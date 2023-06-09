@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { DialogForm, DialogFormButtonContainer } from './styles';
 import { Creators as DialogActions } from '../../store/ducks/dialog';
-import { connect } from 'react-redux';
 import Dialog from '../Dialog';
 import Button from '../../styles/Button';
 
 class AlertDialog extends Component {
-
   onClose = () => {
     this.props.setDialog('alert');
   }
@@ -34,17 +33,17 @@ class AlertDialog extends Component {
 
           <DialogFormButtonContainer>
             <Button onClick={this.submit.bind(this)}>Sim</Button>
-            <Button color="gray" isCancel={true} onClick={this.onClose}>Não</Button>
+            <Button color="gray" isCancel onClick={this.onClose}>Não</Button>
           </DialogFormButtonContainer>
 
         </DialogForm>
       </Dialog>
-    )
+    );
   }
 }
 
 const mapStateToProps = ({ dialog }) => ({ dialog });
 
 export default connect(
-  mapStateToProps, { ...DialogActions }
+  mapStateToProps, { ...DialogActions },
 )(AlertDialog);

@@ -1,9 +1,8 @@
-import api from '../../services/api';
-import { Creators } from '../ducks/download';
 import { call, put } from 'redux-saga/effects';
 import { actions as toastrActions } from 'react-redux-toastr';
+import api from '../../services/api';
+import { Creators } from '../ducks/download';
 import { downloadStream } from '../../utils/utils';
-
 
 export function* getDownload({ id, action }) {
   try {
@@ -12,13 +11,12 @@ export function* getDownload({ id, action }) {
 
     yield put(Creators.downloadSuccess(response.data));
     downloadStream({ id, content: response.data, action });
-
   } catch (err) {
     yield put(Creators.downloadError({ err }));
     yield put(toastrActions.add({
       type: 'error',
       title: 'Erro',
-      message: 'Falha ao baixar arquivo'
+      message: 'Falha ao baixar arquivo',
     }));
   }
 }

@@ -1,17 +1,19 @@
 import React, { Component } from 'react';
 import DropZone from 'react-dropzone';
+import filesize from 'filesize';
 import { DropContainer, UploadMessage } from './styles';
 import api from '../../services/api';
-import filesize from "filesize";
 
 export default class Upload extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      uploadedFiles: [],
+    };
+  }
 
-  state = {
-    uploadedFiles: []
-  };
-
-  handleUpload = files => {
-    const uploadedFiles = files.map(file => ({
+  handleUpload = (files) => {
+    const uploadedFiles = files.map((file) => ({
       file,
       id: null,
       name: file.name,
@@ -20,75 +22,72 @@ export default class Upload extends Component {
       progress: 0,
       uploaded: false,
       error: false,
-      url: null
+      url: null,
     }));
 
-    this.setState({
-      uploadedFiles: this.state.uploadedFiles.concat(uploadedFiles)
-    });
+    this.setState((prevState) => ({
+      ...prevState,
+      uploadedFiles: prevState.uploadedFiles.concat(uploadedFiles),
+    }));
 
     uploadedFiles.forEach(this.processUpload);
   };
 
   updateFile = (id, data) => {
-    const newFiles = this.state.uploadedFiles.map(uploadedFile => {
-      return id === uploadedFile.id
+    let newFiles = this.state.uploadedFiles;
+    this.setState((prevState) => {
+      newFiles = prevState.uploadedFiles.map((uploadedFile) => (id === uploadedFile.id
         ? { ...uploadedFile, ...data }
-        : uploadedFile;
+        : uploadedFile));
+      return { ...prevState, uploadedFiles: newFiles };
     });
-
-    this.setState({ uploadedFiles: newFiles });
 
     if (this.props.onUpload) {
       this.props.onUpload(newFiles);
     }
   };
 
-  processUpload = uploadedFile => {
+  processUpload = (uploadedFile) => {
     const data = new FormData();
 
-    data.append("file", uploadedFile.file, uploadedFile.name);
+    data.append('file', uploadedFile.file, uploadedFile.name);
 
     api
-      .post("file", data, {
-        onUploadProgress: e => {
-          const progress = parseInt(Math.round((e.loaded * 100) / e.total));
+      .post('file', data, {
+        onUploadProgress: (e) => {
+          const progress = parseInt(Math.round((e.loaded * 100) / e.total), 10);
 
           this.updateFile(uploadedFile.id, {
-            progress
+            progress,
           });
-        }
+        },
       })
-      .then(response => {
+      .then((response) => {
         this.updateFile(uploadedFile.id, {
           uploaded: true,
           id: response.data.id,
-          url: response.data.url
+          url: response.data.url,
         });
       })
       .catch(() => {
         this.updateFile(uploadedFile.id, {
-          error: true
+          error: true,
         });
       });
   };
 
   renderDragMessage = (isDragActive, isDragReject) => {
-    if (!isDragActive) {
-      return <UploadMessage>{this.props.message}</UploadMessage>
-    }
-
-    if (isDragReject) {
-      return <UploadMessage type="error">Arquivo não suportado</UploadMessage>
-    }
-
-    return <UploadMessage type="success">Solte os arquivos aqui</UploadMessage>
+    if (!isDragActive) return <UploadMessage>{this.props.message}</UploadMessage>;
+    if (isDragReject) return <UploadMessage type="error">Arquivo não suportado</UploadMessage>;
+    return <UploadMessage type="success">Solte os arquivos aqui</UploadMessage>;
   }
 
   render() {
     return (
       <DropZone accept={this.props.accept} onDropAccepted={this.handleUpload}>
-        {({ getRootProps, getInputProps, isDragActive, isDragReject }) => (
+        {({
+          getRootProps, getInputProps, isDragActive, isDragReject,
+        }) => (
           <DropContainer
             {...getRootProps()}
             isDragActive={isDragActive}

@@ -15,7 +15,7 @@ const sizes = {
     margin-right: 5vw;
     width: 90%;
     min-height: 90vh;
-  `
+  `,
 };
 
 export const ConfigContainer = styled.div`
@@ -23,8 +23,8 @@ export const ConfigContainer = styled.div`
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.1);
   border-radius: 5px;
 
-  ${props => sizes[props.size || 'default']}
-  
+  ${(props) => sizes[props.size || 'default']}
+
   h1 {
     padding: 2rem;
     font-weight: 600;

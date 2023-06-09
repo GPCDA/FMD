@@ -1,24 +1,26 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { actions as toastrActions } from 'react-redux-toastr';
 import {
   DialogForm, DialogFormButtonContainer,
-  DialogInput, DialogSpan
+  DialogInput, DialogSpan,
 } from '../../styles/global';
 import { Creators as DialogActions } from '../../store/ducks/dialog';
 import { Creators as DataSourceActions } from '../../store/ducks/data_source';
-import { connect } from 'react-redux';
 import Dialog from '../Dialog';
 import Button from '../../styles/Button';
-import { actions as toastrActions } from 'react-redux-toastr';
 import Upload from '../Upload';
 import UploadFileList from '../UploadFileList';
 import api from '../../services/api';
 
 class DataSourceDialog extends Component {
-
-  state = {
-    name: '',
-    uploadedFiles: []
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      name: '',
+      uploadedFiles: [],
+    };
+  }
 
   onClose = () => {
     this.props.setDialog('dataSource');
@@ -28,32 +30,33 @@ class DataSourceDialog extends Component {
   onCancel = () => {
     const { uploadedFiles } = this.state;
 
-    uploadedFiles.forEach(file => this.handleDelete(file.id));
+    uploadedFiles.forEach((file) => this.handleDelete(file.id));
 
     this.onClose();
   }
 
-  handleDelete = async id => {
+  handleDelete = async (id) => {
     await api.delete(`file/${id}`);
 
-    this.setState({
-      uploadedFiles: this.state.uploadedFiles.filter(file => file.id !== id)
-    });
+    this.setState((prevState) => ({
+      ...prevState,
+      uploadedFiles: prevState.uploadedFiles.filter((file) => file.id !== id),
+    }));
   };
 
   renderWarningMsg = (msg) => {
     this.props.add({
       type: 'warning',
       title: 'Atenção',
-      message: msg
+      message: msg,
     });
   }
 
-  handleChangeInput = e => this.setState({ [e.target.name]: e.target.value });
+  handleChangeInput = (e) => this.setState({ [e.target.name]: e.target.value });
 
   submit = () => {
     const { name, uploadedFiles } = this.state;
-    const fileId = uploadedFiles.map(file => file.id);
+    const fileId = uploadedFiles.map((file) => file.id);
 
     if (!name) {
       this.renderWarningMsg('Nome não informado');
@@ -87,23 +90,25 @@ class DataSourceDialog extends Component {
             value={name}
             autoComplete="off"
             onChange={this.handleChangeInput}
-            name="name">
-          </DialogInput>
+            name="name"
+          />
 
           {!uploadedFiles.length && (
             <div style={{ paddingTop: '2vh' }}>
               <div style={{ paddingBottom: '.5vh' }}><DialogSpan>Arquivo:</DialogSpan></div>
               <Upload
-                onUpload={(uploadedFiles) => this.setState({ uploadedFiles })}
+                onUpload={(newUploadedFiles) => this.setState({ uploadedFiles: newUploadedFiles })}
                 accept="text/csv"
                 message="Arraste um arquivo CSV ou clique aqui."
               />
-            </div>)}
+            </div>
+          )}
 
           {!!uploadedFiles.length && (
             <UploadFileList
               files={uploadedFiles}
-              onDelete={(uploadedFiles) => this.setState({ uploadedFiles })} />
+              onDelete={(newUploadedFiles) => this.setState({ uploadedFiles: newUploadedFiles })}
+            />
           )}
 
           {!uploadedFiles.length && (
@@ -116,12 +121,12 @@ class DataSourceDialog extends Component {
 
           <DialogFormButtonContainer>
             <Button onClick={this.submit.bind(this)}>Salvar</Button>
-            <Button style={{ marginLeft: '1vw' }} color="gray" isCancel={true} onClick={this.onCancel}>Cancelar</Button>
+            <Button style={{ marginLeft: '1vw' }} color="gray" isCancel onClick={this.onCancel}>Cancelar</Button>
           </DialogFormButtonContainer>
 
         </DialogForm>
       </Dialog>
-    )
+    );
   }
 }
 
@@ -130,7 +135,8 @@ const mapStateToProps = ({ dialog }) => ({ dialog });
 export default connect(
   mapStateToProps,
   {
-    ...DialogActions, ...toastrActions,
-    ...DataSourceActions
-  }
+    ...DialogActions,
+    ...toastrActions,
+    ...DataSourceActions,
+  },
 )(DataSourceDialog);

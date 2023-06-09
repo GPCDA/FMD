@@ -9,7 +9,7 @@ export const { Types, Creators } = createActions({
   indicatorError: ['err'],
   getIndicators: ['filter'],
   saveIndicators: ['filter'],
-  setIndicator: ['name', 'value']
+  setIndicator: ['name', 'value'],
 });
 
 /** --------------------------------
@@ -27,28 +27,30 @@ const INITIAL_STATE = Immutable({
   courseSelected: [],
   subjectSelected: [],
   semesterSelected: [],
-  phenomenonSelected: []
+  phenomenonSelected: [],
 });
 
 /* Reducers */
 
-export const init = state => state.merge({ data: [] });
+export const init = (state) => state.merge({ data: [] });
 
-export const initFilter = state => state.merge({
+export const initFilter = (state) => state.merge({
   targetSelected: [],
   courseSelected: [],
   subjectSelected: [],
   semesterSelected: [],
-  phenomenonSelected: []
+  phenomenonSelected: [],
 });
 
 export const set = (state, { name, value }) => state.merge({ [name]: value });
 
-export const request = state => state.merge({ loading: true });
+export const request = (state) => state.merge({ loading: true });
 
-export const success = (state, { data }) => state.merge({ source: data, data, error: false, loading: false, indicators: [] });
+export const success = (state, { data }) => state.merge({
+  source: data, data, error: false, loading: false, indicators: [],
+});
 
-export const error = state => state.merge({ loading: false, error: true });
+export const error = (state) => state.merge({ loading: false, error: true });
 
 /* Reducers to types */
 
@@ -58,5 +60,5 @@ export default createReducer(INITIAL_STATE, {
   [Types.SET_INDICATOR]: set,
   [Types.INDICATOR_REQUEST]: request,
   [Types.INDICATOR_SUCCESS]: success,
-  [Types.INDICATOR_ERROR]: error
+  [Types.INDICATOR_ERROR]: error,
 });

@@ -1,6 +1,7 @@
 import { combineReducers } from 'redux';
 import { connectRouter } from 'connected-react-router';
 
+import { reducer as toastr } from 'react-redux-toastr';
 import lms from './lms';
 import auth from './auth';
 import train from './train';
@@ -19,9 +20,8 @@ import model_copy from './model_copy';
 import download from './download';
 import data_source from './data_source';
 import phenomenon from './phenomenon';
-import { reducer as toastr } from 'react-redux-toastr';
 
-export default history => combineReducers({
+export default (history) => combineReducers({
   lms,
   auth,
   train,
@@ -41,5 +41,5 @@ export default history => combineReducers({
   download,
   data_source,
   phenomenon,
-  router: connectRouter(history)
+  router: connectRouter(history),
 });

@@ -1,5 +1,5 @@
 import styled, { css, createGlobalStyle } from 'styled-components';
-import 'react-redux-toastr/lib/css/react-redux-toastr.min.css'
+import 'react-redux-toastr/lib/css/react-redux-toastr.min.css';
 import { initializeIcons } from '@uifabric/icons';
 import { loadTheme } from 'office-ui-fabric-react';
 import 'react-perfect-scrollbar/dist/css/styles.css';
@@ -37,8 +37,8 @@ loadTheme({
     neutralPrimary: '#333333',
     neutralDark: '#272727',
     black: '#1d1d1d',
-    white: '#ffffff'
-  }
+    white: '#ffffff',
+  },
 });
 
 initializeIcons();
@@ -117,7 +117,7 @@ export default createGlobalStyle`
   .lms-card {
     width: 30.5%;
     margin: .5vw;
-    background-color: #FBFBFB !important; 
+    background-color: #FBFBFB !important;
     font-family: ${fontFamily} !important;
   }
 `;
@@ -126,22 +126,22 @@ export const ComboBoxStyle = {
   container: {
     marginBottom: '1rem',
     '&:hover': {
-      border: '1px solid red'
-    }
+      border: '1px solid red',
+    },
   },
   root: {
     backgroundColor: '#F5F5F5',
     '&:hover': {
-      border: '1px solid red'
-    }
+      border: '1px solid red',
+    },
   },
   input: {
     backgroundColor: '#F5F5F5',
     '&:hover': {
-      border: '1px solid red'
-    }
-  }
-}
+      border: '1px solid red',
+    },
+  },
+};
 
 export const selectStyle = {
   container: (provided) => ({
@@ -153,52 +153,48 @@ export const selectStyle = {
   clearIndicator: (provided) => ({
     ...provided,
     color: secondaryColor,
-    padding: 5
+    padding: 5,
   }),
   multiValueRemove: (provided) => ({
     ...provided,
     color: secondaryColor,
     borderRadius: '0 8px 8px 0',
-    "&:hover": {
+    '&:hover': {
       color: '#fff',
       cursor: 'pointer',
       backgroundColor: secondaryColor,
-    }
+    },
   }),
-  dropdownIndicator: (provided) => {
-    return {
-      ...provided,
+  dropdownIndicator: (provided) => ({
+    ...provided,
+    color: secondaryColor,
+    padding: 5,
+    ':hover': {
       color: secondaryColor,
-      padding: 5,
-      ":hover": {
-        color: secondaryColor
-      }
-    }
-  },
+    },
+  }),
   multiValue: (provided) => ({
     ...provided,
-    borderRadius: 16
+    borderRadius: 16,
   }),
   groupHeading: (provided) => ({
     ...provided,
-    color: secondaryColor
+    color: secondaryColor,
   }),
-  indicatorsContainer: provided => ({
+  indicatorsContainer: (provided) => ({
     ...provided,
-    height: 30
+    height: 30,
   }),
-  control: (provided, state) => {
-    return {
-      ...provided,
-      backgroundColor: '#F9F9F9',
-      boxShadow: state.isFocused || state.isHovered ? `0 0 0 1px ${secondaryColor}` : null,
-      "&:hover": {
-        borderColor: secondaryColor,
-      },
-      borderWidth: 1,
-      minHeight: 30
-    }
-  },
+  control: (provided, state) => ({
+    ...provided,
+    backgroundColor: '#F9F9F9',
+    boxShadow: state.isFocused || state.isHovered ? `0 0 0 1px ${secondaryColor}` : null,
+    '&:hover': {
+      borderColor: secondaryColor,
+    },
+    borderWidth: 1,
+    minHeight: 30,
+  }),
   option: (provided, state) => {
     let color = '#000';
     let background;
@@ -217,13 +213,13 @@ export const selectStyle = {
       ...provided,
       color,
       background,
-      ":active": {
+      ':active': {
         color: '#FFF',
-        backgroundColor: secondaryColor
-      }
-    }
-  }
-}
+        backgroundColor: secondaryColor,
+      },
+    };
+  },
+};
 
 export const Table = styled.table`
   color: black;
@@ -257,7 +253,7 @@ export const HeaderColumn = styled.td`
   padding: .7rem;
   font-weight: bold;
 
-  ${props => props.align && css`
+  ${(props) => props.align && css`
     text-align: ${props.align};
   `}
 `;
@@ -265,7 +261,7 @@ export const HeaderColumn = styled.td`
 export const FirstItemColumn = styled.td`
   padding-left: 2rem;
 
-  ${props => props.isClickable && css`
+  ${(props) => props.isClickable && css`
     &:hover {
       cursor: pointer;
     }
@@ -275,11 +271,11 @@ export const FirstItemColumn = styled.td`
 export const ItemColumn = styled.td`
   padding: .7rem;
 
-  ${props => props.align && css`
+  ${(props) => props.align && css`
     text-align: ${props.align};
   `}
 
-  ${props => props.isClickable && css`
+  ${(props) => props.isClickable && css`
     &:hover {
       cursor: pointer;
     }
@@ -387,9 +383,9 @@ export const SelectText = styled.div`
 export const materialUIStyle = createMuiTheme({
   typography: {
     useNextVariants: true,
-    fontFamily: fontFamily,
+    fontFamily,
     h3: {
-      "&.appTitle": {
+      '&.appTitle': {
         marginBottom: 24,
       },
     },

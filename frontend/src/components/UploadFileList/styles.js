@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components';
 
 export const Container = styled.ul`
   margin-top: 20px;
@@ -35,7 +35,7 @@ export const FileInfo = styled.div`
         background: transparent;
         color: #e57878;
         margin-left: 5px;
-        
+
         &:hover {
           text-decoration: underline;
           cursor: pointer;
@@ -49,7 +49,7 @@ export const Preview = styled.div`
   width: 36px;
   height: 36px;
   border-radius: 5px;
-  background-image: url(${props => props.src});
+  background-image: url(${(props) => props.src});
   background-repeat: no-repeat;
   background-size: cover;
   background-position: 50% 50%;

@@ -5,15 +5,10 @@ module.exports = {
     jest: true,
   },
   extends: [
-    'react-app',
     'airbnb',
     'plugin:@typescript-eslint/recommended',
     'prettier/@typescript-eslint',
   ],
-  globals: {
-    Atomics: 'readonly',
-    SharedArrayBuffer: 'readonly',
-  },
   parserOptions: {
     ecmaFeatures: {
       jsx: true,
@@ -23,15 +18,22 @@ module.exports = {
   },
   plugins: ['react', 'import', 'jsx-a11y'],
   rules: {
+    'max-len': 'off',
+    'no-bitwise': ['error', { allow: ['~'] }],
+    '@typescript-eslint/camelcase': 'off',
+    'react/jsx-props-no-spreading': 'off',
+    'react/jsx-no-bind': 'off',
+    'react/prop-types': 'off',
+    'react/destructuring-assignment': 'off',
     'react/jsx-filename-extension': [
       'error',
       {
-        extensions: ['.tsx'],
+        extensions: ['.tsx', 'js'],
       },
     ],
     'import/prefer-default-export': 'off',
     '@typescript-eslint/explicit-function-return-type': 'off',
-    '@typescript-eslint/explicit-member-accessibility': 'off'
+    '@typescript-eslint/explicit-member-accessibility': 'off',
   },
   settings: {
     'import/parsers': {

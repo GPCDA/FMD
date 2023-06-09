@@ -1,50 +1,51 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { ConfigContainer } from '../../styles/ConfigContainer';
-import BreadCrumb from '../BreadCrumb';
-import { DataSourceText, RowDetail } from './styles';
-import {
-  Header, Table, HeaderColumn, StatusMsgContainer,
-  FirstItemColumn, ItemColumn, LoadingContainer
-} from '../../styles/global';
-import Button from '../../styles/Button';
 import MoreIcon from 'react-feather/dist/icons/more-horizontal';
 import ChevronDown from 'react-feather/dist/icons/chevron-down';
 import ChevronUp from 'react-feather/dist/icons/chevron-up';
 import AlertIcon from 'react-feather/dist/icons/alert-triangle';
 import TargetIcon from 'react-feather/dist/icons/crosshair';
-import Progress from '../Progress';
 import PerfectScrollbar from 'react-perfect-scrollbar';
+import { ProgressSpinner } from 'primereact/progressspinner';
+import { actions as toastrActions } from 'react-redux-toastr';
+import { Menu, MenuItem } from '@material-ui/core';
+import { ConfigContainer } from '../../styles/ConfigContainer';
+import BreadCrumb from '../BreadCrumb';
+import { DataSourceText, RowDetail } from './styles';
+import {
+  Header, Table, HeaderColumn, StatusMsgContainer,
+  FirstItemColumn, ItemColumn, LoadingContainer, terciaryColor, FirstHeaderColumn,
+} from '../../styles/global';
+import Button from '../../styles/Button';
+import Progress from '../Progress';
 import { INDICATORS, TRAIN, ADD_TRAIN } from '../../constants';
 import { Creators as ScreenActions } from '../../store/ducks/screen';
 import { Creators as DialogActions } from '../../store/ducks/dialog';
-import { ProgressSpinner } from 'primereact/progressspinner';
-import { actions as toastrActions } from 'react-redux-toastr';
 import { Creators as ChartActions } from '../../store/ducks/chart';
 import Chart from '../Chart';
-import { Menu, MenuItem } from '@material-ui/core';
-import { terciaryColor, FirstHeaderColumn } from '../../styles/global';
 import PreProcessingDialog from '../PreProcessingDialog';
 import TrainConfigDialog from '../TrainConfigDialog';
 import { Creators as PreProcessingActions } from '../../store/ducks/pre_processing';
 import { Creators as TrainActions } from '../../store/ducks/train';
 import AlertDialog from '../AlertDialog';
 
-export const ItemColumnWrapper = onClick => ({ ...props }) => <ItemColumn isClickable={true} onClick={onClick} {...props} />
+export const ItemColumnWrapper = (onClick) => ({ ...props }) => <ItemColumn isClickable onClick={onClick} {...props} />;
 
 class PreProcessing extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      indicatorSelected: null,
+      anchorEl: null,
+      expandedRow: null,
+    };
+  }
 
-  state = {
-    indicatorSelected: null,
-    anchorEl: null,
-    expandedRow: null
-  };
+  getDataSourceContext = () => (this.props.indicator.datasource ? this.props.indicator.datasource.split('/')[0] : null);
 
-  getDataSourceContext = () => this.props.indicator.datasource ? this.props.indicator.datasource.split('/')[0] : null;
+  getDataSourceName = () => (this.props.indicator.datasource ? this.props.indicator.datasource.split('/')[2] : null);
 
-  getDataSourceName = () => this.props.indicator.datasource ? this.props.indicator.datasource.split('/')[2] : null;
-
-  handleRowClick(item) {
+  handleRowClick = (item) => {
     const { expandedRow } = this.state;
     const { path } = this.props.pre_processing;
     const newExpandedRow = expandedRow !== item.name ? item.name : null;
@@ -69,13 +70,13 @@ class PreProcessing extends Component {
       path,
       pre_processing_constant: indicatorSelected.type === 'Discreto' ? +constantValue : constantValue,
       pre_processing_strategy: strategy,
-      pre_processing_indicator: indicatorSelected.name
-    }
+      pre_processing_indicator: indicatorSelected.name,
+    };
 
     this.props.getPreProcessing(newFilter);
   }
 
-  handleMenuItemClick = (strategy, event) => {
+  handleMenuItemClick = (strategy/* , event */) => {
     const { indicatorSelected } = this.state;
 
     this.handleMenuItemClose();
@@ -92,7 +93,7 @@ class PreProcessing extends Component {
   };
 
   renderMenuActions = () => {
-    let actions = [];
+    const actions = [];
     const { anchorEl, indicatorSelected } = this.state;
 
     if (indicatorSelected && indicatorSelected.type === 'Discreto') {
@@ -113,9 +114,9 @@ class PreProcessing extends Component {
         onClose={this.handleMenuItemClose}
       >
         <MenuItem style={{ color: '#FFF', backgroundColor: terciaryColor }}>Pré-processar com</MenuItem>
-        {actions.map((option, index) => (
+        {actions.map((option) => (
           <MenuItem
-            key={index}
+            key={option.pre_processing_action}
             selected={false}
             onClick={this.handleMenuItemClick.bind(this, option.pre_processing_action)}
           >
@@ -123,7 +124,7 @@ class PreProcessing extends Component {
           </MenuItem>
         ))}
       </Menu>
-    )
+    );
   }
 
   renderIconDetail = (item) => {
@@ -134,23 +135,29 @@ class PreProcessing extends Component {
       icon = <ChevronUp size={20} />;
     }
 
-    return <div style={{ display: 'flex', alignItems: 'center' }}>{icon}</div>
+    return <div style={{ display: 'flex', alignItems: 'center' }}>{icon}</div>;
   }
 
-  renderItem(item) {
+  renderItem = (item) => {
     const { targetSelected } = this.props.indicator;
-    const isTarget = targetSelected && targetSelected.value === item.name ? true : false;
+    const isTarget = !!(targetSelected && targetSelected.value === item.name);
     const ItemColumnWrapped = ItemColumnWrapper(this.handleRowClick.bind(this, item));
 
+    const correlationFieldValue = () => {
+      if (item.corr) return <Progress value={item.corr} />;
+      if (isTarget) return <b>Alvo</b>;
+      return 'N/A';
+    };
+
     const itemRows = [
-      <tr key={"row-data-" + item.name}>
-        <FirstItemColumn onClick={this.handleRowClick.bind(this, item)} isClickable={true}>{this.renderIconDetail(item)}</FirstItemColumn>
+      <tr key={`row-data-${item.name}`}>
+        <FirstItemColumn onClick={this.handleRowClick.bind(this, item)} isClickable>{this.renderIconDetail(item)}</FirstItemColumn>
         <ItemColumnWrapped style={{ paddingLeft: '2rem' }}>{item.description}</ItemColumnWrapped>
         <ItemColumnWrapped title={item.missing ? `Qtd. Dados Faltantes: ${item.missing}` : null}>
           {item.missing ? <AlertIcon size={20} color="#FFF" fill="#A87878" /> : null}
         </ItemColumnWrapped>
         <ItemColumnWrapped>{isTarget ? <TargetIcon size={20} color="#DEB981" /> : null}</ItemColumnWrapped>
-        <ItemColumnWrapped>{item.corr ? <Progress value={item.corr} /> : isTarget ? <b>Alvo</b> : 'N/A'}</ItemColumnWrapped>
+        <ItemColumnWrapped>{correlationFieldValue()}</ItemColumnWrapped>
         <ItemColumnWrapped>{item.type}</ItemColumnWrapped>
         <ItemColumnWrapped align="right">{item.unique}</ItemColumnWrapped>
         <ItemColumnWrapped align="right">{item.missing}</ItemColumnWrapped>
@@ -161,18 +168,18 @@ class PreProcessing extends Component {
         <ItemColumnWrapped align="right">{item.max}</ItemColumnWrapped>
 
         <ItemColumn onClick={item.missing ? this.handleClickListItem.bind(this, item) : null} style={{ display: 'flex', justifyContent: 'center' }}>{item.missing ? <MoreIcon /> : null}</ItemColumn>
-      </tr >
+      </tr>,
     ];
 
     if (this.state.expandedRow === item.name) {
       itemRows.push(
-        <RowDetail key={"row-expanded-" + item.name}>
+        <RowDetail key={`row-expanded-${item.name}`}>
           <td colSpan={Object.keys(item).length}>
-            <div style={{ 'display': 'flex', justifyContent: 'center', alignItems: 'center' }}>
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
               <Chart name={item.description} />
             </div>
           </td>
-        </RowDetail>
+        </RowDetail>,
       );
     }
 
@@ -186,7 +193,7 @@ class PreProcessing extends Component {
     const newData = {
       ...data,
       path,
-      target: targetSelected && targetSelected.value ? targetSelected.value : null
+      target: targetSelected && targetSelected.value ? targetSelected.value : null,
     };
 
     this.props.postTrain(newData);
@@ -195,7 +202,7 @@ class PreProcessing extends Component {
 
   submit = () => {
     const { data } = this.props.pre_processing;
-    const itemsMissing = data.filter(item => item.missing);
+    const itemsMissing = data.filter((item) => item.missing);
 
     if (itemsMissing.length) {
       this.renderWarningMsg('Por favor, verifique as pendências antes de continuar.');
@@ -214,7 +221,7 @@ class PreProcessing extends Component {
     this.props.add({
       type: 'warning',
       title: 'Atenção',
-      message: msg
+      message: msg,
     });
   }
 
@@ -223,7 +230,7 @@ class PreProcessing extends Component {
 
     if (is_processed) {
       this.props.setDialog('alert', {
-        description: 'Os dados pré-processados serão perdidos. Deseja continuar?'
+        description: 'Os dados pré-processados serão perdidos. Deseja continuar?',
       });
       return;
     }
@@ -245,11 +252,11 @@ class PreProcessing extends Component {
 
     return (
       <PerfectScrollbar style={{ width: '100%', overflowX: 'auto' }}>
-        <ConfigContainer size='big'>
+        <ConfigContainer size="big">
 
-          <div onClick={this.checkIsPreProcessed.bind(this)}>
+          <div tabIndex={0} role="button" onKeyDown={this.handleKeyDown} onClick={this.checkIsPreProcessed.bind(this)}>
             <BreadCrumb
-              text='Voltar para Seleção de indicadores'
+              text="Voltar para Seleção de indicadores"
             />
           </div>
 
@@ -261,58 +268,70 @@ class PreProcessing extends Component {
           </Header>
 
           <DataSourceText>
-            <span><b>Fonte de dados: </b> {dataSourceContext}/{dataSourceName} {data.length && !loading ? `(Total de Instâncias : ${data[0].count})` : null}</span>
+            <span>
+              <b>Fonte de dados: </b>
+              {' '}
+              {dataSourceContext}
+              /
+              {dataSourceName}
+              {' '}
+              {data.length && !loading ? `(Total de Instâncias : ${data[0].count})` : null}
+            </span>
           </DataSourceText>
 
-          {loading ?
-            <LoadingContainer>
-              <ProgressSpinner style={{ width: '50px', height: '50px' }} strokeWidth="4" fill="#EEEEEE" animationDuration=".5s" />
-            </LoadingContainer>
+          {loading
+            ? (
+              <LoadingContainer>
+                <ProgressSpinner style={{ width: '50px', height: '50px' }} strokeWidth="4" fill="#EEEEEE" animationDuration=".5s" />
+              </LoadingContainer>
+            )
             : null}
 
-          {!data.length && !loading && !error ?
-            <StatusMsgContainer> Sem dados para serem exibidos. </StatusMsgContainer>
+          {!data.length && !loading && !error
+            ? <StatusMsgContainer> Sem dados para serem exibidos. </StatusMsgContainer>
             : null}
 
-          {error ?
-            <StatusMsgContainer>Ocorreu um erro para listar os indicadores.</StatusMsgContainer>
+          {error
+            ? <StatusMsgContainer>Ocorreu um erro para listar os indicadores.</StatusMsgContainer>
             : null}
 
-          {data.length && !loading && !error ?
-            <div style={{ overflowX: 'auto' }}>
-              <Table>
-                <thead>
-                  <tr>
-                    <FirstHeaderColumn>&nbsp;</FirstHeaderColumn>
-                    <HeaderColumn style={{ paddingLeft: '2rem' }}>Indicador</HeaderColumn>
-                    <HeaderColumn>&nbsp;</HeaderColumn>
-                    <HeaderColumn>&nbsp;</HeaderColumn>
-                    <HeaderColumn>Correlação</HeaderColumn>
-                    <HeaderColumn>Tipo</HeaderColumn>
-                    <HeaderColumn align="right">Qtd. Único</HeaderColumn>
-                    <HeaderColumn align="right">Qtd. Faltante</HeaderColumn>
-                    <HeaderColumn align="right" >Média</HeaderColumn>
-                    <HeaderColumn align="right">Desvio Padrão</HeaderColumn>
-                    <HeaderColumn align="right">Mínimo</HeaderColumn>
-                    <HeaderColumn align="right">Máximo</HeaderColumn>
-                    <HeaderColumn>Ações</HeaderColumn>
-                  </tr>
-                </thead>
+          {data.length && !loading && !error
+            ? (
+              <div style={{ overflowX: 'auto' }}>
+                <Table>
+                  <thead>
+                    <tr>
+                      <FirstHeaderColumn>&nbsp;</FirstHeaderColumn>
+                      <HeaderColumn style={{ paddingLeft: '2rem' }}>Indicador</HeaderColumn>
+                      <HeaderColumn>&nbsp;</HeaderColumn>
+                      <HeaderColumn>&nbsp;</HeaderColumn>
+                      <HeaderColumn>Correlação</HeaderColumn>
+                      <HeaderColumn>Tipo</HeaderColumn>
+                      <HeaderColumn align="right">Qtd. Único</HeaderColumn>
+                      <HeaderColumn align="right">Qtd. Faltante</HeaderColumn>
+                      <HeaderColumn align="right">Média</HeaderColumn>
+                      <HeaderColumn align="right">Desvio Padrão</HeaderColumn>
+                      <HeaderColumn align="right">Mínimo</HeaderColumn>
+                      <HeaderColumn align="right">Máximo</HeaderColumn>
+                      <HeaderColumn>Ações</HeaderColumn>
+                    </tr>
+                  </thead>
 
-                <tbody>
-                  {data.map(item => this.renderItem(item))}
-                </tbody>
-              </Table>
-            </div>
+                  <tbody>
+                    {data.map((item) => this.renderItem(item))}
+                  </tbody>
+                </Table>
+              </div>
+            )
             : null}
 
         </ConfigContainer>
         {this.renderMenuActions()}
         <PreProcessingDialog onSubmit={({ strategy, constantValue }) => this.executePreProcessing({ strategy, constantValue })} />
-        <TrainConfigDialog onSubmit={({ data }) => this.goToTrain({ data })} />
-        <AlertDialog onSubmit={this.initPreProcessing}></AlertDialog>
+        <TrainConfigDialog onSubmit={({ data: trainData }) => this.goToTrain({ data: trainData })} />
+        <AlertDialog onSubmit={this.initPreProcessing} />
       </PerfectScrollbar>
-    )
+    );
   }
 }
 
@@ -320,8 +339,11 @@ const mapStateToProps = ({ pre_processing, indicator }) => ({ pre_processing, in
 
 export default connect(
   mapStateToProps, {
-  ...ScreenActions, ...toastrActions,
-  ...ChartActions, ...DialogActions,
-  ...PreProcessingActions, ...TrainActions
-}
+    ...ScreenActions,
+    ...toastrActions,
+    ...ChartActions,
+    ...DialogActions,
+    ...PreProcessingActions,
+    ...TrainActions,
+  },
 )(PreProcessing);

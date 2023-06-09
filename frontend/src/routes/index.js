@@ -6,7 +6,7 @@ import history from './history';
 
 import Private from './private';
 import Guest from './guest';
-import Main from '../pages/Main'
+import Main from '../pages/Main';
 import SignIn from '../pages/Auth/SignIn';
 import { SIGNIN, ROOT, TRAIN_MODEL } from './constants';
 import TrainModel from '../pages/TrainModel';
@@ -19,6 +19,6 @@ const Routes = () => (
       <Private path={TRAIN_MODEL} exact component={TrainModel} />
     </Switch>
   </ConnectedRouter>
-)
+);
 
-export default Routes
+export default Routes;

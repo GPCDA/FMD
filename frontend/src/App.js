@@ -1,20 +1,19 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import { Provider } from 'react-redux';
-import GlobalStyle from './styles/global';
 import ReduxToastr from 'react-redux-toastr';
-import { materialUIStyle } from './styles/global';
 import { ThemeProvider as MuiThemeProvider } from '@material-ui/core/styles';
+import GlobalStyle, { materialUIStyle } from './styles/global';
 
 import store from './store';
 import Routes from './routes';
 
-require('dotenv').config({  
-  path: process.env.NODE_ENV === "development" ? ".env.development" : ".env"
-})
+require('dotenv').config({
+  path: process.env.NODE_ENV === 'development' ? '.env.development' : '.env',
+});
 
 const App = () => (
   <Provider store={store}>
-    <Fragment>
+    <>
       <MuiThemeProvider theme={materialUIStyle}>
         <Routes />
         <ReduxToastr
@@ -25,10 +24,11 @@ const App = () => (
           transitionIn="fadeIn"
           transitionOut="fadeOut"
           progressBar
-          closeOnToastrClick />
+          closeOnToastrClick
+        />
       </MuiThemeProvider>
       <GlobalStyle />
-    </Fragment>
+    </>
   </Provider>
 );
 
