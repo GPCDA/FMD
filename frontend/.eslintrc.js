@@ -25,20 +25,12 @@ module.exports = {
     'react/jsx-no-bind': 'off',
     'react/prop-types': 'off',
     'react/destructuring-assignment': 'off',
-    'react/jsx-filename-extension': [
-      'error',
-      {
-        extensions: ['.tsx', 'js'],
-      },
-    ],
+    'react/jsx-filename-extension': ['error', { extensions: ['.jsx', 'js'] }],
     'import/prefer-default-export': 'off',
     '@typescript-eslint/explicit-function-return-type': 'off',
     '@typescript-eslint/explicit-member-accessibility': 'off',
   },
   settings: {
-    'import/parsers': {
-      '@typescript-eslint/parser': ['.ts', '.tsx'],
-    },
     'import/resolver': {
       typescript: {},
     },
