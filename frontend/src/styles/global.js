@@ -309,10 +309,55 @@ export const LoadingContainer = styled.div`
   padding-bottom: 15vh;
 `;
 
+export const Flex = styled.div`
+  display: flex;
+  gap: 1rem;
+
+  div {
+    flex: 1;
+  }
+`;
+
 export const DialogFormButtonContainer = styled.div`
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: center;
+  padding: 1rem;
+  gap: 1rem;
+
+  button {
+    color: #4A5173;
+    font-size: 14px;
+    line-height: 21px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    background-color: #FFF;
+    border: 1px solid #4A5173;
+
+    &:hover {
+      color: #FFF;
+    }
+  }
+`;
+
+export const DialogLabelGroup = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: center;
+
+  gap: 0.5rem;
+
+  input {
+    margin: 0;
+  }
+`;
+
+export const DialogLabel = styled.label`
+  display: flex;
+  gap: 0.5rem;
+  align-items: baseline;
+  justify-content: flex-start;
 `;
 
 export const DialogInput = styled.input`
@@ -333,16 +378,16 @@ export const DialogSpan = styled.span`
     font-size: 16px;
     line-height: 31px;
     letter-spacing: 0.07em;
-    margin-top: 15px;
 `;
 
-export const DialogForm = styled.form`
-  border-radius: 5px;
-  padding: 40px;
-  width: 400px;
+export const DialogHeader = styled.header`
+  position: relative;
+  padding: 2rem 1rem;
   display: flex;
-  flex-direction: column;
-  align-items: stretch;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.5);
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);
 
   h1 {
     font-weight: 500;
@@ -371,6 +416,76 @@ export const DialogForm = styled.form`
       color: #FFF;
     }
   }
+`;
+
+export const DialogForm = styled.form`
+  border-radius: 5px;
+  padding: 40px;
+  min-width: 400px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.5rem;
+
+  h1 {
+    font-weight: 500;
+    font-weight: 800;
+    font-size: 18px;
+    line-height: 31px;
+    letter-spacing: 0.07em;
+    justify-content: center;
+  }
+
+  h2 {
+    font-size: 12px;
+  }
+
+  button {
+    margin: 30px 0 0;
+    color: #4A5173;
+    font-size: 14px;
+    line-height: 21px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    background-color: #FFF;
+    border: 1px solid #4A5173;
+
+    &:hover {
+      color: #FFF;
+    }
+  }
+`;
+
+export const DialogDotStepper = styled.div`
+  display: flex;
+  padding: 1rem;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+`;
+
+export const DialogDotStep = styled.div`
+  position: relative;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: rgb(0,0,0);
+
+  ${(props) => props.active && css`
+    background-color: rgba(0,0,0,0.5);
+
+    &:before {
+      content: '';
+      position: absolute;
+      display: block;
+      top: -50%;
+      left: -50%;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background-color: rgba(0,0,0,0.1);
+    }
+  `}
 `;
 
 export const SelectText = styled.div`

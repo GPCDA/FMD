@@ -18,6 +18,15 @@ import Train from '../../components/Train';
 import TrainModel from '../TrainModel';
 import Dashboard from '../../components/Dashboard';
 
+const COMPONENTS = {
+  [DATASOURCE]: <DataSource />,
+  [INDICATORS]: <Indicators />,
+  [PRE_PROCESSING]: <PreProcessing />,
+  [TRAIN]: <Train />,
+  [TRAIN_MODEL]: <TrainModel />,
+  [LAD]: <Dashboard />,
+};
+
 class Main extends Component {
   componentDidMount() {
     this.props.getLms();
@@ -26,31 +35,9 @@ class Main extends Component {
   renderContent = () => {
     const { activeComponent } = this.props.screen;
 
-    if (activeComponent === DATASOURCE) {
-      return <DataSource />;
-    }
+    const currentComponent = COMPONENTS[activeComponent];
 
-    if (activeComponent === INDICATORS) {
-      return <Indicators />;
-    }
-
-    if (activeComponent === PRE_PROCESSING) {
-      return <PreProcessing />;
-    }
-
-    if (activeComponent === TRAIN) {
-      return <Train />;
-    }
-
-    if (activeComponent === TRAIN_MODEL) {
-      return <TrainModel />;
-    }
-
-    if (activeComponent === LAD) {
-      return <Dashboard />;
-    }
-
-    return null;
+    return currentComponent;
   }
 
   render() {

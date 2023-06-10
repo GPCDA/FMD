@@ -17,5 +17,5 @@ export const Content = styled.div`
   color: #000;
   border-radius: 5px;
   box-shadow: 40px;
-  width: ${(props) => (props.size === 'big' ? 600 : 400)}
+  width: ${(props) => (props.size === 'big' ? '600px' : '400px')}
 `;

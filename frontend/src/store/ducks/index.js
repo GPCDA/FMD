@@ -20,6 +20,7 @@ import model_copy from './model_copy';
 import download from './download';
 import data_source from './data_source';
 import phenomenon from './phenomenon';
+import data_base from './data_base';
 
 export default (history) => combineReducers({
   lms,
@@ -41,5 +42,6 @@ export default (history) => combineReducers({
   download,
   data_source,
   phenomenon,
+  data_base,
   router: connectRouter(history),
 });

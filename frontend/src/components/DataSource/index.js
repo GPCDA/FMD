@@ -12,13 +12,14 @@ import EditIcon from 'react-feather/dist/icons/settings';
 import DeleteIcon from 'react-feather/dist/icons/trash-2';
 import PlayIcon from 'react-feather/dist/icons/play';
 import FileIcon from 'react-feather/dist/icons/file';
+import DatabaseIcon from 'react-feather/dist/icons/database';
 import * as moment from 'moment';
 import IconButton from '@material-ui/core/IconButton';
 import { ProgressSpinner } from 'primereact/progressspinner';
 import filesize from 'filesize';
 import MoodleConfigDialog from '../MoodleConfigDialog';
 import {
-  INDICATORS, ADD_TRAIN, LMS, CSV,
+  INDICATORS, ADD_TRAIN, LMS, CSV, DATA_BASE,
 } from '../../constants';
 import { Creators as ScreenActions } from '../../store/ducks/screen';
 import { Creators as IndicatorActions } from '../../store/ducks/indicator';
@@ -32,6 +33,7 @@ import CustomButton from '../../styles/Button';
 import { Creators as DataSourceActions } from '../../store/ducks/data_source';
 import { Creators as LmsActions } from '../../store/ducks/lms';
 import { Creators as DialogActions } from '../../store/ducks/dialog';
+import { Creators as DataBaseActions } from '../../store/ducks/data_base';
 import { CardContainer } from './styles';
 
 const availableLms = { moodle: true };
@@ -41,12 +43,13 @@ class DataSource extends Component {
     super(props);
     this.state = {
       selectedItem: null,
-      chipSelected: LMS,
+      chipSelected: DATA_BASE,
     };
   }
 
   UNSAFE_componentWillMount() {
     this.props.getDataSource();
+    this.props.getDataBase();
   }
 
   openDialogConfig = (item/* , event */) => {
@@ -115,20 +118,57 @@ class DataSource extends Component {
     </Card>
   )
 
-  handleMsgDelete = (item/* , event */) => {
+  renderCardDataBase = (item, idx) => (
+    <Card className="lms-card" key={idx}>
+      <CardActionArea>
+        <CardContent style={{ color: primaryColor }}>
+          <Typography gutterBottom variant="h5" component="h2" style={{ fontFamily }}>
+            {item.name}
+          </Typography>
+          <Typography variant="body2" color="textSecondary" component="p" style={{ color: primaryColor, fontFamily, fontSize: '10px' }}>
+            <b>Importado em:</b>
+            {' '}
+            {moment(item.created_at).format('DD/MM/YYYY HH:mm')}
+          </Typography>
+          <Typography variant="body2" color="textSecondary" component="p" style={{ color: primaryColor, fontFamily, fontSize: '10px' }}>
+            <b>Tamanho:</b>
+            {' '}
+            {filesize(item.size)}
+          </Typography>
+        </CardContent>
+      </CardActionArea>
+      <CardActions style={{ backgroundColor: primaryColor }}>
+        <IconButton onClick={this.goToIndicators.bind(this, CSV, item.id, item.name)}>
+          <PlayIcon size={20} color="#FFF" />
+        </IconButton>
+        <IconButton onClick={this.handleMsgDelete.bind(this, item, 'Você realmente deseja excluir este banco de dados?')}>
+          <DeleteIcon size={20} color="#FFF" />
+        </IconButton>
+      </CardActions>
+    </Card>
+  )
+
+  handleMsgDelete = (item, message) => {
     this.setState({ selectedItem: item });
 
     this.props.setDialog('alert', {
-      description: 'Você realmente deseja excluir esta fonte de dados?',
+      description: message || 'Você realmente deseja excluir esta fonte de dados?',
     });
   }
 
   handleDelete = () => {
-    const { selectedItem } = this.state;
+    const { chipSelected, selectedItem } = this.state;
 
-    if (!selectedItem || !selectedItem.id) return;
+    if (!selectedItem?.id) return;
 
-    this.props.deleteDataSource(selectedItem.id);
+    const deleteChipFunctions = {
+      [CSV]: this.props.deleteDataSource,
+      [DATA_BASE]: this.props.deleteDataBase,
+    };
+
+    const deleteChipFunction = deleteChipFunctions[chipSelected];
+
+    if (deleteChipFunction) deleteChipFunction(selectedItem.id);
   }
 
   goToIndicators = (context, id, name/* , event */) => {
@@ -146,24 +186,41 @@ class DataSource extends Component {
   renderDatasetOptions = () => {
     const { chipSelected } = this.state;
 
+    const chips = [
+      {
+        id: DATA_BASE,
+        avatar: <DatabaseIcon size={16} color={chipSelected === DATA_BASE ? '#FFF' : primaryColor} />,
+        label: 'Banco de dados',
+        className: chipSelected === DATA_BASE ? 'active-chip' : 'inactive-chip',
+        onClick: this.setChip.bind(this, DATA_BASE),
+      },
+      {
+        id: CSV,
+        avatar: <FileIcon size={16} color={chipSelected === CSV ? '#FFF' : primaryColor} />,
+        label: 'Arquivos CSV',
+        className: chipSelected === CSV ? 'active-chip' : 'inactive-chip',
+        onClick: this.setChip.bind(this, CSV),
+      },
+      {
+        id: LMS,
+        avatar: <MonitorIcon size={16} color={chipSelected === LMS ? '#FFF' : primaryColor} />,
+        label: 'Ambientes EAD',
+        className: chipSelected === LMS ? 'active-chip' : 'inactive-chip',
+        onClick: this.setChip.bind(this, LMS),
+      },
+    ];
+
     return (
-      <div style={{ display: 'flex', paddingLeft: '2rem' }}>
-        <div>
+      <div style={{ display: 'flex', paddingLeft: '2rem', gap: '0.5rem' }}>
+        {chips.map((chip) => (
           <Chip
-            avatar={<MonitorIcon size={16} color={chipSelected === LMS ? '#FFF' : primaryColor} />}
-            label="Ambientes EAD"
-            className={chipSelected === LMS ? 'active-chip' : 'inactive-chip'}
-            onClick={this.setChip.bind(this, LMS)}
+            key={chip.id}
+            avatar={chip.avatar}
+            label={chip.label}
+            className={chip.className}
+            onClick={chip.onClick}
           />
-        </div>
-        <div style={{ paddingLeft: '.5vw' }}>
-          <Chip
-            avatar={<FileIcon size={16} color={chipSelected === CSV ? '#FFF' : primaryColor} />}
-            label="Arquivos CSV"
-            className={chipSelected === CSV ? 'active-chip' : 'inactive-chip'}
-            onClick={this.setChip.bind(this, CSV)}
-          />
-        </div>
+        ))}
       </div>
     );
   }
@@ -172,9 +229,46 @@ class DataSource extends Component {
 
   render() {
     const { chipSelected } = this.state;
-    const { lms, data_source } = this.props;
+    const { lms, data_source, data_base } = this.props;
     const loading = !!data_source.loading;
-    const hasData = !!data_source.data.length;
+    const hasDataSource = !!data_source.data.length;
+    const hasDataBase = !!data_base.data.length;
+
+    const chipsView = {
+      [LMS]: (
+        <CardContainer>{lms.data.map((item, idx) => this.renderCardLMS(item, idx))}</CardContainer>
+      ),
+      [CSV]: (
+        <>
+          <CardContainer>{data_source.data.map((item, idx) => this.renderCardCSV(item, idx))}</CardContainer>
+
+          {loading && (
+            <StatusMsgContainer>
+              <ProgressSpinner style={{ width: '50px', height: '50px' }} strokeWidth="4" fill="#EEEEEE" animationDuration=".5s" />
+            </StatusMsgContainer>
+          )}
+
+          {!hasDataSource && !loading && (
+            <StatusMsgContainer>Nenhuma fonte de dados cadastrada</StatusMsgContainer>
+          )}
+        </>
+      ),
+      [DATA_BASE]: (
+        <>
+          <CardContainer>{data_base.data.map((item, idx) => this.renderCardDataBase(item, idx))}</CardContainer>
+
+          {loading && (
+            <StatusMsgContainer>
+              <ProgressSpinner style={{ width: '50px', height: '50px' }} strokeWidth="4" fill="#EEEEEE" animationDuration=".5s" />
+            </StatusMsgContainer>
+          )}
+
+          {!hasDataBase && !loading && (
+            <StatusMsgContainer>Nenhum banco de dados cadastrado</StatusMsgContainer>
+          )}
+        </>
+      ),
+    };
 
     return (
       <PerfectScrollbar style={{ width: '100%' }}>
@@ -189,23 +283,8 @@ class DataSource extends Component {
 
           {this.renderDatasetOptions()}
 
-          {chipSelected === LMS
-            ? <CardContainer>{lms.data.map((item, idx) => this.renderCardLMS(item, idx))}</CardContainer>
-            : null}
+          {chipsView[chipSelected]}
 
-          {chipSelected === CSV
-            ? <CardContainer>{data_source.data.map((item, idx) => this.renderCardCSV(item, idx))}</CardContainer>
-            : null}
-
-          {chipSelected === CSV && loading && (
-            <StatusMsgContainer>
-              <ProgressSpinner style={{ width: '50px', height: '50px' }} strokeWidth="4" fill="#EEEEEE" animationDuration=".5s" />
-            </StatusMsgContainer>
-          )}
-
-          {chipSelected === CSV && !hasData && !loading && (
-            <StatusMsgContainer>Nenhuma fonte de dados cadastrada</StatusMsgContainer>
-          )}
         </ConfigContainer>
         <MoodleConfigDialog />
         <DataSourceDialog />
@@ -215,7 +294,7 @@ class DataSource extends Component {
   }
 }
 
-const mapStateToProps = ({ lms, data_source }) => ({ lms, data_source });
+const mapStateToProps = ({ lms, data_source, data_base }) => ({ lms, data_source, data_base });
 
 export default connect(
   mapStateToProps, {
@@ -224,5 +303,6 @@ export default connect(
     ...ScreenActions,
     ...IndicatorActions,
     ...DataSourceActions,
+    ...DataBaseActions,
   },
 )(DataSource);
