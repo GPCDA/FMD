@@ -5,7 +5,7 @@ const api = axios.create({
 });
 
 api.interceptors.request.use((config) => {
-  const { token } = localStorage.getItem('@fmdev:token');
+  const token = localStorage.getItem('@fmdev:token');
 
   const headers = { ...config.headers };
 
