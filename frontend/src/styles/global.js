@@ -351,6 +351,9 @@ export const DialogLabelGroup = styled.div`
   input {
     margin: 0;
   }
+  button {
+    margin: 0 !important;
+  }
 `;
 
 export const DialogLabel = styled.label`
