@@ -10,3 +10,4 @@ export const LMS = 'LMS';
 export const CSV = 'CSV';
 export const LAD = 'LAD';
 export const DATA_BASE = 'DATA_BASE';
+export const CARTRIDGE = 'CARTRIDGE';

@@ -16,6 +16,7 @@ import { Types as DownloadTypes } from '../ducks/download';
 import { Types as DataSourceTypes } from '../ducks/data_source';
 import { Types as PhenomenonTypes } from '../ducks/phenomenon';
 import { Types as DataBaseTypes } from '../ducks/data_base';
+import { Types as CartridgeTypes } from '../ducks/cartridge';
 
 import { getChart } from './chart';
 import { getDownload } from './download';
@@ -36,6 +37,9 @@ import { getPreProcessing, deletePreProcessing } from './pre_processing';
 import { getDataSource, postDataSource, deleteDataSource } from './data_source';
 import { getPhenomenon } from './phenomenon';
 import { getDataBase, postDataBase, deleteDataBase } from './data_base';
+import {
+  getCartridge, postCartridge, putCartridge, deleteCartridge,
+} from './cartridge';
 
 export default function* rootSaga() {
   return yield all([
@@ -67,5 +71,9 @@ export default function* rootSaga() {
     takeLatest(DataBaseTypes.GET_DATA_BASE, getDataBase),
     takeLatest(DataBaseTypes.POST_DATA_BASE, postDataBase),
     takeLatest(DataBaseTypes.DELETE_DATA_BASE, deleteDataBase),
+    takeLatest(CartridgeTypes.GET_CARTRIDGE, getCartridge),
+    takeLatest(CartridgeTypes.POST_CARTRIDGE, postCartridge),
+    takeLatest(CartridgeTypes.PUT_CARTRIDGE, putCartridge),
+    takeLatest(CartridgeTypes.DELETE_CARTRIDGE, deleteCartridge),
   ]);
 }

@@ -148,12 +148,10 @@ class DataSource extends Component {
     </Card>
   )
 
-  handleMsgDelete = (item, message) => {
+  handleMsgDelete = (item, message = 'Você realmente deseja excluir esta fonte de dados?') => {
     this.setState({ selectedItem: item });
 
-    this.props.setDialog('alert', {
-      description: message || 'Você realmente deseja excluir esta fonte de dados?',
-    });
+    this.props.setDialog('alert', { description: message });
   }
 
   handleDelete = () => {

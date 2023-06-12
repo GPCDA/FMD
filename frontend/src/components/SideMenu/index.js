@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import AddIcon from 'react-feather/dist/icons/plus-circle';
 import TranModelIcon from 'react-feather/dist/icons/package';
 import MonitorIcon from 'react-feather/dist/icons/monitor';
+import ToolIcon from 'react-feather/dist/icons/tool';
 import logo from '../../assets/logo.svg';
 import {
   Container, ItemList, Item, ItemText, Logo,
@@ -12,7 +13,7 @@ import {
 import { Creators as AuthActions } from '../../store/ducks/auth';
 import { Creators as ScreenActions } from '../../store/ducks/screen';
 import {
-  DATASOURCE, TRAIN_MODEL, ADD_TRAIN, LAD,
+  DATASOURCE, TRAIN_MODEL, ADD_TRAIN, LAD, CARTRIDGE,
 } from '../../constants';
 
 class SideMenu extends Component {
@@ -43,6 +44,11 @@ class SideMenu extends Component {
         screen: TRAIN_MODEL,
         component: TRAIN_MODEL,
         icon: <TranModelIcon color="#FFF" strokeWidth={this.getStrokeWidth(TRAIN_MODEL)} />,
+      },
+      {
+        screen: CARTRIDGE,
+        component: CARTRIDGE,
+        icon: <ToolIcon color="#FFF" strokeWidth={this.getStrokeWidth(CARTRIDGE)} />,
       },
     ];
 
