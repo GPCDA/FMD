@@ -10,7 +10,6 @@ import { Creators as DataSourceActions } from '../../store/ducks/data_source';
 import Dialog from '../Dialog';
 import Button from '../../styles/Button';
 import api from '../../services/api';
-import SelectDataSourceType from './Steps/SelectDataSourceType';
 import { Database, File } from './Steps/DataSources';
 import { CSV, DATA_BASE } from '../../constants';
 
@@ -19,7 +18,7 @@ class DataSourceDialog extends Component {
     super(props);
     this.state = {
       currentStep: 0,
-      steps: 3,
+      steps: 2,
 
       selectedDataSourceType: DATA_BASE,
 
@@ -36,11 +35,18 @@ class DataSourceDialog extends Component {
     };
   }
 
+  componentDidUpdate(prevProps/* , prevState, snapshot */) {
+    const { dataSource, data } = this.props.dialog;
+    if (!prevProps.dialog.dataSource && !!dataSource && !!data) {
+      this.setState({ selectedDataSourceType: data.selectedDataSourceType });
+    }
+  }
+
   onClose = () => {
     this.props.setDialog('dataSource');
     this.setState({
       currentStep: 0,
-      steps: 3,
+      steps: 2,
 
       selectedDataSourceType: DATA_BASE,
 
@@ -184,18 +190,6 @@ class DataSourceDialog extends Component {
     const dataSourceComponent = dataSources[selectedDataSourceType] || { header: <h1>Fonte de dados não encontrada.</h1> };
 
     const stepsComponents = [
-      {
-        header: <h1>Selecione o tipo de fonte desejado</h1>,
-        body: <SelectDataSourceType
-          defaultValue={selectedDataSourceType}
-          setSelectedValue={(datasourceType) => (
-            this.setState((prevState) => ({
-              ...prevState,
-              selectedDataSourceType: datasourceType,
-            }))
-          )}
-        />,
-      },
       dataSourceComponent,
     ];
 

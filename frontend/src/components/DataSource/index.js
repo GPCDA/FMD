@@ -10,6 +10,7 @@ import Chip from '@material-ui/core/Chip';
 import DeleteIcon from 'react-feather/dist/icons/trash-2';
 import PlayIcon from 'react-feather/dist/icons/play';
 import FileIcon from 'react-feather/dist/icons/file';
+import PlusIcon from 'react-feather/dist/icons/plus';
 import DatabaseIcon from 'react-feather/dist/icons/database';
 import * as moment from 'moment';
 import IconButton from '@material-ui/core/IconButton';
@@ -26,7 +27,6 @@ import {
   Header, fontFamily, primaryColor, StatusMsgContainer,
 } from '../../styles/global';
 import { ConfigContainer } from '../../styles/ConfigContainer';
-import CustomButton from '../../styles/Button';
 import { Creators as DataSourceActions } from '../../store/ducks/data_source';
 import { Creators as DialogActions } from '../../store/ducks/dialog';
 import { Creators as DataBaseActions } from '../../store/ducks/data_base';
@@ -181,7 +181,7 @@ class DataSource extends Component {
     );
   }
 
-  addDataSource = () => this.props.setDialog('dataSource');
+  addDataSource = (data) => this.props.setDialog('dataSource', data);
 
   render() {
     const { chipSelected } = this.state;
@@ -193,7 +193,16 @@ class DataSource extends Component {
     const chipsView = {
       [CSV]: (
         <>
-          <CardContainer>{data_source.data.map((item, idx) => this.renderCardCSV(item, idx))}</CardContainer>
+          <CardContainer>
+            {data_source.data.map((item, idx) => this.renderCardCSV(item, idx))}
+            <Card className="lms-card">
+              <CardActionArea style={{ height: '100%' }} onClick={() => this.addDataSource({ selectedDataSourceType: CSV })}>
+                <CardContent style={{ color: primaryColor, display: 'flex', justifyContent: 'center' }}>
+                  <PlusIcon size={20} color="#000" />
+                </CardContent>
+              </CardActionArea>
+            </Card>
+          </CardContainer>
 
           {loading && (
             <StatusMsgContainer>
@@ -208,16 +217,21 @@ class DataSource extends Component {
       ),
       [DATA_BASE]: (
         <>
-          <CardContainer>{data_base.data.map((item, idx) => this.renderCardDataBase(item, idx))}</CardContainer>
+          <CardContainer>
+            {data_base.data.map((item, idx) => this.renderCardDataBase(item, idx))}
+            <Card className="lms-card">
+              <CardActionArea style={{ height: '100%' }} onClick={() => this.addDataSource({ selectedDataSourceType: DATA_BASE })}>
+                <CardContent style={{ color: primaryColor, display: 'flex', justifyContent: 'center' }}>
+                  <PlusIcon size={20} color="#000" />
+                </CardContent>
+              </CardActionArea>
+            </Card>
+          </CardContainer>
 
           {loading && (
             <StatusMsgContainer>
               <ProgressSpinner style={{ width: '50px', height: '50px' }} strokeWidth="4" fill="#EEEEEE" animationDuration=".5s" />
             </StatusMsgContainer>
-          )}
-
-          {!hasDataBase && !loading && (
-            <StatusMsgContainer>Nenhum banco de dados cadastrado</StatusMsgContainer>
           )}
         </>
       ),
@@ -229,9 +243,6 @@ class DataSource extends Component {
 
           <Header>
             <h1>Fontes de Dados</h1>
-            <div>
-              <CustomButton filled={false} onClick={this.addDataSource}>Adicionar fonte de dados</CustomButton>
-            </div>
           </Header>
 
           {this.renderDatasetOptions()}
