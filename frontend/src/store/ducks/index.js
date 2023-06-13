@@ -20,7 +20,7 @@ import download from './download';
 import data_source from './data_source';
 import phenomenon from './phenomenon';
 import data_base from './data_base';
-import cartridge from './cartridge';
+import context from './context';
 
 export default (history) => combineReducers({
   auth,
@@ -42,6 +42,6 @@ export default (history) => combineReducers({
   data_source,
   phenomenon,
   data_base,
-  cartridge,
+  context,
   router: connectRouter(history),
 });

@@ -3,14 +3,14 @@ import { actions as toastrActions } from 'react-redux-toastr';
 import api from '../../services/api';
 import { Creators } from '../ducks/data_base';
 
-export function* getCartridge() {
+export function* getContext() {
   try {
-    yield put(Creators.cartridgeRequest());
-    const response = yield call(api.get, 'cartridge');
+    yield put(Creators.contextRequest());
+    const response = yield call(api.get, 'context');
 
-    yield put(Creators.cartridgeSuccess(response.data));
+    yield put(Creators.contextSuccess(response.data));
   } catch (err) {
-    yield put(Creators.cartridgeError({ err }));
+    yield put(Creators.contextError({ err }));
     yield put(toastrActions.add({
       type: 'error',
       title: 'Erro',
@@ -19,11 +19,11 @@ export function* getCartridge() {
   }
 }
 
-export function* postCartridge({ data }) {
+export function* postContext({ data }) {
   try {
-    yield put(Creators.cartridgeInit());
-    yield put(Creators.cartridgeRequest());
-    const response = yield call(api.post, 'cartridge', data);
+    yield put(Creators.contextInit());
+    yield put(Creators.contextRequest());
+    const response = yield call(api.post, 'context', data);
 
     yield put(toastrActions.add({
       type: 'success',
@@ -31,9 +31,9 @@ export function* postCartridge({ data }) {
       message: 'Cartucho criado com sucesso!',
     }));
 
-    yield put(Creators.cartridgeSuccess(response.data));
+    yield put(Creators.contextSuccess(response.data));
   } catch (err) {
-    yield put(Creators.cartridgeError({ err }));
+    yield put(Creators.contextError({ err }));
     yield put(toastrActions.add({
       type: 'error',
       title: 'Erro',
@@ -42,12 +42,12 @@ export function* postCartridge({ data }) {
   }
 }
 
-export function* putCartridge({ filter }) {
+export function* putContext({ filter }) {
   try {
-    yield put(Creators.cartridgeRequest());
-    const response = yield call(api.put, 'cartridge', filter);
+    yield put(Creators.contextRequest());
+    const response = yield call(api.put, 'context', filter);
 
-    yield put(Creators.cartridgeSuccess(response.data));
+    yield put(Creators.contextSuccess(response.data));
 
     yield put(toastrActions.add({
       type: 'success',
@@ -55,7 +55,7 @@ export function* putCartridge({ filter }) {
       message: 'Fonte de Cartucho alterado com sucesso!',
     }));
   } catch (err) {
-    yield put(Creators.cartridgeError({ err }));
+    yield put(Creators.contextError({ err }));
     yield put(toastrActions.add({
       type: 'error',
       title: 'Erro',
@@ -64,12 +64,12 @@ export function* putCartridge({ filter }) {
   }
 }
 
-export function* deleteCartridge({ id }) {
+export function* deleteContext({ id }) {
   try {
-    yield put(Creators.cartridgeRequest());
-    const response = yield call(api.delete, `cartridge/${id}`);
+    yield put(Creators.contextRequest());
+    const response = yield call(api.delete, `context/${id}`);
 
-    yield put(Creators.cartridgeSuccess(response.data));
+    yield put(Creators.contextSuccess(response.data));
 
     yield put(toastrActions.add({
       type: 'success',
@@ -77,7 +77,7 @@ export function* deleteCartridge({ id }) {
       message: 'Cartucho removido com sucesso!',
     }));
   } catch (err) {
-    yield put(Creators.cartridgeError({ err }));
+    yield put(Creators.contextError({ err }));
     yield put(toastrActions.add({
       type: 'error',
       title: 'Erro',

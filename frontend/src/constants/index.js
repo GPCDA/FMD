@@ -9,4 +9,4 @@ export const TRAIN_PIPELINES = 'TRAIN_PIPELINES';
 export const CSV = 'CSV';
 export const LAD = 'LAD';
 export const DATA_BASE = 'DATA_BASE';
-export const CARTRIDGE = 'CARTRIDGE';
+export const CONTEXT = 'CONTEXT';

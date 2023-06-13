@@ -13,7 +13,7 @@ import {
 import { Creators as AuthActions } from '../../store/ducks/auth';
 import { Creators as ScreenActions } from '../../store/ducks/screen';
 import {
-  DATASOURCE, TRAIN_MODEL, ADD_TRAIN, LAD, CARTRIDGE,
+  DATASOURCE, TRAIN_MODEL, ADD_TRAIN, LAD, CONTEXT,
 } from '../../constants';
 
 class SideMenu extends Component {
@@ -46,9 +46,9 @@ class SideMenu extends Component {
         icon: <TranModelIcon color="#FFF" strokeWidth={this.getStrokeWidth(TRAIN_MODEL)} />,
       },
       {
-        screen: CARTRIDGE,
-        component: CARTRIDGE,
-        icon: <ToolIcon color="#FFF" strokeWidth={this.getStrokeWidth(CARTRIDGE)} />,
+        screen: CONTEXT,
+        component: CONTEXT,
+        icon: <ToolIcon color="#FFF" strokeWidth={this.getStrokeWidth(CONTEXT)} />,
       },
     ];
 

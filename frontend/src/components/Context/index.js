@@ -20,7 +20,7 @@ import {
   primaryColor, Header, StatusMsgContainer, fontFamily,
 } from '../../styles/global';
 import { Creators as DialogActions } from '../../store/ducks/dialog';
-import { Creators as CartridgeActions } from '../../store/ducks/cartridge';
+import { Creators as ContextActions } from '../../store/ducks/context';
 import { ConfigContainer } from '../../styles/ConfigContainer';
 
 const XML_MIME_TYPES = [
@@ -36,7 +36,7 @@ const XML_MIME_TYPES = [
   'application/rif+xml',
 ];
 
-class Cartridge extends Component {
+class Context extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -45,7 +45,7 @@ class Cartridge extends Component {
   }
 
   componentDidMount() {
-    this.props.getCartridge();
+    this.props.getContext();
   }
 
   //   handleMenuItemClose = () => this.setState({ anchorEl: null });
@@ -54,7 +54,7 @@ class Cartridge extends Component {
   //     this.setState({ anchorEl: event.currentTarget, itemSelected: item });
   //   };
 
-    renderCardCartridge = (item, idx) => (
+    renderCardContext = (item, idx) => (
       <Card className="lms-card" key={idx}>
         <CardActionArea>
           <CardContent style={{ color: primaryColor }}>
@@ -94,14 +94,14 @@ class Cartridge extends Component {
       const { selectedItem } = this.state;
 
       if (!selectedItem?.id) return;
-      this.props.deleteCartridge(selectedItem.id);
+      this.props.deleteContext(selectedItem.id);
     }
 
     render() {
-      const { cartridge } = this.props;
+      const { context } = this.props;
       const { uploadedFiles } = this.state;
-      const loadingCartridge = !!cartridge.loading;
-      const hasCartridge = !!cartridge.data.length;
+      const loadingContext = !!context.loading;
+      const hasContext = !!context.data.length;
 
       return (
         <PerfectScrollbar style={{ width: '100%', overflowX: 'auto' }}>
@@ -114,6 +114,7 @@ class Cartridge extends Component {
             {!uploadedFiles.length && (
             <div style={{ padding: '2rem' }}>
               <Upload
+                // serverUpload={uploadMetadata}
                 onUpload={(newUploadedFiles) => this.setState({ uploadedFiles: newUploadedFiles })}
                 accept={XML_MIME_TYPES}
                 message={(
@@ -129,15 +130,15 @@ class Cartridge extends Component {
             </div>
             )}
 
-            <CardContainer>{cartridge.data.map((item, idx) => this.renderCardCartridge(item, idx))}</CardContainer>
+            <CardContainer>{context.data.map((item, idx) => this.renderCardContext(item, idx))}</CardContainer>
 
-            {loadingCartridge && (
+            {loadingContext && (
             <StatusMsgContainer>
               <ProgressSpinner style={{ width: '50px', height: '50px' }} strokeWidth="4" fill="#EEEEEE" animationDuration=".5s" />
             </StatusMsgContainer>
             )}
 
-            {!hasCartridge && !loadingCartridge && (
+            {!hasContext && !loadingContext && (
             <StatusMsgContainer>Nenhum cartucho cadastrado</StatusMsgContainer>
             )}
             <AlertDialog onSubmit={this.handleDelete} />
@@ -147,11 +148,11 @@ class Cartridge extends Component {
     }
 }
 
-const mapStateToProps = ({ cartridge }) => ({ cartridge });
+const mapStateToProps = ({ context }) => ({ context });
 
 export default connect(mapStateToProps,
   {
     ...toastrActions,
     ...DialogActions,
-    ...CartridgeActions,
-  })(Cartridge);
+    ...ContextActions,
+  })(Context);

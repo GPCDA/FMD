@@ -11,12 +11,12 @@ import Indicators from '../../components/Indicators';
 import PreProcessing from '../../components/PreProcessing';
 import { Creators as ScreenActions } from '../../store/ducks/screen';
 import {
-  DATASOURCE, INDICATORS, PRE_PROCESSING, TRAIN, TRAIN_MODEL, LAD, CARTRIDGE,
+  DATASOURCE, INDICATORS, PRE_PROCESSING, TRAIN, TRAIN_MODEL, LAD, CONTEXT,
 } from '../../constants';
 import Train from '../../components/Train';
 import TrainModel from '../TrainModel';
 import Dashboard from '../../components/Dashboard';
-import Cartridge from '../../components/Cartridge';
+import Context from '../../components/Context';
 
 const COMPONENTS = {
   [DATASOURCE]: <DataSource />,
@@ -25,7 +25,7 @@ const COMPONENTS = {
   [TRAIN]: <Train />,
   [TRAIN_MODEL]: <TrainModel />,
   [LAD]: <Dashboard />,
-  [CARTRIDGE]: <Cartridge />,
+  [CONTEXT]: <Context />,
 };
 
 class Main extends Component {

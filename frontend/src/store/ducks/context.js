@@ -2,14 +2,14 @@ import { createActions, createReducer } from 'reduxsauce';
 import Immutable from 'seamless-immutable';
 
 export const { Types, Creators } = createActions({
-  cartridgeInit: [],
-  cartridgeRequest: [],
-  cartridgeSuccess: ['data'],
-  cartridgeError: ['err'],
-  getCartridge: [],
-  postCartridge: ['data'],
-  putCartridge: ['filter'],
-  deleteCartridge: ['id'],
+  contextInit: [],
+  contextRequest: [],
+  contextSuccess: ['data'],
+  contextError: ['err'],
+  getContext: [],
+  postContext: ['data'],
+  putContext: ['filter'],
+  deleteContext: ['id'],
 });
 
 /** --------------------------------
@@ -35,8 +35,8 @@ export const error = (state) => state.merge({ loading: false, error: true });
 /* Reducers to types */
 
 export default createReducer(INITIAL_STATE, {
-  [Types.CARTRIDGE_INIT]: init,
-  [Types.CARTRIDGE_REQUEST]: request,
-  [Types.CARTRIDGE_SUCCESS]: success,
-  [Types.CARTRIDGE_ERROR]: error,
+  [Types.CONTEXT_INIT]: init,
+  [Types.CONTEXT_REQUEST]: request,
+  [Types.CONTEXT_SUCCESS]: success,
+  [Types.CONTEXT_ERROR]: error,
 });
