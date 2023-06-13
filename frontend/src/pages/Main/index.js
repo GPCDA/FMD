@@ -10,7 +10,6 @@ import DataSource from '../../components/DataSource';
 import Indicators from '../../components/Indicators';
 import PreProcessing from '../../components/PreProcessing';
 import { Creators as ScreenActions } from '../../store/ducks/screen';
-import { Creators as LmsActions } from '../../store/ducks/lms';
 import {
   DATASOURCE, INDICATORS, PRE_PROCESSING, TRAIN, TRAIN_MODEL, LAD, CARTRIDGE,
 } from '../../constants';
@@ -30,10 +29,6 @@ const COMPONENTS = {
 };
 
 class Main extends Component {
-  componentDidMount() {
-    this.props.getLms();
-  }
-
   renderContent = () => {
     const { activeComponent } = this.props.screen;
 
@@ -54,6 +49,6 @@ class Main extends Component {
 
 const mapStateToProps = ({ screen }) => ({ screen });
 
-const mapDispatchToProps = (dispatch) => bindActionCreators({ ...ScreenActions, ...LmsActions }, dispatch);
+const mapDispatchToProps = (dispatch) => bindActionCreators({ ...ScreenActions }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(Main);

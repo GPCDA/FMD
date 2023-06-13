@@ -7,8 +7,6 @@ import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import Chip from '@material-ui/core/Chip';
-import MonitorIcon from 'react-feather/dist/icons/monitor';
-import EditIcon from 'react-feather/dist/icons/settings';
 import DeleteIcon from 'react-feather/dist/icons/trash-2';
 import PlayIcon from 'react-feather/dist/icons/play';
 import FileIcon from 'react-feather/dist/icons/file';
@@ -17,9 +15,8 @@ import * as moment from 'moment';
 import IconButton from '@material-ui/core/IconButton';
 import { ProgressSpinner } from 'primereact/progressspinner';
 import filesize from 'filesize';
-import MoodleConfigDialog from '../MoodleConfigDialog';
 import {
-  INDICATORS, ADD_TRAIN, LMS, CSV, DATA_BASE,
+  INDICATORS, ADD_TRAIN, CSV, DATA_BASE,
 } from '../../constants';
 import { Creators as ScreenActions } from '../../store/ducks/screen';
 import { Creators as IndicatorActions } from '../../store/ducks/indicator';
@@ -31,12 +28,9 @@ import {
 import { ConfigContainer } from '../../styles/ConfigContainer';
 import CustomButton from '../../styles/Button';
 import { Creators as DataSourceActions } from '../../store/ducks/data_source';
-import { Creators as LmsActions } from '../../store/ducks/lms';
 import { Creators as DialogActions } from '../../store/ducks/dialog';
 import { Creators as DataBaseActions } from '../../store/ducks/data_base';
 import { CardContainer } from './styles';
-
-const availableLms = { moodle: true };
 
 class DataSource extends Component {
   constructor(props) {
@@ -53,8 +47,6 @@ class DataSource extends Component {
   }
 
   openDialogConfig = (item/* , event */) => {
-    if (!availableLms[item.name]) return;
-
     this.props.setDialog(item.name, {
       ...item,
       version: {
@@ -62,31 +54,6 @@ class DataSource extends Component {
       },
     });
   }
-
-  renderCardLMS = (item, idx) => (
-    <Card className="lms-card" key={idx} style={{ opacity: availableLms[item.name] ? 1 : 0.3 }}>
-      <CardActionArea>
-        <CardContent style={{ color: primaryColor }}>
-          <Typography gutterBottom variant="h5" component="h2" style={{ fontFamily }}>
-            {item.description}
-          </Typography>
-          <Typography variant="body2" color="textSecondary" component="p" style={{ color: primaryColor, fontFamily, fontSize: '10px' }}>
-            Versão:
-            {' '}
-            {item.version ? item.version : 'Não disponível'}
-          </Typography>
-        </CardContent>
-      </CardActionArea>
-      <CardActions style={{ backgroundColor: primaryColor }}>
-        <IconButton onClick={this.goToIndicators.bind(this, LMS, item.name, item.description)}>
-          <PlayIcon size={20} color="#FFF" />
-        </IconButton>
-        <IconButton onClick={this.openDialogConfig.bind(this, item)}>
-          <EditIcon size={20} color="#FFF" />
-        </IconButton>
-      </CardActions>
-    </Card>
-  )
 
   renderCardCSV = (item, idx) => (
     <Card className="lms-card" key={idx}>
@@ -172,8 +139,6 @@ class DataSource extends Component {
   goToIndicators = (context, id, name/* , event */) => {
     const key = `${context}/${id}/${name}`;
 
-    if (context === LMS && !availableLms[id]) return;
-
     this.props.setScreen(ADD_TRAIN, INDICATORS);
     this.props.setIndicator('datasource', key);
     this.props.getIndicators({ context, id });
@@ -199,13 +164,6 @@ class DataSource extends Component {
         className: chipSelected === CSV ? 'active-chip' : 'inactive-chip',
         onClick: this.setChip.bind(this, CSV),
       },
-      {
-        id: LMS,
-        avatar: <MonitorIcon size={16} color={chipSelected === LMS ? '#FFF' : primaryColor} />,
-        label: 'Ambientes EAD',
-        className: chipSelected === LMS ? 'active-chip' : 'inactive-chip',
-        onClick: this.setChip.bind(this, LMS),
-      },
     ];
 
     return (
@@ -227,15 +185,12 @@ class DataSource extends Component {
 
   render() {
     const { chipSelected } = this.state;
-    const { lms, data_source, data_base } = this.props;
+    const { data_source, data_base } = this.props;
     const loading = !!data_source.loading;
     const hasDataSource = !!data_source.data.length;
     const hasDataBase = !!data_base.data.length;
 
     const chipsView = {
-      [LMS]: (
-        <CardContainer>{lms.data.map((item, idx) => this.renderCardLMS(item, idx))}</CardContainer>
-      ),
       [CSV]: (
         <>
           <CardContainer>{data_source.data.map((item, idx) => this.renderCardCSV(item, idx))}</CardContainer>
@@ -284,7 +239,6 @@ class DataSource extends Component {
           {chipsView[chipSelected]}
 
         </ConfigContainer>
-        <MoodleConfigDialog />
         <DataSourceDialog />
         <AlertDialog onSubmit={this.handleDelete} />
       </PerfectScrollbar>
@@ -292,12 +246,11 @@ class DataSource extends Component {
   }
 }
 
-const mapStateToProps = ({ lms, data_source, data_base }) => ({ lms, data_source, data_base });
+const mapStateToProps = ({ data_source, data_base }) => ({ data_source, data_base });
 
 export default connect(
   mapStateToProps, {
     ...DialogActions,
-    ...LmsActions,
     ...ScreenActions,
     ...IndicatorActions,
     ...DataSourceActions,

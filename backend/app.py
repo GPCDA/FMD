@@ -1,6 +1,6 @@
 from flask import Blueprint
 from flask_restful import Api
-from resources.Lms import LmsResource
+# from resources.Lms import LmsResource
 from resources.Login import Login
 from resources.Subject import Subject
 from resources.Course import Course
@@ -27,7 +27,7 @@ api = Api(api_bp)
 api.add_resource(Login, '/auth/login')
 api.add_resource(File, '/file', '/file/<string:key>')
 api.add_resource(Register, '/auth/register')
-api.add_resource(LmsResource, '/lms')
+# api.add_resource(LmsResource, '/lms')
 api.add_resource(Subject, '/subject')
 api.add_resource(Course, '/course')
 api.add_resource(Semester, '/semester')

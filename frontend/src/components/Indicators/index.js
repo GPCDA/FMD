@@ -18,18 +18,12 @@ import {
   RightContainer, SelectText, SelectContainer,
 } from './styles';
 import {
-  DATASOURCE, PRE_PROCESSING, ADD_TRAIN, LMS,
+  DATASOURCE, PRE_PROCESSING, ADD_TRAIN,
 } from '../../constants';
 import { selectStyle } from '../../styles/global';
 
 class Indicators extends Component {
   componentDidMount() {
-    const dataSourceContext = this.getDataSourceContext();
-
-    if (dataSourceContext === LMS) {
-      this.props.getCourses({ datasource: this.getDataSourceId() });
-    }
-
     this.props.indicatorInitFilter();
   }
 
@@ -149,52 +143,6 @@ class Indicators extends Component {
 
           <Content>
             <LeftContent>
-              {dataSourceContext === LMS && (
-                <>
-                  <SelectText>Cursos</SelectText>
-                  <SelectContainer>
-                    <Select
-                      isMulti
-                      isClearable
-                      value={courseSelected}
-                      noOptionsMessage={() => 'Sem dados'}
-                      onChange={(e) => this.handleChange(e, 'courseSelected')}
-                      placeholder="Selecione os Cursos"
-                      styles={selectStyle}
-                      options={course.data.asMutable()}
-                    />
-                  </SelectContainer>
-
-                  <SelectText>Disciplinas</SelectText>
-                  <SelectContainer>
-                    <Select
-                      isMulti
-                      isClearable
-                      noOptionsMessage={() => 'Sem dados'}
-                      value={subjectSelected}
-                      onChange={(e) => this.handleChange(e, 'subjectSelected')}
-                      placeholder="Selecione as Disciplinas"
-                      styles={selectStyle}
-                      options={subject.data.asMutable()}
-                    />
-                  </SelectContainer>
-
-                  <SelectText>Turmas</SelectText>
-                  <SelectContainer>
-                    <Select
-                      isMulti
-                      isClearable
-                      value={semesterSelected}
-                      noOptionsMessage={() => 'Sem dados'}
-                      onChange={(e) => this.handleChange(e, 'semesterSelected')}
-                      placeholder="Selecione as Turmas"
-                      styles={selectStyle}
-                      options={semester.data.asMutable()}
-                    />
-                  </SelectContainer>
-                </>
-              )}
-
               <SelectText>Indicador Alvo</SelectText>
               <SelectContainer>
                 <Select
