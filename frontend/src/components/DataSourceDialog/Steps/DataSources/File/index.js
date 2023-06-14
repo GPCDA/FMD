@@ -5,8 +5,29 @@ import {
 } from '../../../../../styles/global';
 import Upload from '../../../../Upload';
 import UploadFileList from '../../../../UploadFileList';
+import api from '../../../../../services/api';
 
 export class File extends PureComponent {
+  uploadContextFile = (file, callback) => {
+    api
+      .post('file', file, {
+        onUploadProgress: (e) => {
+          const progress = parseInt(Math.round((e.loaded * 100) / e.total), 10);
+          callback({ progress });
+        },
+      })
+      .then((response) => {
+        callback({
+          uploaded: true,
+          id: response.data.id,
+          url: response.data.url,
+        });
+      })
+      .catch(() => {
+        callback({ error: true });
+      });
+  }
+
   render() {
     const {
       name, setName, file, setFile,
@@ -29,7 +50,8 @@ export class File extends PureComponent {
         <div style={{ paddingTop: '2vh' }}>
           <div style={{ paddingBottom: '.5vh' }}><DialogSpan>Arquivo:</DialogSpan></div>
           <Upload
-            onUpload={(newUploadedFiles) => setFile({ ...file, uploadedFiles: newUploadedFiles })}
+            serverUpload={this.uploadContextFile}
+            onUpload={(callback) => setFile((prevFile) => ({ ...prevFile, uploadedFiles: callback(prevFile.uploadedFiles) }))}
             accept="text/csv"
             message="Arraste um arquivo CSV ou clique aqui."
           />
@@ -39,7 +61,7 @@ export class File extends PureComponent {
         {!!file.uploadedFiles.length && (
         <UploadFileList
           files={file.uploadedFiles}
-          onDelete={(newUploadedFiles) => setFile({ ...file, uploadedFiles: newUploadedFiles })}
+          onDelete={(newUploadedFiles) => setFile((prevFile) => ({ ...prevFile, uploadedFiles: newUploadedFiles }))}
         />
         )}
 

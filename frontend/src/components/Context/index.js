@@ -22,18 +22,23 @@ import {
 import { Creators as DialogActions } from '../../store/ducks/dialog';
 import { Creators as ContextActions } from '../../store/ducks/context';
 import { ConfigContainer } from '../../styles/ConfigContainer';
+import api from '../../services/api';
 
-const XML_MIME_TYPES = [
-  'application/xml',
-  'text/xml',
-  'application/atom+xml',
-  'application/xhtml+xml',
-  'application/xslt+xml',
-  'image/svg+xml',
-  'application/mathml+xml',
-  'application/rss+xml',
-  'application/akn+xml',
-  'application/rif+xml',
+// const XML_MIME_TYPES = [
+//   'application/xml',
+//   'text/xml',
+//   'application/atom+xml',
+//   'application/xhtml+xml',
+//   'application/xslt+xml',
+//   'image/svg+xml',
+//   'application/mathml+xml',
+//   'application/rss+xml',
+//   'application/akn+xml',
+//   'application/rif+xml',
+// ];
+const JSON_MIME_TYPES = [
+  'application/json',
+  'application/ld+json',
 ];
 
 class Context extends Component {
@@ -97,6 +102,26 @@ class Context extends Component {
       this.props.deleteContext(selectedItem.id);
     }
 
+    uploadContextFile = (file, callback) => {
+      api
+        .post('file', file, {
+          onUploadProgress: (e) => {
+            const progress = parseInt(Math.round((e.loaded * 100) / e.total), 10);
+            callback({ progress });
+          },
+        })
+        .then((response) => {
+          callback({
+            uploaded: true,
+            id: response.data.id,
+            url: response.data.url,
+          });
+        })
+        .catch(() => {
+          callback({ error: true });
+        });
+    }
+
     render() {
       const { context } = this.props;
       const { uploadedFiles } = this.state;
@@ -114,9 +139,9 @@ class Context extends Component {
             {!uploadedFiles.length && (
             <div style={{ padding: '2rem' }}>
               <Upload
-                // serverUpload={uploadMetadata}
+                serverUpload={this.uploadContextFile}
                 onUpload={(newUploadedFiles) => this.setState({ uploadedFiles: newUploadedFiles })}
-                accept={XML_MIME_TYPES}
+                accept={JSON_MIME_TYPES}
                 message={(
                   <span style={{
                     display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem',

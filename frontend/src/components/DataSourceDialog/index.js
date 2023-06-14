@@ -180,9 +180,7 @@ class DataSourceDialog extends Component {
             this.setState((prevState) => ({ ...prevState, name: newName }))
           )}
           file={file}
-          setFile={(newFile) => (
-            this.setState((prevState) => ({ ...prevState, file: newFile }))
-          )}
+          setFile={(callback) => this.setState((prevState) => ({ ...prevState, file: callback(prevState.file) }))}
         />,
       },
     };

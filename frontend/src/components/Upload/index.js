@@ -1,17 +1,10 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import DropZone from 'react-dropzone';
 import filesize from 'filesize';
 import { DropContainer, UploadMessage } from './styles';
 import api from '../../services/api';
 
-export default class Upload extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      uploadedFiles: [],
-    };
-  }
-
+export default class Upload extends PureComponent {
   handleUpload = (files) => {
     const uploadedFiles = files.map((file) => ({
       file,
@@ -25,59 +18,26 @@ export default class Upload extends Component {
       url: null,
     }));
 
-    this.setState((prevState) => ({
-      ...prevState,
-      uploadedFiles: prevState.uploadedFiles.concat(uploadedFiles),
-    }));
+    this.props.onUpload((prevUploadedFile) => prevUploadedFile.concat(uploadedFiles));
 
     uploadedFiles.forEach(this.processUpload);
   };
 
   updateFile = (id, data) => {
-    let newFiles = this.state.uploadedFiles;
-    this.setState((prevState) => {
-      newFiles = prevState.uploadedFiles.map((uploadedFile) => (id === uploadedFile.id
-        ? { ...uploadedFile, ...data }
-        : uploadedFile));
-      return { ...prevState, uploadedFiles: newFiles };
-    });
-
-    if (this.props.onUpload) {
-      this.props.onUpload(newFiles);
-    }
+    this.props.onUpload((prevUploadedFile) => prevUploadedFile.map((uploadedFile) => (id === uploadedFile.id
+      ? { ...uploadedFile, ...data }
+      : uploadedFile)));
   };
 
   processUpload = (uploadedFile) => {
     const data = new FormData();
-    // const { serverUpload = api.post } = this.props;
+    const { serverUpload } = this.props;
 
     data.append('file', uploadedFile.file, uploadedFile.name);
 
-    // serverUpload(data, (newValues) => {
-    //   updateFile(uploadedFile.id, newValues);
-    // });
-    api
-      .post('file', data, {
-        onUploadProgress: (e) => {
-          const progress = parseInt(Math.round((e.loaded * 100) / e.total), 10);
-
-          this.updateFile(uploadedFile.id, {
-            progress,
-          });
-        },
-      })
-      .then((response) => {
-        this.updateFile(uploadedFile.id, {
-          uploaded: true,
-          id: response.data.id,
-          url: response.data.url,
-        });
-      })
-      .catch(() => {
-        this.updateFile(uploadedFile.id, {
-          error: true,
-        });
-      });
+    serverUpload(data, (newValues) => {
+      this.updateFile(uploadedFile.id, newValues);
+    });
   };
 
   renderDragMessage = (isDragActive, isDragReject) => {
