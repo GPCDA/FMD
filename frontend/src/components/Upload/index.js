@@ -49,9 +49,13 @@ export default class Upload extends Component {
 
   processUpload = (uploadedFile) => {
     const data = new FormData();
+    // const { serverUpload = api.post } = this.props;
 
     data.append('file', uploadedFile.file, uploadedFile.name);
 
+    // serverUpload(data, (newValues) => {
+    //   updateFile(uploadedFile.id, newValues);
+    // });
     api
       .post('file', data, {
         onUploadProgress: (e) => {

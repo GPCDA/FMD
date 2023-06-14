@@ -77,7 +77,7 @@ class Context extends Component {
           <IconButton onClick={() => { /* Do Nothing */ }/* this.goToIndicators.bind(this, CSV, item.id, item.name) */}>
             <EyeIcon size={20} color="#FFF" />
           </IconButton>
-          <IconButton onClick={this.handleMsgDelete.bind(this, item, 'Você realmente deseja excluir este cartucho?')}>
+          <IconButton onClick={this.handleMsgDelete.bind(this, item, 'Você realmente deseja excluir este contexto?')}>
             <DeleteIcon size={20} color="#FFF" />
           </IconButton>
         </CardActions>
@@ -108,7 +108,7 @@ class Context extends Component {
           <ConfigContainer size="big" style={{ color: '#000' }}>
 
             <Header>
-              <h1>Cartuchos</h1>
+              <h1>Contextos</h1>
             </Header>
 
             {!uploadedFiles.length && (
@@ -139,7 +139,7 @@ class Context extends Component {
             )}
 
             {!hasContext && !loadingContext && (
-            <StatusMsgContainer>Nenhum cartucho cadastrado</StatusMsgContainer>
+            <StatusMsgContainer>Nenhum contexto cadastrado</StatusMsgContainer>
             )}
             <AlertDialog onSubmit={this.handleDelete} />
           </ConfigContainer>

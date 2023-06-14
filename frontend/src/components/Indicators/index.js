@@ -120,13 +120,13 @@ class Indicators extends Component {
 
   render() {
     const {
-      course, subject, semester, indicator,
+      /* course, subject, semester,  */indicator,
     } = this.props;
     const {
-      source, indicators, targetSelected, courseSelected,
-      subjectSelected, semesterSelected,
+      source, indicators, targetSelected, /* , courseSelected,
+      subjectSelected, semesterSelected, */
     } = this.props.indicator;
-    const dataSourceContext = this.getDataSourceContext();
+    // const dataSourceContext = this.getDataSourceContext();
 
     return (
       <ConfigContainer size="big">

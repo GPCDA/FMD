@@ -187,8 +187,6 @@ class DataSource extends Component {
     const { chipSelected } = this.state;
     const { data_source, data_base } = this.props;
     const loading = !!data_source.loading;
-    const hasDataSource = !!data_source.data.length;
-    const hasDataBase = !!data_base.data.length;
 
     const chipsView = {
       [CSV]: (
@@ -208,10 +206,6 @@ class DataSource extends Component {
             <StatusMsgContainer>
               <ProgressSpinner style={{ width: '50px', height: '50px' }} strokeWidth="4" fill="#EEEEEE" animationDuration=".5s" />
             </StatusMsgContainer>
-          )}
-
-          {!hasDataSource && !loading && (
-            <StatusMsgContainer>Nenhuma fonte de dados cadastrada</StatusMsgContainer>
           )}
         </>
       ),

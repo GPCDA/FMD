@@ -14,7 +14,7 @@ export function* getContext() {
     yield put(toastrActions.add({
       type: 'error',
       title: 'Erro',
-      message: 'Falha ao listar cartuchos',
+      message: 'Falha ao listar contextos',
     }));
   }
 }
@@ -28,7 +28,7 @@ export function* postContext({ data }) {
     yield put(toastrActions.add({
       type: 'success',
       title: 'Sucesso',
-      message: 'Cartucho criado com sucesso!',
+      message: 'Contexto criado com sucesso!',
     }));
 
     yield put(Creators.contextSuccess(response.data));
@@ -37,7 +37,7 @@ export function* postContext({ data }) {
     yield put(toastrActions.add({
       type: 'error',
       title: 'Erro',
-      message: 'Falha ao salvar cartucho',
+      message: 'Falha ao salvar contexto',
     }));
   }
 }
@@ -52,14 +52,14 @@ export function* putContext({ filter }) {
     yield put(toastrActions.add({
       type: 'success',
       title: 'Sucesso',
-      message: 'Fonte de Cartucho alterado com sucesso!',
+      message: 'Fonte de Contexto alterado com sucesso!',
     }));
   } catch (err) {
     yield put(Creators.contextError({ err }));
     yield put(toastrActions.add({
       type: 'error',
       title: 'Erro',
-      message: 'Falha ao atualizar cartucho',
+      message: 'Falha ao atualizar contexto',
     }));
   }
 }
@@ -74,14 +74,14 @@ export function* deleteContext({ id }) {
     yield put(toastrActions.add({
       type: 'success',
       title: 'Sucesso',
-      message: 'Cartucho removido com sucesso!',
+      message: 'Contexto removido com sucesso!',
     }));
   } catch (err) {
     yield put(Creators.contextError({ err }));
     yield put(toastrActions.add({
       type: 'error',
       title: 'Erro',
-      message: 'Falha ao excluir cartucho',
+      message: 'Falha ao excluir contexto',
     }));
   }
 }
