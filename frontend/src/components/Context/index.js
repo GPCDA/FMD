@@ -102,26 +102,6 @@ class Context extends Component {
       this.props.deleteContext(selectedItem.id);
     }
 
-    uploadContextFile = (file, callback) => {
-      api
-        .post('file', file, {
-          onUploadProgress: (e) => {
-            const progress = parseInt(Math.round((e.loaded * 100) / e.total), 10);
-            callback({ progress });
-          },
-        })
-        .then((response) => {
-          callback({
-            uploaded: true,
-            id: response.data.id,
-            url: response.data.url,
-          });
-        })
-        .catch(() => {
-          callback({ error: true });
-        });
-    }
-
     render() {
       const { context } = this.props;
       const { uploadedFiles } = this.state;
@@ -139,7 +119,7 @@ class Context extends Component {
             {!uploadedFiles.length && (
             <div style={{ padding: '2rem' }}>
               <Upload
-                serverUpload={this.uploadContextFile}
+                serverUpload={this.props.postContext}
                 onUpload={(newUploadedFiles) => this.setState({ uploadedFiles: newUploadedFiles })}
                 accept={JSON_MIME_TYPES}
                 message={(
@@ -157,7 +137,7 @@ class Context extends Component {
 
             <CardContainer>{context.data.map((item, idx) => this.renderCardContext(item, idx))}</CardContainer>
 
-            {loadingContext && (
+            {!!(loadingContext || uploadedFiles.length) && (
             <StatusMsgContainer>
               <ProgressSpinner style={{ width: '50px', height: '50px' }} strokeWidth="4" fill="#EEEEEE" animationDuration=".5s" />
             </StatusMsgContainer>

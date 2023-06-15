@@ -1,7 +1,7 @@
 import { call, put } from 'redux-saga/effects';
 import { actions as toastrActions } from 'react-redux-toastr';
 import api from '../../services/api';
-import { Creators } from '../ducks/data_base';
+import { Creators } from '../ducks/context';
 
 export function* getContext() {
   try {
@@ -19,11 +19,21 @@ export function* getContext() {
   }
 }
 
-export function* postContext({ data }) {
+export function* postContext({ data, callback }) {
   try {
     yield put(Creators.contextInit());
     yield put(Creators.contextRequest());
-    const response = yield call(api.post, 'context', data);
+    const response = yield call(api.post, 'context', data, {
+      onUploadProgress: (e) => {
+        const progress = parseInt(Math.round((e.loaded * 100) / e.total), 10);
+        callback({ progress });
+      },
+    });
+    callback({
+      uploaded: true,
+      id: response.data.id,
+      url: response.data.url,
+    });
 
     yield put(toastrActions.add({
       type: 'success',
@@ -39,6 +49,7 @@ export function* postContext({ data }) {
       title: 'Erro',
       message: 'Falha ao salvar contexto',
     }));
+    callback({ error: true });
   }
 }
 

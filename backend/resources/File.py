@@ -11,7 +11,7 @@ from utils.utils import get_extension_from_path, delete_file
 
 class File(Resource):
 
-    ALLOWED_EXTENSIONS = {'csv', 'xml', 'json'}
+    ALLOWED_EXTENSIONS = {'csv'}
 
     def allowed_file(self, filename):
         return '.' in filename and filename.rsplit('.', 1)[1].lower() in self.ALLOWED_EXTENSIONS

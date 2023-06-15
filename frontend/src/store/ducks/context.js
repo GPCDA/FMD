@@ -7,7 +7,7 @@ export const { Types, Creators } = createActions({
   contextSuccess: ['data'],
   contextError: ['err'],
   getContext: [],
-  postContext: ['data'],
+  postContext: ['data', 'callback'],
   putContext: ['filter'],
   deleteContext: ['id'],
 });

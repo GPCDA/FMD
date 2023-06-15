@@ -2,7 +2,6 @@ import React, { PureComponent } from 'react';
 import DropZone from 'react-dropzone';
 import filesize from 'filesize';
 import { DropContainer, UploadMessage } from './styles';
-import api from '../../services/api';
 
 export default class Upload extends PureComponent {
   handleUpload = (files) => {
