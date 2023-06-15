@@ -11,10 +11,15 @@ const dragReject = css`
 export const DropContainer = styled.div.attrs({
   className: 'dropzone',
 })`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   border: 1px dashed #ddd;
   border-radius: 4px;
   cursor: pointer;
   transition: height 0.2s ease;
+  min-height: 7.5rem;
   ${(props) => props.isDragActive && dragActive};
   ${(props) => props.isDragReject && dragReject};
 `;

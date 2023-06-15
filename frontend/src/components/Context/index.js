@@ -22,7 +22,6 @@ import {
 import { Creators as DialogActions } from '../../store/ducks/dialog';
 import { Creators as ContextActions } from '../../store/ducks/context';
 import { ConfigContainer } from '../../styles/ConfigContainer';
-import api from '../../services/api';
 
 // const XML_MIME_TYPES = [
 //   'application/xml',
@@ -119,7 +118,10 @@ class Context extends Component {
             {!uploadedFiles.length && (
             <div style={{ padding: '2rem' }}>
               <Upload
-                serverUpload={this.props.postContext}
+                serverUpload={(data, callback) => this.props.postContext(data, (newFileValues) => {
+                  callback(newFileValues);
+                  this.setState((prevState) => ({ ...prevState, uploadedFiles: [] }));
+                })}
                 onUpload={(newUploadedFiles) => this.setState({ uploadedFiles: newUploadedFiles })}
                 accept={JSON_MIME_TYPES}
                 message={(

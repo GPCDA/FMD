@@ -115,6 +115,7 @@ export default createGlobalStyle`
   }
 
   .lms-card {
+    min-height: 10rem;
     width: 30.5%;
     margin: .5vw;
     background-color: #FBFBFB !important;
