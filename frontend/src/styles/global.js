@@ -283,7 +283,7 @@ export const ItemColumn = styled.td`
   `}
 `;
 
-export const Header = styled.div`
+export const Header = styled.header`
   display: flex;
   justify-content: space-between;
   align-items: center;

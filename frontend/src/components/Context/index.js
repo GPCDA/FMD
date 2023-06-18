@@ -22,19 +22,8 @@ import {
 import { Creators as DialogActions } from '../../store/ducks/dialog';
 import { Creators as ContextActions } from '../../store/ducks/context';
 import { ConfigContainer } from '../../styles/ConfigContainer';
+import ContextDialog from '../ContextDialog';
 
-// const XML_MIME_TYPES = [
-//   'application/xml',
-//   'text/xml',
-//   'application/atom+xml',
-//   'application/xhtml+xml',
-//   'application/xslt+xml',
-//   'image/svg+xml',
-//   'application/mathml+xml',
-//   'application/rss+xml',
-//   'application/akn+xml',
-//   'application/rif+xml',
-// ];
 const JSON_MIME_TYPES = [
   'application/json',
   'application/ld+json',
@@ -52,33 +41,19 @@ class Context extends Component {
     this.props.getContext();
   }
 
-  //   handleMenuItemClose = () => this.setState({ anchorEl: null });
-
-  //   handleClickMenu = (item, event) => {
-  //     this.setState({ anchorEl: event.currentTarget, itemSelected: item });
-  //   };
+  handleShowContext = (data) => this.props.setDialog('context', data)
 
     renderCardContext = (item, idx) => (
-      <Card className="lms-card" key={idx}>
-        <CardActionArea>
+      <Card className="lms-card" key={idx} style={{ display: 'flex', flexDirection: 'column' }}>
+        <CardActionArea style={{ flex: 1 }}>
           <CardContent style={{ color: primaryColor }}>
             <Typography gutterBottom variant="h5" component="h2" style={{ fontFamily }}>
               {item.name}
             </Typography>
-            {/* <Typography variant="body2" color="textSecondary" component="p" style={{ color: primaryColor, fontFamily, fontSize: '10px' }}>
-              <b>Importado em:</b>
-              {' '}
-              {moment(item.created_at).format('DD/MM/YYYY HH:mm')}
-            </Typography>
-            <Typography variant="body2" color="textSecondary" component="p" style={{ color: primaryColor, fontFamily, fontSize: '10px' }}>
-              <b>Tamanho:</b>
-              {' '}
-              {{filesize(item.size)}}
-            </Typography> */}
           </CardContent>
         </CardActionArea>
         <CardActions style={{ backgroundColor: primaryColor }}>
-          <IconButton onClick={() => { /* Do Nothing */ }/* this.goToIndicators.bind(this, CSV, item.id, item.name) */}>
+          <IconButton onClick={() => this.handleShowContext(item)}>
             <EyeIcon size={20} color="#FFF" />
           </IconButton>
           <IconButton onClick={this.handleMsgDelete.bind(this, item, 'Você realmente deseja excluir este contexto?')}>
@@ -149,6 +124,7 @@ class Context extends Component {
             <StatusMsgContainer>Nenhum contexto cadastrado</StatusMsgContainer>
             )}
             <AlertDialog onSubmit={this.handleDelete} />
+            <ContextDialog />
           </ConfigContainer>
         </PerfectScrollbar>
       );

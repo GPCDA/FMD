@@ -20,6 +20,7 @@ export const INITIAL_STATE = Immutable({
   trainSave: false,
   trainMetrics: false,
   trainAlgorithm: false,
+  context: false,
 });
 
 /* Reducers */

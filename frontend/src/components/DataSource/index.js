@@ -232,8 +232,8 @@ class DataSource extends Component {
     };
 
     return (
-      <PerfectScrollbar style={{ width: '100%' }}>
-        <ConfigContainer style={{ minHeight: '70%' }}>
+      <PerfectScrollbar style={{ width: '100%', overflowX: 'auto' }}>
+        <ConfigContainer style={{ color: '#000' }}>
 
           <Header>
             <h1>Fontes de Dados</h1>

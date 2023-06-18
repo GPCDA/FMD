@@ -1,15 +1,11 @@
-import secrets
 import traceback
 import json
 from Model import db
-from utils import utils
 from sqlalchemy import desc
-from datetime import datetime
-from resources.File import File
 from flask_restful import Resource
-from flask import request, current_app
+from flask import request
 from flask_jwt_extended import jwt_required
-from Model import FileModel, ContextModel, ContextModelSchema, ContextFieldModel, ContextFieldSchema
+from Model import ContextModel, ContextModelSchema, ContextFieldModel
 
 
 class Context(Resource):
@@ -85,16 +81,9 @@ class Context(Resource):
     @jwt_required
     def delete(self, key):
         try:
-            datasource = ContextModel.query.filter_by(id=key).first()
-            file = FileModel.query.filter_by(id=datasource.file_id).first()
+            context = ContextModel.query.filter_by(id=key).first()
 
-            path = f"{current_app.config.get('UPLOAD_FOLDER')}/{file.file_id}"
-            utils.delete_file(path)
-
-            db.session.delete(datasource)
-            db.session.commit()
-
-            db.session.delete(file)
+            db.session.delete(context)
             db.session.commit()
 
             return self.get()

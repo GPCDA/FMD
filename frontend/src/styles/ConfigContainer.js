@@ -9,10 +9,7 @@ const sizes = {
     min-height: 60vh;
   `,
   big: css`
-    margin-top: 5vh;
-    margin-bottom: 5vh;
-    margin-left: 5vw;
-    margin-right: 5vw;
+    margin: 5vh auto;
     width: 90%;
     min-height: 90vh;
   `,
@@ -25,8 +22,11 @@ export const ConfigContainer = styled.div`
 
   ${(props) => sizes[props.size || 'default']}
 
-  h1 {
+  header {
     padding: 2rem;
+  }
+  
+  h1 {
     font-weight: 600;
     font-size: 24px;
     line-height: 31px;
