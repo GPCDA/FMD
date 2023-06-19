@@ -1,4 +1,3 @@
-import secrets
 import traceback
 from Model import db
 from utils import utils
@@ -12,7 +11,6 @@ from Model import FileModel, DatasourceModel, DatasourceModelSchema
 
 
 class Datasource(Resource):
-
     @jwt_required
     def get(self):
         try:

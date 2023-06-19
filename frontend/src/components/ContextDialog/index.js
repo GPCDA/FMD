@@ -23,7 +23,7 @@ class ContextDialog extends PureComponent {
       <Dialog size="big">
         <DialogHeader><h1>{data.name}</h1></DialogHeader>
 
-        <DialogForm style={{ overflow: 'auto' }}>
+        <DialogForm>
           {data.fields.map((field) => (
             <DialogLabelGroup>
               <DialogLabel style={{ color: primaryColor, fontWeight: 'bold' }}>

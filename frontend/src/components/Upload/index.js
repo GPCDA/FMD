@@ -15,7 +15,7 @@ export default class Upload extends PureComponent {
       uploaded: false,
       error: false,
       url: null,
-    }));
+    })).slice(0, 1);
 
     this.props.onUpload((prevUploadedFile) => prevUploadedFile.concat(uploadedFiles));
 

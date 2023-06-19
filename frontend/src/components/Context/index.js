@@ -43,92 +43,92 @@ class Context extends Component {
 
   handleShowContext = (data) => this.props.setDialog('context', data)
 
-    renderCardContext = (item, idx) => (
-      <Card className="lms-card" key={idx} style={{ display: 'flex', flexDirection: 'column' }}>
-        <CardActionArea style={{ flex: 1 }}>
-          <CardContent style={{ color: primaryColor }}>
-            <Typography gutterBottom variant="h5" component="h2" style={{ fontFamily }}>
-              {item.name}
-            </Typography>
-          </CardContent>
-        </CardActionArea>
-        <CardActions style={{ backgroundColor: primaryColor }}>
-          <IconButton onClick={() => this.handleShowContext(item)}>
-            <EyeIcon size={20} color="#FFF" />
-          </IconButton>
-          <IconButton onClick={this.handleMsgDelete.bind(this, item, 'Você realmente deseja excluir este contexto?')}>
-            <DeleteIcon size={20} color="#FFF" />
-          </IconButton>
-        </CardActions>
-      </Card>
-    )
+  renderCardContext = (item, idx) => (
+    <Card className="lms-card" key={idx} style={{ display: 'flex', flexDirection: 'column' }}>
+      <CardActionArea style={{ flex: 1 }}>
+        <CardContent style={{ color: primaryColor }}>
+          <Typography gutterBottom variant="h5" component="h2" style={{ fontFamily }}>
+            {item.name}
+          </Typography>
+        </CardContent>
+      </CardActionArea>
+      <CardActions style={{ backgroundColor: primaryColor }}>
+        <IconButton onClick={() => this.handleShowContext(item)}>
+          <EyeIcon size={20} color="#FFF" />
+        </IconButton>
+        <IconButton onClick={this.handleMsgDelete.bind(this, item, 'Você realmente deseja excluir este contexto?')}>
+          <DeleteIcon size={20} color="#FFF" />
+        </IconButton>
+      </CardActions>
+    </Card>
+  )
 
-    handleMsgDelete = (item, message = '') => {
-      this.setState({ selectedItem: item });
+  handleMsgDelete = (item, message = '') => {
+    this.setState({ selectedItem: item });
 
-      this.props.setDialog('alert', { description: message });
-    }
+    this.props.setDialog('alert', { description: message });
+  }
 
-    handleDelete = () => {
-      const { selectedItem } = this.state;
+  handleDelete = () => {
+    const { selectedItem } = this.state;
 
-      if (!selectedItem?.id) return;
-      this.props.deleteContext(selectedItem.id);
-    }
+    if (!selectedItem?.id) return;
+    this.props.deleteContext(selectedItem.id);
+  }
 
-    render() {
-      const { context } = this.props;
-      const { uploadedFiles } = this.state;
-      const loadingContext = !!context.loading;
-      const hasContext = !!context.data.length;
+  render() {
+    const { context } = this.props;
+    const { uploadedFiles } = this.state;
+    const loadingContext = !!context.loading;
+    const hasContext = !!context.data.length;
 
-      return (
-        <PerfectScrollbar style={{ width: '100%', overflowX: 'auto' }}>
-          <ConfigContainer size="big" style={{ color: '#000' }}>
+    return (
+      <PerfectScrollbar style={{ width: '100%', overflowX: 'auto' }}>
+        <ConfigContainer size="big" style={{ color: '#000' }}>
 
-            <Header>
-              <h1>Contextos</h1>
-            </Header>
+          <Header>
+            <h1>Contextos</h1>
+          </Header>
 
-            {!uploadedFiles.length && (
-            <div style={{ padding: '2rem' }}>
-              <Upload
-                serverUpload={(data, callback) => this.props.postContext(data, (newFileValues) => {
-                  callback(newFileValues);
-                  this.setState((prevState) => ({ ...prevState, uploadedFiles: [] }));
-                })}
-                onUpload={(newUploadedFiles) => this.setState({ uploadedFiles: newUploadedFiles })}
-                accept={JSON_MIME_TYPES}
-                message={(
-                  <span style={{
-                    display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem',
-                  }}
-                  >
-                    <UploadIcon color="#4A5173B8" strokeWidth={2} size={48} />
-                    <i>Upload de arquivos...</i>
-                  </span>
-              )}
-              />
-            </div>
+          {!uploadedFiles.length && (
+          <div style={{ padding: '2rem' }}>
+            <Upload
+              serverUpload={(data, callback) => this.props.postContext(data, (newFileValues) => {
+                callback(newFileValues);
+                this.setState((prevState) => ({ ...prevState, uploadedFiles: [] }));
+              })}
+              onUpload={(newUploadedFiles) => this.setState({ uploadedFiles: newUploadedFiles })}
+              accept={JSON_MIME_TYPES}
+              message={(
+                <span style={{
+                  display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem',
+                }}
+                >
+                  <UploadIcon color="#4A5173B8" strokeWidth={2} size={48} />
+                  <i>Upload de arquivos...</i>
+                </span>
             )}
+            />
+          </div>
+          )}
 
-            <CardContainer>{context.data.map((item, idx) => this.renderCardContext(item, idx))}</CardContainer>
+          <CardContainer>{context.data.map((item, idx) => this.renderCardContext(item, idx))}</CardContainer>
 
-            {!!(loadingContext || uploadedFiles.length) && (
-            <StatusMsgContainer>
-              <ProgressSpinner style={{ width: '50px', height: '50px' }} strokeWidth="4" fill="#EEEEEE" animationDuration=".5s" />
-            </StatusMsgContainer>
-            )}
+          {!!(loadingContext || uploadedFiles.length) && (
+          <StatusMsgContainer>
+            <ProgressSpinner style={{ width: '50px', height: '50px' }} strokeWidth="4" fill="#EEEEEE" animationDuration=".5s" />
+          </StatusMsgContainer>
+          )}
 
-            {!hasContext && !loadingContext && (
-            <StatusMsgContainer>Nenhum contexto cadastrado</StatusMsgContainer>
-            )}
-            <AlertDialog onSubmit={this.handleDelete} />
-            <ContextDialog />
-          </ConfigContainer>
-        </PerfectScrollbar>
-      );
-    }
+          {!hasContext && !loadingContext && (
+          <StatusMsgContainer>Nenhum contexto cadastrado</StatusMsgContainer>
+          )}
+          <AlertDialog onSubmit={this.handleDelete} />
+          <ContextDialog />
+        </ConfigContainer>
+      </PerfectScrollbar>
+    );
+  }
 }
 
 const mapStateToProps = ({ context }) => ({ context });

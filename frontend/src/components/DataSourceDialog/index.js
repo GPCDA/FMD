@@ -7,10 +7,11 @@ import {
 } from '../../styles/global';
 import { Creators as DialogActions } from '../../store/ducks/dialog';
 import { Creators as DataSourceActions } from '../../store/ducks/data_source';
+import { Creators as ContextActions } from '../../store/ducks/context';
 import Dialog from '../Dialog';
 import Button from '../../styles/Button';
 import api from '../../services/api';
-import { Database, File } from './Steps/DataSources';
+import { Database, File, ContextMap } from './Steps';
 import { CSV, DATA_BASE } from '../../constants';
 
 class DataSourceDialog extends Component {
@@ -32,13 +33,27 @@ class DataSourceDialog extends Component {
       file: {
         uploadedFiles: [],
       },
+      contextMap: {
+        context: null,
+        fieldMap: [],
+      },
     };
+    props.getContext();
   }
 
-  componentDidUpdate(prevProps/* , prevState, snapshot */) {
+  componentDidUpdate(prevProps, prevState/* , snapshot */) {
     const { dataSource, data } = this.props.dialog;
     if (!prevProps.dialog.dataSource && !!dataSource && !!data) {
       this.setState({ selectedDataSourceType: data.selectedDataSourceType });
+    }
+
+    const uploadedFileId = this.state.file.uploadedFiles[0]?.id;
+    if (
+      this.state.selectedDataSourceType === CSV
+      && prevState.file.uploadedFiles !== this.state.file.uploadedFiles
+      && (uploadedFileId !== null && uploadedFileId !== undefined)
+    ) {
+      this.props.getDataSourceFields(uploadedFileId);
     }
   }
 
@@ -59,6 +74,10 @@ class DataSourceDialog extends Component {
       },
       file: {
         uploadedFiles: [],
+      },
+      contextMap: {
+        context: null,
+        fieldMap: [],
       },
     });
   }
@@ -100,10 +119,8 @@ class DataSourceDialog extends Component {
 
   handleValidateFields = (shouldAlert = false) => {
     const {
-      name, currentStep, selectedDataSourceType, database, file,
+      name, selectedDataSourceType, database, file,
     } = this.state;
-
-    if (!currentStep) return true;
 
     if (!name) {
       if (shouldAlert) this.renderWarningMsg('Nome não informado');
@@ -128,7 +145,7 @@ class DataSourceDialog extends Component {
         if (!file.uploadedFiles.length) {
           if (shouldAlert) this.renderWarningMsg('Nenhum arquivo importado');
         }
-        return !file.uploadedFiles.length;
+        return !!file.uploadedFiles.length && !!file.uploadedFiles[0].id;
       },
     };
 
@@ -142,7 +159,7 @@ class DataSourceDialog extends Component {
     const { name, uploadedFiles } = this.state;
     const fileId = uploadedFiles.map((file) => file.id);
 
-    // if (!this.handleValidateFields(true)) return;
+    if (!this.handleValidateFields(true)) return;
 
     this.props.postDataSource({ name, file_id: fileId[0] });
     this.onClose();
@@ -150,9 +167,11 @@ class DataSourceDialog extends Component {
 
   render() {
     const {
-      steps, currentStep, selectedDataSourceType, name, database, file,
+      steps, currentStep, selectedDataSourceType, name, database, file, contextMap,
     } = this.state;
     const { dataSource } = this.props.dialog;
+    const { currentDatasourceFields } = this.props.data_source;
+    const { data: contexts } = this.props.context;
 
     if (!dataSource) {
       return null;
@@ -171,6 +190,7 @@ class DataSourceDialog extends Component {
             this.setState((prevState) => ({ ...prevState, database: newDatabase }))
           )}
         />,
+        fields: currentDatasourceFields,
       },
       [CSV]: {
         header: <h1>Upload de arquivo</h1>,
@@ -182,6 +202,7 @@ class DataSourceDialog extends Component {
           file={file}
           setFile={(callback) => this.setState((prevState) => ({ ...prevState, file: callback(prevState.file) }))}
         />,
+        fields: currentDatasourceFields,
       },
     };
 
@@ -189,6 +210,17 @@ class DataSourceDialog extends Component {
 
     const stepsComponents = [
       dataSourceComponent,
+      {
+        header: <h1>Mapeamento de Contexto</h1>,
+        body: <ContextMap
+          contexts={contexts.asMutable()}
+          contextMap={contextMap}
+          setContextMap={(newContextMap) => (
+            this.setState((prevState) => ({ ...prevState, contextMap: newContextMap }))
+          )}
+          datasourceFields={dataSourceComponent.fields.asMutable()}
+        />,
+      },
     ];
 
     return (
@@ -208,7 +240,7 @@ class DataSourceDialog extends Component {
           }
           {
             currentStep === (steps - 1) ? (
-              <Button onClick={this.onCancel}>Salvar</Button>
+              <Button onClick={this.submit}>Salvar</Button>
             ) : <Button onClick={this.handleNextStep} disabled={!this.handleValidateFields()}>Avançar</Button>
           }
         </DialogFormButtonContainer>
@@ -223,7 +255,7 @@ class DataSourceDialog extends Component {
   }
 }
 
-const mapStateToProps = ({ dialog }) => ({ dialog });
+const mapStateToProps = ({ dialog, data_source, context }) => ({ dialog, data_source, context });
 
 export default connect(
   mapStateToProps,
@@ -231,5 +263,6 @@ export default connect(
     ...DialogActions,
     ...toastrActions,
     ...DataSourceActions,
+    ...ContextActions,
   },
 )(DataSourceDialog);

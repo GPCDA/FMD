@@ -8,7 +8,7 @@ import UploadFileList from '../../../../UploadFileList';
 import api from '../../../../../services/api';
 
 export class File extends PureComponent {
-  uploadContextFile = (file, callback) => {
+  uploadDatasourceFile = (file, callback) => {
     api
       .post('file', file, {
         onUploadProgress: (e) => {
@@ -48,9 +48,9 @@ export class File extends PureComponent {
 
         {!file.uploadedFiles.length && (
         <div style={{ paddingTop: '2vh' }}>
-          <div style={{ paddingBottom: '.5vh' }}><DialogSpan>Arquivo:</DialogSpan></div>
+          <div style={{ paddingBottom: '.5vh' }}><DialogSpan>Arquivo*:</DialogSpan></div>
           <Upload
-            serverUpload={this.uploadContextFile}
+            serverUpload={this.uploadDatasourceFile}
             onUpload={(callback) => setFile((prevFile) => ({ ...prevFile, uploadedFiles: callback(prevFile.uploadedFiles) }))}
             accept="text/csv"
             message="Arraste um arquivo CSV ou clique aqui."

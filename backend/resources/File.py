@@ -1,6 +1,7 @@
 import os
 import uuid
 import traceback
+import pandas as pd
 from Model import db
 from flask_restful import Resource
 from flask import request, current_app
@@ -40,6 +41,25 @@ class File(Resource):
         except:
             traceback.print_exc()
             return None
+
+
+    @jwt_required
+    def get(self, key):
+        fields = []
+        file = FileModel.query.filter_by(id=key).first()
+
+        upload_folder = current_app.config.get('UPLOAD_FOLDER')
+        path = f"{upload_folder}/{file.file_id}"
+
+        df = pd.read_csv(path)
+
+        for column in df.columns:
+            fields.append({
+                'value': column,
+                'label': column
+            })
+
+        return fields
 
 
     @jwt_required

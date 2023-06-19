@@ -4,8 +4,9 @@ import Immutable from 'seamless-immutable';
 export const { Types, Creators } = createActions({
   dataSourceInit: [],
   dataSourceRequest: [],
-  dataSourceSuccess: ['data'],
+  dataSourceSuccess: ['data', 'currentDatasourceFields'],
   dataSourceError: ['err'],
+  getDataSourceFields: ['fileId'],
   getDataSource: [],
   postDataSource: ['data'],
   deleteDataSource: ['id'],
@@ -17,17 +18,23 @@ export const { Types, Creators } = createActions({
 
 const INITIAL_STATE = Immutable({
   data: [],
+  currentDatasourceFields: [],
   loading: false,
   error: false,
 });
 
 /* Reducers */
 
-export const init = (state) => state.merge({ data: [] });
+export const init = (state) => state.merge({ data: [], currentDatasourceFields: null });
 
 export const request = (state) => state.merge({ loading: true });
 
-export const success = (state, { data }) => state.merge({ data, error: false, loading: false });
+export const success = (state, { data = state.data, currentDatasourceFields = state.currentDatasourceFields }) => state.merge({
+  data,
+  currentDatasourceFields,
+  error: false,
+  loading: false,
+});
 
 export const error = (state) => state.merge({ loading: false, error: true });
 

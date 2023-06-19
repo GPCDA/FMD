@@ -430,6 +430,7 @@ export const DialogForm = styled.form`
   flex-direction: column;
   align-items: stretch;
   gap: 0.5rem;
+  overflow: auto;
 
   h1 {
     font-weight: 500;

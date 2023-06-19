@@ -3,6 +3,22 @@ import { actions as toastrActions } from 'react-redux-toastr';
 import api from '../../services/api';
 import { Creators } from '../ducks/data_source';
 
+export function* getDataSourceFields({ fileId }) {
+  try {
+    yield put(Creators.dataSourceRequest());
+    const response = yield call(api.get, `file/${fileId}`);
+
+    yield put(Creators.dataSourceSuccess(undefined, response.data));
+  } catch (err) {
+    yield put(Creators.dataSourceError({ err }));
+    yield put(toastrActions.add({
+      type: 'error',
+      title: 'Erro',
+      message: 'Falha ao buscar campos da fonte de dados',
+    }));
+  }
+}
+
 export function* getDataSource() {
   try {
     yield put(Creators.dataSourceRequest());
