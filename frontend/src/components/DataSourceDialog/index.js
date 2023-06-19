@@ -26,6 +26,7 @@ class DataSourceDialog extends Component {
       name: '',
       database: {
         url: '',
+        driver: '',
         user: '',
         password: '',
         query: '',
@@ -68,6 +69,7 @@ class DataSourceDialog extends Component {
       name: '',
       database: {
         url: '',
+        driver: '',
         user: '',
         password: '',
         query: '',
@@ -131,15 +133,17 @@ class DataSourceDialog extends Component {
       [DATA_BASE]: () => {
         if (!database.url) {
           if (shouldAlert) this.renderWarningMsg('URL não informado');
-        /* } else if (!database.user) {
+        } if (!database.driver) {
+          if (shouldAlert) this.renderWarningMsg('Driver não informado');
+        } else if (!database.user) {
           if (shouldAlert) this.renderWarningMsg('Usuário não informado');
         } else if (!database.password) {
-          if (shouldAlert) this.renderWarningMsg('Senha não informada'); */
+          if (shouldAlert) this.renderWarningMsg('Senha não informada');
         } else if (!database.query) {
           if (shouldAlert) this.renderWarningMsg('Consulta não informada');
         }
 
-        return !database.url || !database.user || !database.password || !database.query;
+        return database.url && database.driver && database.user && database.password && database.query;
       },
       [CSV]: () => {
         if (!file.uploadedFiles.length) {

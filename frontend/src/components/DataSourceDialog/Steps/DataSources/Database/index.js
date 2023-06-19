@@ -1,16 +1,59 @@
 import React, { PureComponent } from 'react';
+import querystring from 'query-string';
+import Select from 'react-select';
 import {
   DialogForm, DialogLabelGroup,
-  DialogLabel, DialogInput, Flex, DialogSpan,
+  DialogLabel, DialogInput, Flex, DialogSpan, selectStyle,
 } from '../../../../../styles/global';
 import CodeEditor from '../../../../CodeEditor';
 import Button from '../../../../../styles/Button';
+import carte, { transformations } from '../../../../../services/carte';
+
+const drivers = [
+  {
+    label: 'PostgreSQL',
+    value: 'org.postgresql.Driver',
+  },
+  {
+    label: 'MySQL',
+    value: 'org.postgresql.Driver',
+  },
+  {
+    label: 'Oracle',
+    value: 'org.postgresql.Driver',
+  },
+];
 
 export class Database extends PureComponent {
+  testDatabaseConnection = async () => {
+    const {
+      url, driver, user, password, query,
+    } = this.props.database;
+    const executeParams = {
+      trans: transformations.testarConexao, url, driver, user, password, query,
+    };
+    // const executeBody = {
+    //   url, driver, user, password, query,
+    // };
+    const urlQueryParams = querystring.stringifyUrl({ url: '', query: executeParams });
+    // const bodyQueryParams = querystring.stringifyUrl({ url: '', query: executeBody }).slice(1);
+    // console.log(executeBody, bodyQueryParams);
+    const resultTest = await carte.execute.get(
+      urlQueryParams,
+      // bodyQueryParams,
+      // { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } },
+    )
+      .then((response) => response.data.data[0]).catch((err) => err);
+
+    console.log(resultTest);
+  }
+
   render() {
     const {
       name, setName, database, setDatabase,
     } = this.props;
+
+    console.log(database);
 
     return (
       <DialogForm>
@@ -33,6 +76,19 @@ export class Database extends PureComponent {
             autoComplete="off"
             defaultValue={database.url}
             onChange={(event) => setDatabase({ ...database, url: event.target.value })}
+          />
+        </DialogLabelGroup>
+
+        <DialogLabelGroup>
+          <DialogLabel htmlFor="database-url">Driver*: </DialogLabel>
+          <Select
+            isSearchable
+            options={drivers}
+            value={drivers.find((driver) => driver.value === database.driver)}
+            noOptionsMessage={() => 'Sem drivers'}
+            placeholder="Selecione o driver"
+            onChange={(newValue) => setDatabase({ ...database, driver: newValue.value })}
+            styles={selectStyle}
           />
         </DialogLabelGroup>
 
@@ -63,16 +119,14 @@ export class Database extends PureComponent {
         <DialogLabelGroup>
           <Flex style={{ justifyContent: 'space-between' }}>
             <DialogLabel htmlFor="database-query">Consulta*: </DialogLabel>
-            <Button filled size="small" onClick={() => alert('ok')}>Testar</Button>
+            <Button filled size="small" onClick={this.testDatabaseConnection}>Testar</Button>
           </Flex>
           <CodeEditor
             id="database-query"
             defaultValue={database.query}
-            onChange={(event) => setDatabase({ ...database, query: event.target?.value || '' })}
+            onChange={(value) => setDatabase({ ...database, query: value })}
           />
         </DialogLabelGroup>
-
-        <DialogSpan style={{ fontSize: '0.75rem', fontWeight: 'bold' }}>* Bancos de dados aceitos: PostgreSQL, MySQL, Oracle</DialogSpan>
 
       </DialogForm>
     );
