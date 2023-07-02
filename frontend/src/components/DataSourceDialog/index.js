@@ -36,7 +36,7 @@ class DataSourceDialog extends Component {
       },
       contextMap: {
         context: null,
-        fieldMap: [],
+        fieldMap: {},
       },
     };
     props.getContext();
@@ -79,7 +79,7 @@ class DataSourceDialog extends Component {
       },
       contextMap: {
         context: null,
-        fieldMap: [],
+        fieldMap: {},
       },
     });
   }
@@ -111,7 +111,8 @@ class DataSourceDialog extends Component {
     }));
   };
 
-  renderWarningMsg = (msg) => {
+  renderWarningMsg = (msg, shouldAlert = true) => {
+    if (!shouldAlert) return;
     this.props.add({
       type: 'warning',
       title: 'Atenção',
@@ -121,51 +122,77 @@ class DataSourceDialog extends Component {
 
   handleValidateFields = (shouldAlert = false) => {
     const {
-      name, selectedDataSourceType, database, file,
+      name, selectedDataSourceType, database, file, contextMap, currentStep,
     } = this.state;
+    const { data: contexts } = this.props.context;
 
     if (!name) {
-      if (shouldAlert) this.renderWarningMsg('Nome não informado');
+      this.renderWarningMsg('Nome não informado', shouldAlert);
       return false;
     }
 
     const dataSourcesFields = {
       [DATA_BASE]: () => {
         if (!database.url) {
-          if (shouldAlert) this.renderWarningMsg('URL não informado');
-        } if (!database.driver) {
-          if (shouldAlert) this.renderWarningMsg('Driver não informado');
+          this.renderWarningMsg('URL não informado', shouldAlert);
+        } else if (!database.driver) {
+          this.renderWarningMsg('Driver não informado', shouldAlert);
         } else if (!database.user) {
-          if (shouldAlert) this.renderWarningMsg('Usuário não informado');
+          this.renderWarningMsg('Usuário não informado', shouldAlert);
         } else if (!database.password) {
-          if (shouldAlert) this.renderWarningMsg('Senha não informada');
+          this.renderWarningMsg('Senha não informada', shouldAlert);
         } else if (!database.query) {
-          if (shouldAlert) this.renderWarningMsg('Consulta não informada');
+          this.renderWarningMsg('Consulta não informada', shouldAlert);
         }
 
         return database.url && database.driver && database.user && database.password && database.query;
       },
       [CSV]: () => {
         if (!file.uploadedFiles.length) {
-          if (shouldAlert) this.renderWarningMsg('Nenhum arquivo importado');
+          this.renderWarningMsg('Nenhum arquivo importado', shouldAlert);
         }
         return !!file.uploadedFiles.length && !!file.uploadedFiles[0].id;
       },
     };
-
     const validateFields = dataSourcesFields[selectedDataSourceType];
 
-    if (validateFields) return validateFields();
-    return true;
+    const validateContextFields = () => {
+      if (!contextMap.context) {
+        this.renderWarningMsg('Contexto não informado', shouldAlert);
+      }
+      const contextFieldsValue = contexts?.find((context) => context.id === contextMap.context.value)?.fields;
+
+      const hasEmptyField = Object.entries(contextMap.fieldMap).some(([fieldKey, fieldValue]) => {
+        if (!fieldValue) {
+          const fieldObject = contextFieldsValue.find((field) => field.code === fieldKey);
+          this.renderWarningMsg(`"${fieldObject.description || fieldKey}" não informado`, shouldAlert);
+          return true;
+        }
+        return false;
+      });
+
+      return Boolean(contextMap.context && !hasEmptyField);
+    };
+
+    switch (currentStep) {
+      case 1:
+        if (!validateContextFields()) return false;
+        // falls through
+
+      case 0:
+        return validateFields ? validateFields() : true;
+
+      default: return true;
+    }
   }
 
   submit = () => {
-    const { name, uploadedFiles } = this.state;
-    const fileId = uploadedFiles.map((file) => file.id);
+    // const { name, uploadedFiles } = this.state;
+    // const fileId = uploadedFiles.map((file) => file.id);
 
     if (!this.handleValidateFields(true)) return;
 
-    this.props.postDataSource({ name, file_id: fileId[0] });
+    // this.props.postDataSource({ name, file_id: fileId[0] });
     this.onClose();
   }
 

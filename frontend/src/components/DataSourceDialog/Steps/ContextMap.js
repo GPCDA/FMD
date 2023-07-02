@@ -63,27 +63,34 @@ export class ContextMap extends PureComponent {
     return (
       <DialogForm style={{ padding: '4rem 40px' }}>
         <div style={{
-          display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: '1rem',
+          display: 'flex', flexDirection: 'column', gap: '0.25rem', marginBottom: '1.25rem',
         }}
         >
           <SelectText style={{ flex: 1 }}>Selecione o Contexto*:</SelectText>
-          <Select
-            isSearchable
-            options={contextOptions}
-            value={contextMap.context}
-            noOptionsMessage={() => 'Sem contextos'}
-            placeholder="Selecione o contexto"
-            onChange={(newValue) => setContextMap({ ...contextMap, context: newValue })}
-            styles={{
-              ...selectStyle,
-              container: (provided) => ({
-                ...provided,
-                flex: 1,
+          <div style={{ display: 'flex' }}>
+            <Select
+              isSearchable
+              options={contextOptions}
+              value={contextMap.context}
+              noOptionsMessage={() => 'Sem contextos'}
+              placeholder="Selecione o contexto"
+              onChange={(newValue) => setContextMap({
+                ...contextMap,
+                context: newValue,
+                fieldMap: this.props.contexts?.find((context) => context.id === newValue?.value)?.fields
+                  ?.reduce((fields, field) => ({ ...fields, [field.code]: '' }), {}),
+              })}
+              styles={{
+                ...selectStyle,
+                container: (provided) => ({
+                  ...provided,
+                  flex: 1,
 
-                fontSize: 12,
-              }),
-            }}
-          />
+                  fontSize: 12,
+                }),
+              }}
+            />
+          </div>
         </div>
 
         {
@@ -91,11 +98,11 @@ export class ContextMap extends PureComponent {
               <div
                 key={contextField.code}
                 style={{
-                  display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: '1rem',
+                  display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem',
                 }}
               >
                 <SelectText style={{ flex: 1 }}>
-                  {contextField.code}
+                  {contextField.description}
                   *:
                 </SelectText>
                 <Select
