@@ -28,3 +28,5 @@ TEST_FEATURES = 'data/test/features'
 TEST_TARGET = 'data/test/target'
 BASE_URL = 'http://localhost:5000'
 UPLOAD_FOLDER = 'data/upload'
+CARTE_BASE_URI = f"http://{env.str('CARTE_USER')}:{env.str('CARTE_PASS')}@{env.str('CARTE_HOST')}:{env.str('CARTE_PORT')}"
+CARTE_LOCATION = env.str('CARTE_LOCATION')

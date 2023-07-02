@@ -1,13 +1,13 @@
 import React, { PureComponent } from 'react';
-import querystring from 'query-string';
+import { connect } from 'react-redux';
 import Select from 'react-select';
+import { Creators as DataBaseConnectionTestActions } from '../../../../../store/ducks/data_base_connection_test';
 import {
   DialogForm, DialogLabelGroup,
-  DialogLabel, DialogInput, Flex, DialogSpan, selectStyle,
+  DialogLabel, DialogInput, Flex, selectStyle,
 } from '../../../../../styles/global';
 import CodeEditor from '../../../../CodeEditor';
 import Button from '../../../../../styles/Button';
-import carte, { transformations } from '../../../../../services/carte';
 
 const drivers = [
   {
@@ -24,28 +24,15 @@ const drivers = [
   },
 ];
 
-export class Database extends PureComponent {
+class DatabaseComponent extends PureComponent {
   testDatabaseConnection = async () => {
     const {
       url, driver, user, password, query,
     } = this.props.database;
-    const executeParams = {
-      trans: transformations.testarConexao, url, driver, user, password, query,
-    };
-    // const executeBody = {
-    //   url, driver, user, password, query,
-    // };
-    const urlQueryParams = querystring.stringifyUrl({ url: '', query: executeParams });
-    // const bodyQueryParams = querystring.stringifyUrl({ url: '', query: executeBody }).slice(1);
-    // console.log(executeBody, bodyQueryParams);
-    const resultTest = await carte.execute.get(
-      urlQueryParams,
-      // bodyQueryParams,
-      // { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } },
-    )
-      .then((response) => response.data.data[0]).catch((err) => err);
 
-    console.log(resultTest);
+    this.props.postDataBaseConnectionTest({
+      url, driver, user, password, query,
+    });
   }
 
   render() {
@@ -132,3 +119,12 @@ export class Database extends PureComponent {
     );
   }
 }
+
+const mapStateToProps = ({ data_base_connection_test }) => ({ data_base_connection_test });
+
+export const Database = connect(
+  mapStateToProps,
+  {
+    ...DataBaseConnectionTestActions,
+  },
+)(DatabaseComponent);

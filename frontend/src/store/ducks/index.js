@@ -21,6 +21,7 @@ import data_source from './data_source';
 import phenomenon from './phenomenon';
 import data_base from './data_base';
 import context from './context';
+import data_base_connection_test from './data_base_connection_test';
 
 export default (history) => combineReducers({
   auth,
@@ -43,5 +44,6 @@ export default (history) => combineReducers({
   phenomenon,
   data_base,
   context,
+  data_base_connection_test,
   router: connectRouter(history),
 });
