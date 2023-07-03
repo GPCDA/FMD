@@ -303,6 +303,22 @@ export const StatusMsgContainer = styled.div`
   font-size: 1.2rem;
 `;
 
+export const WaitingContainerBackdrop = styled.div`
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  z-index: 10;
+  padding-top: 15vh;
+  padding-bottom: 15vh;
+  font-size: 1.2rem;
+  background: rgba(0,0,0,0.2);
+`;
+
 export const LoadingContainer = styled.div`
   display: flex;
   justify-content: center;

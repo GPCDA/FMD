@@ -16,7 +16,7 @@ import { Types as DataSourceTypes } from '../ducks/data_source';
 import { Types as PhenomenonTypes } from '../ducks/phenomenon';
 import { Types as DataBaseTypes } from '../ducks/data_base';
 import { Types as ContextTypes } from '../ducks/context';
-import { Types as DataBaseConnectionTestTypes } from '../ducks/data_base_connection_test';
+import { Types as DataBaseConnectionTypes } from '../ducks/data_base_connection';
 
 import { getChart } from './chart';
 import { getDownload } from './download';
@@ -41,7 +41,7 @@ import { getDataBase, postDataBase, deleteDataBase } from './data_base';
 import {
   getContext, postContext, putContext, deleteContext,
 } from './context';
-import { postDataBaseConnectionTest } from './data_base_connection_test';
+import { postDataBaseConnectionTest, postDataBaseConnectionFields } from './data_base_connection';
 
 export default function* rootSaga() {
   return yield all([
@@ -76,6 +76,7 @@ export default function* rootSaga() {
     takeLatest(ContextTypes.POST_CONTEXT, postContext),
     takeLatest(ContextTypes.PUT_CONTEXT, putContext),
     takeLatest(ContextTypes.DELETE_CONTEXT, deleteContext),
-    takeLatest(DataBaseConnectionTestTypes.POST_DATA_BASE_CONNECTION_TEST, postDataBaseConnectionTest),
+    takeLatest(DataBaseConnectionTypes.POST_DATA_BASE_CONNECTION_TEST, postDataBaseConnectionTest),
+    takeLatest(DataBaseConnectionTypes.POST_DATA_BASE_CONNECTION_FIELDS, postDataBaseConnectionFields),
   ]);
 }

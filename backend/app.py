@@ -21,6 +21,7 @@ from resources.File import File
 from resources.Phenomenon import Phenomenon
 from resources.Context import Context
 from resources.DatabaseConnectionTest import DatabaseConnectionTest
+from resources.DatabaseConnectionFields import DatabaseConnectionFields
 
 api_bp = Blueprint('api', __name__)
 api = Api(api_bp)
@@ -46,4 +47,5 @@ api.add_resource(Download, '/download/<string:key>')
 api.add_resource(Datasource, '/data-source', '/data-source/<string:key>')
 api.add_resource(Phenomenon, '/phenomenon')
 api.add_resource(Context, '/context', '/context/<string:key>')
-api.add_resource(DatabaseConnectionTest, '/database-connection-test')
+api.add_resource(DatabaseConnectionTest, '/database-connection/test')
+api.add_resource(DatabaseConnectionFields, '/database-connection/fields')

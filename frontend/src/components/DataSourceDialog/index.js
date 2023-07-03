@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { actions as toastrActions } from 'react-redux-toastr';
+import { ProgressSpinner } from 'primereact/progressspinner';
 import {
   DialogFormButtonContainer, DialogHeader,
-  DialogDotStepper, DialogDotStep,
+  DialogDotStepper, DialogDotStep, WaitingContainerBackdrop,
 } from '../../styles/global';
 import { Creators as DialogActions } from '../../store/ducks/dialog';
 import { Creators as DataSourceActions } from '../../store/ducks/data_source';
-import { Creators as ContextActions } from '../../store/ducks/context';
+import { Creators as DataBaseConnectionActions } from '../../store/ducks/data_base_connection';
 import Dialog from '../Dialog';
 import Button from '../../styles/Button';
 import api from '../../services/api';
@@ -92,7 +93,27 @@ class DataSourceDialog extends Component {
   }
 
   handleNextStep = () => {
-    this.setState((prevState) => ({ ...prevState, currentStep: prevState.currentStep + 1 }));
+    const { selectedDataSourceType, database, currentStep } = this.state;
+    const steps = {
+      0: () => {
+        if (selectedDataSourceType === DATA_BASE) {
+          this.props.postDataBaseConnectionFields({
+            url: database.url,
+            driver: database.driver.value,
+            user: database.user,
+            password: database.password,
+            query: database.query,
+          }, () => {
+            this.setState((prevState) => ({ ...prevState, currentStep: prevState.currentStep + 1 }));
+          });
+          return;
+        }
+        this.setState((prevState) => ({ ...prevState, currentStep: prevState.currentStep + 1 }));
+      },
+    };
+    const handleNextStepFunction = steps[currentStep];
+    if (handleNextStepFunction) return handleNextStepFunction();
+    return this.setState((prevState) => ({ ...prevState, currentStep: prevState.currentStep + 1 }));
   }
 
   handlePreviousStep = () => {
@@ -187,12 +208,15 @@ class DataSourceDialog extends Component {
   }
 
   submit = () => {
-    // const { name, uploadedFiles } = this.state;
-    // const fileId = uploadedFiles.map((file) => file.id);
-
+    const {
+      name, selectedDataSourceType, database, file, contextMap,
+    } = this.state;
     if (!this.handleValidateFields(true)) return;
 
-    // this.props.postDataSource({ name, file_id: fileId[0] });
+    const fileId = file.uploadedFiles.map((uploadedFile) => uploadedFile.id);
+    this.props.postDataSource({
+      name, type: selectedDataSourceType, file_id: fileId[0], database, contextMap,
+    });
     this.onClose();
   }
 
@@ -203,10 +227,9 @@ class DataSourceDialog extends Component {
     const { dataSource } = this.props.dialog;
     const { currentDatasourceFields } = this.props.data_source;
     const { data: contexts } = this.props.context;
+    const { data: dataBaseFields, loading: databaseConnectionLoading } = this.props.data_base_connection;
 
-    if (!dataSource) {
-      return null;
-    }
+    if (!dataSource) return null;
 
     const dataSources = {
       [DATA_BASE]: {
@@ -221,7 +244,7 @@ class DataSourceDialog extends Component {
             this.setState((prevState) => ({ ...prevState, database: newDatabase }))
           )}
         />,
-        fields: currentDatasourceFields,
+        fields: dataBaseFields,
       },
       [CSV]: {
         header: <h1>Upload de arquivo</h1>,
@@ -274,6 +297,13 @@ class DataSourceDialog extends Component {
               <Button onClick={this.submit}>Salvar</Button>
             ) : <Button onClick={this.handleNextStep} disabled={!this.handleValidateFields()}>Avançar</Button>
           }
+          {
+            databaseConnectionLoading && (
+              <WaitingContainerBackdrop>
+                <ProgressSpinner style={{ width: '50px', height: '50px' }} strokeWidth="4" fill="#EEEEEE" animationDuration=".5s" />
+              </WaitingContainerBackdrop>
+            )
+          }
         </DialogFormButtonContainer>
 
         <DialogDotStepper>
@@ -286,7 +316,11 @@ class DataSourceDialog extends Component {
   }
 }
 
-const mapStateToProps = ({ dialog, data_source, context }) => ({ dialog, data_source, context });
+const mapStateToProps = ({
+  dialog, data_source, context, data_base_connection,
+}) => ({
+  dialog, data_source, context, data_base_connection,
+});
 
 export default connect(
   mapStateToProps,
@@ -294,6 +328,6 @@ export default connect(
     ...DialogActions,
     ...toastrActions,
     ...DataSourceActions,
-    ...ContextActions,
+    ...DataBaseConnectionActions,
   },
 )(DataSourceDialog);

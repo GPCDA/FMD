@@ -11,7 +11,7 @@ from services import carte
 from urllib.parse import unquote
 
 
-class DatabaseConnectionTest(Resource):
+class DatabaseConnectionFields(Resource):
     @jwt_required
     def post(self):
         try:

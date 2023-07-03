@@ -125,6 +125,6 @@ const mapStateToProps = ({ data_base_connection_test }) => ({ data_base_connecti
 export const Database = connect(
   mapStateToProps,
   {
-    ...DataBaseConnectionTestActions,
+    ...DataBaseConnectionActions,
   },
 )(DatabaseComponent);
