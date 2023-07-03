@@ -1,28 +1,13 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import Select from 'react-select';
-import { Creators as DataBaseConnectionTestActions } from '../../../../../store/ducks/data_base_connection_test';
+import { Creators as DataBaseConnectionActions } from '../../../../../store/ducks/data_base_connection';
 import {
   DialogForm, DialogLabelGroup,
   DialogLabel, DialogInput, Flex, selectStyle,
 } from '../../../../../styles/global';
 import CodeEditor from '../../../../CodeEditor';
 import Button from '../../../../../styles/Button';
-
-const drivers = [
-  {
-    label: 'PostgreSQL',
-    value: 'org.postgresql.Driver',
-  },
-  {
-    label: 'MySQL',
-    value: 'org.postgresql.Driver',
-  },
-  {
-    label: 'Oracle',
-    value: 'org.postgresql.Driver',
-  },
-];
 
 class DatabaseComponent extends PureComponent {
   testDatabaseConnection = async () => {
@@ -31,7 +16,7 @@ class DatabaseComponent extends PureComponent {
     } = this.props.database;
 
     this.props.postDataBaseConnectionTest({
-      url, driver, user, password, query,
+      url, driver: driver.value, user, password, query,
     });
   }
 
@@ -39,8 +24,7 @@ class DatabaseComponent extends PureComponent {
     const {
       name, setName, database, setDatabase,
     } = this.props;
-
-    console.log(database);
+    const { data: jdbcDrivers } = this.props.jdbc_driver;
 
     return (
       <DialogForm>
@@ -70,11 +54,11 @@ class DatabaseComponent extends PureComponent {
           <DialogLabel htmlFor="database-url">Driver*: </DialogLabel>
           <Select
             isSearchable
-            options={drivers}
-            value={drivers.find((driver) => driver.value === database.driver)}
+            options={jdbcDrivers.asMutable()}
+            value={database.driver}
             noOptionsMessage={() => 'Sem drivers'}
             placeholder="Selecione o driver"
-            onChange={(newValue) => setDatabase({ ...database, driver: newValue.value })}
+            onChange={(newValue) => setDatabase({ ...database, driver: newValue })}
             styles={selectStyle}
           />
         </DialogLabelGroup>
@@ -106,7 +90,16 @@ class DatabaseComponent extends PureComponent {
         <DialogLabelGroup>
           <Flex style={{ justifyContent: 'space-between' }}>
             <DialogLabel htmlFor="database-query">Consulta*: </DialogLabel>
-            <Button filled size="small" onClick={this.testDatabaseConnection}>Testar</Button>
+            <Button
+              filled
+              size="small"
+              disabled={
+                !(database.url && database.query && database.driver)
+              }
+              onClick={this.testDatabaseConnection}
+            >
+              Testar
+            </Button>
           </Flex>
           <CodeEditor
             id="database-query"
@@ -120,7 +113,7 @@ class DatabaseComponent extends PureComponent {
   }
 }
 
-const mapStateToProps = ({ data_base_connection_test }) => ({ data_base_connection_test });
+const mapStateToProps = ({ jdbc_driver }) => ({ jdbc_driver });
 
 export const Database = connect(
   mapStateToProps,

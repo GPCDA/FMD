@@ -17,6 +17,7 @@ import { Types as PhenomenonTypes } from '../ducks/phenomenon';
 import { Types as DataBaseTypes } from '../ducks/data_base';
 import { Types as ContextTypes } from '../ducks/context';
 import { Types as DataBaseConnectionTypes } from '../ducks/data_base_connection';
+import { Types as JDBCDriverTypes } from '../ducks/jdbc_driver';
 
 import { getChart } from './chart';
 import { getDownload } from './download';
@@ -42,6 +43,7 @@ import {
   getContext, postContext, putContext, deleteContext,
 } from './context';
 import { postDataBaseConnectionTest, postDataBaseConnectionFields } from './data_base_connection';
+import { getJDBCDriver } from './jdbc_driver';
 
 export default function* rootSaga() {
   return yield all([
@@ -78,5 +80,6 @@ export default function* rootSaga() {
     takeLatest(ContextTypes.DELETE_CONTEXT, deleteContext),
     takeLatest(DataBaseConnectionTypes.POST_DATA_BASE_CONNECTION_TEST, postDataBaseConnectionTest),
     takeLatest(DataBaseConnectionTypes.POST_DATA_BASE_CONNECTION_FIELDS, postDataBaseConnectionFields),
+    takeLatest(JDBCDriverTypes.GET_JDBC_DRIVER, getJDBCDriver),
   ]);
 }

@@ -22,6 +22,7 @@ import phenomenon from './phenomenon';
 import data_base from './data_base';
 import context from './context';
 import data_base_connection from './data_base_connection';
+import jdbc_driver from './jdbc_driver';
 
 export default (history) => combineReducers({
   auth,
@@ -45,5 +46,6 @@ export default (history) => combineReducers({
   data_base,
   context,
   data_base_connection,
+  jdbc_driver,
   router: connectRouter(history),
 });

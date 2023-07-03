@@ -27,7 +27,7 @@ class DataSourceDialog extends Component {
       name: '',
       database: {
         url: '',
-        driver: '',
+        driver: null,
         user: '',
         password: '',
         query: '',
@@ -40,7 +40,6 @@ class DataSourceDialog extends Component {
         fieldMap: {},
       },
     };
-    props.getContext();
   }
 
   componentDidUpdate(prevProps, prevState/* , snapshot */) {
@@ -70,7 +69,7 @@ class DataSourceDialog extends Component {
       name: '',
       database: {
         url: '',
-        driver: '',
+        driver: null,
         user: '',
         password: '',
         query: '',

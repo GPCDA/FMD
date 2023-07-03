@@ -22,6 +22,7 @@ from resources.Phenomenon import Phenomenon
 from resources.Context import Context
 from resources.DatabaseConnectionTest import DatabaseConnectionTest
 from resources.DatabaseConnectionFields import DatabaseConnectionFields
+from resources.JDBCDriver import JDBCDriver
 
 api_bp = Blueprint('api', __name__)
 api = Api(api_bp)
@@ -49,3 +50,4 @@ api.add_resource(Phenomenon, '/phenomenon')
 api.add_resource(Context, '/context', '/context/<string:key>')
 api.add_resource(DatabaseConnectionTest, '/database-connection/test')
 api.add_resource(DatabaseConnectionFields, '/database-connection/fields')
+api.add_resource(JDBCDriver, '/jdbc-driver')

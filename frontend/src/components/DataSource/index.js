@@ -30,6 +30,8 @@ import { ConfigContainer } from '../../styles/ConfigContainer';
 import { Creators as DataSourceActions } from '../../store/ducks/data_source';
 import { Creators as DialogActions } from '../../store/ducks/dialog';
 import { Creators as DataBaseActions } from '../../store/ducks/data_base';
+import { Creators as ContextActions } from '../../store/ducks/context';
+import { Creators as JDBCDriverActions } from '../../store/ducks/jdbc_driver';
 import { CardContainer } from './styles';
 
 class DataSource extends Component {
@@ -41,9 +43,11 @@ class DataSource extends Component {
     };
   }
 
-  UNSAFE_componentWillMount() {
+  componentDidMount() {
     this.props.getDataSource();
     this.props.getDataBase();
+    this.props.getContext();
+    this.props.getJdbcDriver();
   }
 
   openDialogConfig = (item/* , event */) => {
@@ -260,5 +264,7 @@ export default connect(
     ...IndicatorActions,
     ...DataSourceActions,
     ...DataBaseActions,
+    ...ContextActions,
+    ...JDBCDriverActions,
   },
 )(DataSource);

@@ -127,20 +127,44 @@ class TrainModelSchema(ma.Schema):
     last_predict_at = maFields.DateTime()
 
 
+class DatasourceTypeModel(db.Model, TimestampMixin):
+    __tablename__ = 'datasource_types'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(), nullable=False)
+    description = db.Column(db.String())
+
+    def __init__(self, name, description):
+        self.name = name
+        self.description = description
+
+
+class DatasourceTypeModelSchema(ma.Schema):
+    id = maFields.Integer(dump_only=True)
+    name = maFields.String()
+    description = maFields.String()
+    created_at = maFields.DateTime()
+    updated_at = maFields.DateTime()
+
+
 class DatasourceModel(db.Model, TimestampMixin):
     __tablename__ = 'datasources'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(), nullable=False)
     file_id = db.Column(db.Integer, db.ForeignKey('files.id'), nullable=False)
+    type_id = db.Column(db.Integer, db.ForeignKey('datasource_types.id', onupdate="CASCADE", ondelete="SET NULL"), nullable=False)
+    type = db.relationship('DatasourceTypeModel')
 
-    def __init__(self, name, file_id):
+    def __init__(self, name, file_id, type):
         self.name = name
         self.file_id = file_id
+        self.type = type
 
 
 class DatasourceModelSchema(ma.Schema):
     id = maFields.Integer(dump_only=True)
     name = maFields.String()
+    type_id = maFields.Integer()
+    type = maFields.Nested('DatasourceTypeModelSchema')
     file_id = maFields.Integer()
     size = maFields.Float()
     created_at = maFields.DateTime()
@@ -225,3 +249,21 @@ class ContextFieldSchema(ma.Schema):
     created_at = maFields.DateTime()
     updated_at = maFields.DateTime()
 
+
+class JDBCDriverModel(db.Model, TimestampMixin):
+    __tablename__ = 'jdbc_drivers'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(), nullable=False)
+    driverclass = db.Column(db.String(), nullable=False)
+
+    def __init__(self, name, driverclass):
+        self.name = name
+        self.driverclass = driverclass
+
+
+class JDBCDriverModelSchema(ma.Schema):
+    id = maFields.Integer(dump_only=True)
+    name = maFields.String()
+    driverclass = maFields.String()
+    created_at = maFields.DateTime()
+    updated_at = maFields.DateTime()

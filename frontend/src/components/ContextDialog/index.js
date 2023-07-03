@@ -25,7 +25,7 @@ class ContextDialog extends PureComponent {
 
         <DialogForm>
           {data.fields.map((field) => (
-            <DialogLabelGroup>
+            <DialogLabelGroup key={field.code}>
               <DialogLabel style={{ color: primaryColor, fontWeight: 'bold' }}>
                 {field.code}
                 :
