@@ -25,7 +25,7 @@ const INITIAL_STATE = Immutable({
 
 /* Reducers */
 
-export const init = (state) => state.merge({ data: [], currentDatasourceFields: null });
+export const init = (state) => state.merge({ data: [], currentDatasourceFields: [] });
 
 export const request = (state) => state.merge({ loading: true });
 

@@ -1,11 +1,6 @@
 import traceback
-from Model import db
-from utils import utils
-from sqlalchemy import desc
-from datetime import datetime
-from resources.File import File
 from flask_restful import Resource
-from flask import request, current_app
+from flask import request
 from flask_jwt_extended import jwt_required
 from services import carte
 from urllib.parse import unquote
@@ -26,9 +21,7 @@ class DatabaseConnectionTest(Resource):
             if missing_fields:
                 return {'msg': f"Campos obrigatórios ausentes: {', '.join(missing_fields)}"}, 400
 
-            execute_params = {
-              "trans": carte.transformations()['testar_conexao']
-            }
+            transformation = carte.transformations()['testar_conexao']
             executeBody = {
               'url': payload['url'],
               'driver': payload['driver'],
@@ -37,7 +30,7 @@ class DatabaseConnectionTest(Resource):
               'query': payload['query']
             }
             
-            response = carte.execute(execute_params, executeBody).json()
+            response = carte.executeTrans(transformation, executeBody).json()
             
             ExecutionLogText = response['data'][0]['ExecutionLogText']
             ExecutionResult = response['data'][0]['ExecutionResult']

@@ -7,19 +7,36 @@ def transformations():
         "testar_conexao": f"{current_app.config.get('CARTE_LOCATION')}/testarConexao/connectiongetmetadata.ktr", # (url, driver, user, password, query) Get database connection and sql query
     }
 
-def execute(execute_params = {}, execute_body = {}):
+def jobs():
+    return {
+        "ingerir_banco_de_dados": f"{current_app.config.get('CARTE_LOCATION')}/IngestorBD/job_principal_ingestor_bd.kjb", # (url, driver, user, password, query) Get database connection, sql query and context map
+    }
+
+def executeTrans(trans = '', execute_body = {}):
     headers = {
         'Content-Type': 'application/x-www-form-urlencoded'
     }
     request_params=''
     request_body=''
 
-    if execute_params:
-        request_params = f'?{urlencode(execute_params)}'
+    if trans: request_params = f'?{urlencode({ "trans": trans })}'
 
-    if execute_body:
-        request_body = f'{urlencode(execute_body)}'
+    if execute_body: request_body = f'{urlencode(execute_body)}'
 
     endpoint = f"{current_app.config.get('CARTE_BASE_URI')}/kettle/executeTrans/{request_params}"
+    return requests.post(endpoint, data=request_body, headers=headers)
+
+def executeJob(job = '', execute_body = {}):
+    headers = {
+        'Content-Type': 'application/x-www-form-urlencoded'
+    }
+    request_params=''
+    request_body=''
+
+    if job: request_params = f'?{urlencode({ "job": job })}'
+
+    if execute_body: request_body = f'{urlencode(execute_body)}'
+
+    endpoint = f"{current_app.config.get('CARTE_BASE_URI')}/kettle/executeJob/{request_params}"
     return requests.post(endpoint, data=request_body, headers=headers)
 

@@ -144,7 +144,6 @@ class DataSourceDialog extends Component {
     const {
       name, selectedDataSourceType, database, file, contextMap, currentStep,
     } = this.state;
-    const { data: contexts } = this.props.context;
 
     if (!name) {
       this.renderWarningMsg('Nome não informado', shouldAlert);
@@ -180,12 +179,10 @@ class DataSourceDialog extends Component {
       if (!contextMap.context) {
         this.renderWarningMsg('Contexto não informado', shouldAlert);
       }
-      const contextFieldsValue = contexts?.find((context) => context.id === contextMap.context.value)?.fields;
 
       const hasEmptyField = Object.entries(contextMap.fieldMap).some(([fieldKey, fieldValue]) => {
         if (!fieldValue) {
-          const fieldObject = contextFieldsValue.find((field) => field.code === fieldKey);
-          this.renderWarningMsg(`"${fieldObject.description || fieldKey}" não informado`, shouldAlert);
+          this.renderWarningMsg(`"${fieldKey}" não informado`, shouldAlert);
           return true;
         }
         return false;
@@ -213,8 +210,10 @@ class DataSourceDialog extends Component {
     if (!this.handleValidateFields(true)) return;
 
     const fileId = file.uploadedFiles.map((uploadedFile) => uploadedFile.id);
+    const sendDatabase = { ...database, driver: database.driver?.label };
+    const sendContextMap = { ...contextMap, context: contextMap.context?.value };
     this.props.postDataSource({
-      name, type: selectedDataSourceType, file_id: fileId[0], database, contextMap,
+      name, type: selectedDataSourceType, file_id: fileId[0], database: sendDatabase, contextMap: sendContextMap,
     });
     this.onClose();
   }
@@ -259,7 +258,7 @@ class DataSourceDialog extends Component {
       },
     };
 
-    const dataSourceComponent = dataSources[selectedDataSourceType] || { header: <h1>Fonte de dados não encontrada.</h1> };
+    const dataSourceComponent = dataSources[selectedDataSourceType] || { header: <h1>Fonte de dados não encontrada.</h1>, fields: [] };
 
     const stepsComponents = [
       dataSourceComponent,

@@ -8,5 +8,5 @@ export const PRE_PROCESSING_RAW = 'PRE_PROCESSING_RAW';
 export const TRAIN_PIPELINES = 'TRAIN_PIPELINES';
 export const CSV = 'CSV';
 export const LAD = 'LAD';
-export const DATA_BASE = 'DATA_BASE';
+export const DATA_BASE = 'DB';
 export const CONTEXT = 'CONTEXT';

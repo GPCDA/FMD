@@ -78,7 +78,7 @@ export class ContextMap extends PureComponent {
                 ...contextMap,
                 context: newValue,
                 fieldMap: this.props.contexts?.find((context) => context.id === newValue?.value)?.fields
-                  ?.reduce((fields, field) => ({ ...fields, [field.code]: '' }), {}),
+                  ?.reduce((fields, field) => ({ ...fields, [field.description]: '' }), {}),
               })}
               styles={{
                 ...selectStyle,
@@ -96,7 +96,7 @@ export class ContextMap extends PureComponent {
         {
             selectedContext?.fields.map((contextField) => (
               <div
-                key={contextField.code}
+                key={contextField.description}
                 style={{
                   display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem',
                 }}
@@ -108,14 +108,14 @@ export class ContextMap extends PureComponent {
                 <Select
                   isSearchable
                   options={datasourceFieldOptions}
-                  value={contextMap.fieldMap[contextField.code]}
+                  value={datasourceFieldOptions.find((option) => option.value === contextMap.fieldMap[contextField.description])}
                   noOptionsMessage={() => 'Sem campos do banco de dados'}
                   placeholder="Selecione o contexto"
                   onChange={(newValue) => setContextMap({
                     ...contextMap,
                     fieldMap: {
                       ...contextMap.fieldMap,
-                      [contextField.code]: newValue,
+                      [contextField.description]: newValue.value,
                     },
                   })}
                   styles={{
