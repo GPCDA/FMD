@@ -29,7 +29,6 @@ import {
 import { ConfigContainer } from '../../styles/ConfigContainer';
 import { Creators as DataSourceActions } from '../../store/ducks/data_source';
 import { Creators as DialogActions } from '../../store/ducks/dialog';
-import { Creators as DataBaseActions } from '../../store/ducks/data_base';
 import { Creators as ContextActions } from '../../store/ducks/context';
 import { Creators as JDBCDriverActions } from '../../store/ducks/jdbc_driver';
 import { CardContainer } from './styles';
@@ -40,14 +39,38 @@ class DataSource extends Component {
     this.state = {
       selectedItem: null,
       chipSelected: DATA_BASE,
+      csvDatasources: [],
+      dbDatasources: [],
     };
   }
 
   componentDidMount() {
     this.props.getDataSource();
-    this.props.getDataBase();
     this.props.getContext();
     this.props.getJdbcDriver();
+  }
+
+  componentDidUpdate(prevProps) {
+    const { data_source } = this.props;
+    const { loading: prevLoading } = prevProps.data_source;
+    const loading = !!data_source.loading;
+    if (!!prevLoading && !loading) {
+      const { csvDatasources, dbDatasources } = data_source.data.reduce((datasources, datasource) => {
+        const datasourceType = {
+          [CSV]: () => {
+            datasources.csvDatasources.push(datasource);
+          },
+          [DATA_BASE]: () => {
+            datasources.dbDatasources.push(datasource);
+          },
+        };
+        const datasourceTypeFunction = datasourceType[datasource.type.name];
+        if (datasourceTypeFunction) datasourceTypeFunction();
+        return datasources;
+      }, { csvDatasources: [], dbDatasources: [] });
+
+      this.setState({ csvDatasources, dbDatasources });
+    }
   }
 
   openDialogConfig = (item/* , event */) => {
@@ -74,7 +97,7 @@ class DataSource extends Component {
           <Typography variant="body2" color="textSecondary" component="p" style={{ color: primaryColor, fontFamily, fontSize: '10px' }}>
             <b>Tamanho:</b>
             {' '}
-            {filesize(item.size)}
+            {filesize(item.file.size)}
           </Typography>
         </CardContent>
       </CardActionArea>
@@ -132,7 +155,7 @@ class DataSource extends Component {
 
     const deleteChipFunctions = {
       [CSV]: this.props.deleteDataSource,
-      [DATA_BASE]: this.props.deleteDataBase,
+      [DATA_BASE]: this.props.deleteDataSource,
     };
 
     const deleteChipFunction = deleteChipFunctions[chipSelected];
@@ -188,15 +211,15 @@ class DataSource extends Component {
   addDataSource = (data) => this.props.setDialog('dataSource', data);
 
   render() {
-    const { chipSelected } = this.state;
-    const { data_source, data_base } = this.props;
+    const { chipSelected, csvDatasources, dbDatasources } = this.state;
+    const { data_source } = this.props;
     const loading = !!data_source.loading;
 
     const chipsView = {
       [CSV]: (
         <>
           <CardContainer>
-            {data_source.data.map((item, idx) => this.renderCardCSV(item, idx))}
+            {csvDatasources.map((item, idx) => this.renderCardCSV(item, idx))}
             <Card className="lms-card">
               <CardActionArea style={{ height: '100%' }} onClick={() => this.addDataSource({ selectedDataSourceType: CSV })}>
                 <CardContent style={{ color: primaryColor, display: 'flex', justifyContent: 'center' }}>
@@ -216,7 +239,7 @@ class DataSource extends Component {
       [DATA_BASE]: (
         <>
           <CardContainer>
-            {data_base.data.map((item, idx) => this.renderCardDataBase(item, idx))}
+            {dbDatasources.map((item, idx) => this.renderCardDataBase(item, idx))}
             <Card className="lms-card">
               <CardActionArea style={{ height: '100%' }} onClick={() => this.addDataSource({ selectedDataSourceType: DATA_BASE })}>
                 <CardContent style={{ color: primaryColor, display: 'flex', justifyContent: 'center' }}>
@@ -263,7 +286,6 @@ export default connect(
     ...ScreenActions,
     ...IndicatorActions,
     ...DataSourceActions,
-    ...DataBaseActions,
     ...ContextActions,
     ...JDBCDriverActions,
   },

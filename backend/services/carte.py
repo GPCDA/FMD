@@ -5,6 +5,8 @@ from urllib.parse import urlencode
 def transformations():
     return {
         "testar_conexao": f"{current_app.config.get('CARTE_LOCATION')}/testarConexao/connectiongetmetadata.ktr", # (url, driver, user, password, query) Get database connection and sql query
+        "capturar_metadata": f"{current_app.config.get('CARTE_LOCATION')}/testarConexao/connectiongetmetadata_metadataonly.ktr", # (url, driver, user, password, query) Get database connection and sql query
+        "ingerir_banco_de_dados": f"{current_app.config.get('CARTE_LOCATION')}/IngestorBD/Transformation_1.ktr", # (url, driver, user, password, query) Get database connection and sql query
     }
 
 def jobs():

@@ -159,6 +159,7 @@ class DatasourceModel(db.Model, TimestampMixin):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(), nullable=False)
     file_id = db.Column(db.Integer, db.ForeignKey('files.id'))
+    file = db.relationship('FileModel')
     type_id = db.Column(db.Integer, db.ForeignKey('datasource_types.id', onupdate="CASCADE", ondelete="SET NULL"), nullable=False)
     type = db.relationship('DatasourceTypeModel')
     contexts = db.relationship("ContextModel", secondary=datasource_context, back_populates="datasources")
@@ -175,7 +176,7 @@ class DatasourceModelSchema(ma.Schema):
     type_id = maFields.Integer()
     type = maFields.Nested('DatasourceTypeModelSchema')
     file_id = maFields.Integer()
-    size = maFields.Float()
+    file = maFields.Nested('FileModelSchema')
     contexts = maFields.List(maFields.Nested('ContextModelSchema', exclude=('datasources', )))
     datasource_contexts = maFields.List(maFields.Dict(keys=maFields.String(), values=maFields.String()))
     contextMap = maFields.List(maFields.Nested('DatasourceContextMapModelSchema', exclude=('datasource', )))
@@ -291,9 +292,9 @@ class DatabaseModel(db.Model, TimestampMixin):
     password = db.Column(db.String())
     query = db.Column(db.String(), nullable=False)
     driver_id = db.Column(db.Integer, db.ForeignKey('jdbc_drivers.id', onupdate="CASCADE", ondelete="SET NULL"), nullable=False)
-    driver = db.relationship('JDBCDriverModel', viewonly=True)
+    driver = db.relationship('JDBCDriverModel')
     datasource_id = db.Column(db.Integer, db.ForeignKey('datasources.id', onupdate="CASCADE", ondelete="CASCADE"), nullable=False)
-    datasource = db.relationship('DatasourceModel', viewonly=True, backref=backref('databases'))
+    datasource = db.relationship('DatasourceModel', backref=backref('databases'))
 
     def __init__(self, url, user, password, query, driver, datasource):
         self.url = url

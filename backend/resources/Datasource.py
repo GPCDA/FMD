@@ -1,3 +1,4 @@
+import os
 import uuid
 import traceback
 from Model import db
@@ -7,41 +8,44 @@ from flask_restful import Resource
 from flask import request, current_app
 from flask_jwt_extended import jwt_required
 from services import carte
-from Model import FileModel, DatasourceModel, DatasourceModelSchema, DatasourceTypeModel, DatabaseModel, ContextModel, DatasourceContextMapModel, datasource_context
+from Model import FileModel, DatasourceModel, DatasourceModelSchema, DatasourceTypeModel, \
+    DatabaseModel, ContextModel, DatasourceContextMapModel, datasource_context, \
+    FileModel, FileModelSchema, JDBCDriverModel
 
 
 class Datasource(Resource):
 
-    def generate_DB_file(self, data):
+    def get_file_size(self, filepath):
+        file_length = os.stat(filepath).st_size
+        
+        return file_length
+
+    def insert_on_database(self, data):
         try:
-            expected_fields = ['url', 'driver', 'user', 'password', 'query']
-            payload = request.get_json()
+            model = FileModel(
+                file_id=data['id'],
+                filename=data['filename'],
+                extension=data['extension'],
+                size=data['size']
+            )
 
-            missing_fields = []
-            for field in expected_fields:
-                if field not in payload:
-                    missing_fields.append(field)
+            db.session.add(model)
+            db.session.commit()
 
-            if missing_fields:
-                return {'msg': f"Campos obrigatórios ausentes: {', '.join(missing_fields)}"}, 400
+            return model
+        except:
+            traceback.print_exc()
+            return None
 
-            job = carte.jobs()['ingerir_banco_de_dados']
+    def generate_DB_file(self, name, data):
+        try:
             upload_folder = current_app.config.get('UPLOAD_FOLDER')
             extension = '.csv'
-            file_id = f"{str(uuid.uuid4())}{extension}"
-
-            if file and self.allowed_file(file.filename):
-                file.save(os.path.join(upload_folder, file_id))
-            else:
-                return {'msg': 'Extension file invalid'}, 500
+            file_id = f"{str(uuid.uuid4())}"
+            filepath = os.path.abspath(os.path.join(upload_folder, file_id))
+            file_id = f"{file_id}{extension}"
             
-            data = {
-                'id': file_id,
-                'filename': file.filename,
-                'extension': extension.replace('.', ''),
-                'size': self.get_file_size(upload_folder, file_id),
-                'url': f"{upload_folder}/{file_id}"
-            }
+            trans = carte.transformations()['ingerir_banco_de_dados']
             executeBody = {
               'url': data['url'],
               'driver': data['databaseModel'].driver.driverclass,
@@ -49,26 +53,38 @@ class Datasource(Resource):
               'password': data['password'],
               'query': data['query'],
               "id_contexto": data['datasourceContextId'],
-              "filename": ""
+              "filename": filepath
+            }
+            print(trans, executeBody)
+
+
+            carte.executeTrans(trans, executeBody)
+
+            data = {
+                'id': file_id,
+                'filename': f"{name}{extension}",
+                'extension': extension.replace('.', ''),
+                'size': self.get_file_size(f"{filepath}{extension}"),
+                'url': f"{upload_folder}/{file_id}"
             }
             
-            carte.executeJob(job, executeBody)
+            file = self.insert_on_database(data)
 
-            return None
+            return file
         except:
             traceback.print_exc()
             return None
         
     def insert_DB_instance(self, data):
         try:
-            jdbcDriver = db.session.query(DatasourceTypeModel).filter(DatasourceTypeModel.name == data['driver']).first()
+            jdbcDriver = db.session.query(JDBCDriverModel).filter(JDBCDriverModel.name == data['driver']).first()
 
             databaseModel = DatabaseModel(
                 url=data['url'],
-                driver=jdbcDriver,
                 user=data['user'],
                 password=data['password'],
                 query=data['query'],
+                driver=jdbcDriver,
                 datasource=data['datasource']
             )
 
@@ -117,9 +133,7 @@ class Datasource(Resource):
     @jwt_required
     def get(self):
         try:
-            res = db.session.query(DatasourceModel.id, DatasourceModel.created_at,
-                                   DatasourceModel.name, FileModel.size) \
-                .join(FileModel, DatasourceModel.file_id == FileModel.id) \
+            res = db.session.query(DatasourceModel) \
                 .order_by(desc(DatasourceModel.created_at)).all()
 
             schema = DatasourceModelSchema(many=True)
@@ -140,19 +154,25 @@ class Datasource(Resource):
 
             datasourceModel = DatasourceModel(
                 name=data['name'],
-                file_id=data['file_id'],
+                file_id=data.get('file_id'),
                 type=datasourceType,
             )
             
             data['contextMap']['datasource'] = datasourceModel
-            datasourceContextId = self.insert_context_map(data['contextMap'])
+            # datasourceContextId = self.insert_context_map(data['contextMap'])
 
             if datasourceType.name == 'DB':
-                data['database']['datasource'] = datasourceModel
-                databaseModel = self.insert_DB_instance(data['database'])
+                data['database']['datasource'] = db.session.query(DatasourceModel).filter(DatasourceModel.name == 'doidera').first() #datasourceModel
+                databaseModel = db.session.query(DatabaseModel).filter(DatabaseModel.id == 13).first()
+                #self.insert_DB_instance(data['database'])
+
                 data['database']['databaseModel'] = databaseModel
-                data['database']['datasourceContextId'] = datasourceContextId
-                self.generate_DB_file(data['database'])
+                data['database']['datasourceContextId'] = 12#datasourceContextId
+                file = self.generate_DB_file(data['name'], data['database'])
+                print(file, data['database']['datasource'])
+                data['database']['datasource'].file = file
+                db.session.add(data['database']['datasource'])
+                db.session.commit()
 
             return self.get()
 

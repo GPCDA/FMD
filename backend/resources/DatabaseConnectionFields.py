@@ -26,7 +26,7 @@ class DatabaseConnectionFields(Resource):
             if missing_fields:
                 return {'msg': f"Campos obrigatórios ausentes: {', '.join(missing_fields)}"}, 400
 
-            transformation = carte.transformations()['testar_conexao']
+            transformation = carte.transformations()['capturar_metadata']
             executeBody = {
               'url': payload['url'],
               'driver': payload['driver'],
@@ -37,20 +37,20 @@ class DatabaseConnectionFields(Resource):
             
             response = carte.executeTrans(transformation, executeBody).json()
             
-            ExecutionLogText = response['data'][0]['ExecutionLogText']
-            ExecutionResult = response['data'][0]['ExecutionResult']
-            ExecutionNrErrors = response['data'][0]['ExecutionNrErrors']
+            metadata = response['data']
 
-            if ExecutionResult == 'false':
-                errorMessage = '\n'.join([line.split('\n')[0] for line in unquote(ExecutionLogText).split('Table input.0 - ')[4:6]])
+            if not metadata:
+                return {'msg': 'Metadata not found'}, 400
+            
+            fields = []
+            for column in metadata:
+                fields.append({
+                    'value': column['Fieldname'],
+                    'label': column['Fieldname']
+                })
 
-                return {'msg': errorMessage}, 400
-            elif (bool(ExecutionNrErrors)):
-                errorMessage = '\n'.join([line.split('\n')[0] for line in unquote(ExecutionLogText).split('Table input.0 - ')[14:16]])
-                return {'msg': errorMessage}, 400
-
-            return {'msg': "Conexão bem sucedida"}, 200
+            return fields, 200
 
         except:
             traceback.print_exc()
-            return {'msg': f"Error on test database connection"}, 500
+            return {'msg': f"Error on get database metadata"}, 500
