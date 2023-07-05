@@ -21,9 +21,7 @@ class AlertDialog extends Component {
   render() {
     const { alert, data } = this.props.dialog;
 
-    if (!alert) {
-      return null;
-    }
+    if (!alert) return null;
 
     return (
       <Dialog>

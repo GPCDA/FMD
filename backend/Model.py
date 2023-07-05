@@ -10,13 +10,6 @@ ma = Marshmallow()
 db = SQLAlchemy()
 
 
-datasource_context = db.Table('datasource_context', db.metadata,
-    db.Column('id', db.Integer, primary_key=True),
-    db.Column('datasource_id', db.ForeignKey('datasources.id', onupdate="CASCADE", ondelete="CASCADE")),
-    db.Column('context_id', db.ForeignKey('contexts.id', onupdate="CASCADE", ondelete="CASCADE")),
-    db.UniqueConstraint('datasource_id', 'context_id', name='relationship')
-)
-
 class TimestampMixin(object):
     created_at = db.Column(
         db.DateTime, nullable=False, default=datetime.utcnow)
@@ -162,12 +155,14 @@ class DatasourceModel(db.Model, TimestampMixin):
     file = db.relationship('FileModel')
     type_id = db.Column(db.Integer, db.ForeignKey('datasource_types.id', onupdate="CASCADE", ondelete="SET NULL"), nullable=False)
     type = db.relationship('DatasourceTypeModel')
-    contexts = db.relationship("ContextModel", secondary=datasource_context, back_populates="datasources")
+    context_id = db.Column(db.Integer, db.ForeignKey('contexts.id', onupdate="CASCADE", ondelete="CASCADE"), nullable=False)
+    context = db.relationship("ContextModel", backref=backref('datasources', passive_deletes=True))
 
-    def __init__(self, name, file_id, type):
+    def __init__(self, name, file_id, type, context):
         self.name = name
         self.file_id = file_id
         self.type = type
+        self.context = context
 
 
 class DatasourceModelSchema(ma.Schema):
@@ -177,9 +172,9 @@ class DatasourceModelSchema(ma.Schema):
     type = maFields.Nested('DatasourceTypeModelSchema')
     file_id = maFields.Integer()
     file = maFields.Nested('FileModelSchema')
-    contexts = maFields.List(maFields.Nested('ContextModelSchema', exclude=('datasources', )))
-    datasource_contexts = maFields.List(maFields.Dict(keys=maFields.String(), values=maFields.String()))
+    context = maFields.Nested('ContextModelSchema', exclude=('datasources', ))
     contextMap = maFields.List(maFields.Nested('DatasourceContextMapModelSchema', exclude=('datasource', )))
+    database = maFields.Nested('DatabaseModelSchema', exclude=('datasource', ))
     created_at = maFields.DateTime()
     updated_at = maFields.DateTime()
 
@@ -214,7 +209,6 @@ class ContextModel(db.Model, TimestampMixin):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String())
     description = db.Column(db.String())
-    datasources = db.relationship("DatasourceModel", secondary=datasource_context, back_populates="contexts")
 
     def __init__(self, name, description):
         self.name = name
@@ -226,7 +220,7 @@ class ContextModelSchema(ma.Schema):
     name = maFields.String()
     description = maFields.String()
     fields = maFields.List(maFields.Nested('ContextFieldSchema', exclude=('context', )))
-    datasources = maFields.List(maFields.Nested('DatasourceModelSchema', exclude=('contexts', )))
+    datasources = maFields.List(maFields.Nested('DatasourceModelSchema', exclude=('context', )))
     created_at = maFields.DateTime()
     updated_at = maFields.DateTime()
 
@@ -294,7 +288,7 @@ class DatabaseModel(db.Model, TimestampMixin):
     driver_id = db.Column(db.Integer, db.ForeignKey('jdbc_drivers.id', onupdate="CASCADE", ondelete="SET NULL"), nullable=False)
     driver = db.relationship('JDBCDriverModel')
     datasource_id = db.Column(db.Integer, db.ForeignKey('datasources.id', onupdate="CASCADE", ondelete="CASCADE"), nullable=False)
-    datasource = db.relationship('DatasourceModel', backref=backref('databases'))
+    datasource = db.relationship('DatasourceModel', backref=backref('database', uselist=False, passive_deletes=True))
 
     def __init__(self, url, user, password, query, driver, datasource):
         self.url = url
@@ -324,13 +318,13 @@ class DatasourceContextMapModel(db.Model, TimestampMixin):
     id = db.Column(db.Integer, primary_key=True)
     datasource_field = db.Column(db.String(), nullable=False)
     context_field = db.Column(db.String(), nullable=False)
-    datasource_context_id = db.Column(db.ForeignKey('datasource_context.id', onupdate="CASCADE", ondelete="CASCADE"), nullable=False)
-    datasource = db.relationship("DatasourceModel", secondary=datasource_context, viewonly=True, backref=backref('contextMap'))
+    datasource_id = db.Column(db.ForeignKey('datasources.id', onupdate="CASCADE", ondelete="CASCADE"), nullable=False)
+    datasource = db.relationship("DatasourceModel", viewonly=True, backref=backref('contextMap'))
 
-    def __init__(self, datasource_field, context_field, datasource_context_id):
+    def __init__(self, datasource_field, context_field, datasource_id):
         self.datasource_field = datasource_field
         self.context_field = context_field
-        self.datasource_context_id = datasource_context_id
+        self.datasource_id = datasource_id
 
 
 class DatasourceContextMapModelSchema(ma.Schema):

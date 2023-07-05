@@ -19,6 +19,22 @@ export function* getDataSourceFields({ fileId }) {
   }
 }
 
+export function* getDataSourceContent({ fileId }) {
+  try {
+    yield put(Creators.dataSourceRequest());
+    const response = yield call(api.get, `file-data/${fileId}`);
+
+    yield put(Creators.dataSourceSuccess(undefined, undefined, response.data));
+  } catch (err) {
+    yield put(Creators.dataSourceError({ err }));
+    yield put(toastrActions.add({
+      type: 'error',
+      title: 'Erro',
+      message: 'Falha ao buscar campos da fonte de dados',
+    }));
+  }
+}
+
 export function* getDataSource() {
   try {
     yield put(Creators.dataSourceRequest());

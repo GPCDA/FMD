@@ -35,7 +35,7 @@ import { postTrainMetric } from './train_metric';
 import { signInRequest, signOutRequest } from './auth';
 import { getPreProcessing, deletePreProcessing } from './pre_processing';
 import {
-  getDataSourceFields, getDataSource, postDataSource, deleteDataSource,
+  getDataSourceFields, getDataSourceContent, getDataSource, postDataSource, deleteDataSource,
 } from './data_source';
 import { getPhenomenon } from './phenomenon';
 import { getDataBase, postDataBase, deleteDataBase } from './data_base';
@@ -67,6 +67,7 @@ export default function* rootSaga() {
     takeLatest(TrainModelTypes.DELETE_TRAIN_MODEL, deleteTrainModel),
     takeLatest(TrainMetricTypes.POST_TRAIN_METRIC, postTrainMetric),
     takeLatest(DataSourceTypes.GET_DATA_SOURCE_FIELDS, getDataSourceFields),
+    takeLatest(DataSourceTypes.GET_DATA_SOURCE_CONTENT, getDataSourceContent),
     takeLatest(DataSourceTypes.GET_DATA_SOURCE, getDataSource),
     takeLatest(DataSourceTypes.POST_DATA_SOURCE, postDataSource),
     takeLatest(DataSourceTypes.DELETE_DATA_SOURCE, deleteDataSource),

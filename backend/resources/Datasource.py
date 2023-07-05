@@ -9,8 +9,7 @@ from flask import request, current_app
 from flask_jwt_extended import jwt_required
 from services import carte
 from Model import FileModel, DatasourceModel, DatasourceModelSchema, DatasourceTypeModel, \
-    DatabaseModel, ContextModel, DatasourceContextMapModel, datasource_context, \
-    FileModel, FileModelSchema, JDBCDriverModel
+    DatabaseModel, ContextModel, DatasourceContextMapModel, FileModel, JDBCDriverModel
 
 
 class Datasource(Resource):
@@ -52,11 +51,9 @@ class Datasource(Resource):
               'username': data['user'],
               'password': data['password'],
               'query': data['query'],
-              "id_contexto": data['datasourceContextId'],
+              "datasource_id": data['datasourceId'],
               "filename": filepath
             }
-            print(trans, executeBody)
-
 
             carte.executeTrans(trans, executeBody)
 
@@ -100,32 +97,23 @@ class Datasource(Resource):
         try:
             context = db.session.query(ContextModel).filter(ContextModel.id == data['context']).first()
             
-            data['datasource'].contexts.append(context)
+            data['datasource'].context = context
             
             db.session.add(data['datasource'])
             db.session.commit()
-
-
-            datasourceId = data['datasource'].id
-            contextId = context.id
-
-            datasourceContextFound = db.session.query(datasource_context).filter(
-                datasource_context.c.datasource_id==datasourceId, 
-                datasource_context.c.context_id==contextId
-            ).first()
 
             datasourceContextMapModels = [
                 DatasourceContextMapModel(
                     context_field=key,
                     datasource_field=value,
-                    datasource_context_id=datasourceContextFound.id
+                    datasource_id=data['datasource'].id
                 ) for key, value in data['fieldMap'].items()
             ]
 
             db.session.add_all(datasourceContextMapModels)
             db.session.commit()
 
-            return datasourceContextFound.id
+            return data['datasource'].id
         except:
             traceback.print_exc()
             return None
@@ -156,20 +144,20 @@ class Datasource(Resource):
                 name=data['name'],
                 file_id=data.get('file_id'),
                 type=datasourceType,
+                context=None
             )
             
             data['contextMap']['datasource'] = datasourceModel
-            # datasourceContextId = self.insert_context_map(data['contextMap'])
+            datasourceId = self.insert_context_map(data['contextMap'])
 
             if datasourceType.name == 'DB':
-                data['database']['datasource'] = db.session.query(DatasourceModel).filter(DatasourceModel.name == 'doidera').first() #datasourceModel
-                databaseModel = db.session.query(DatabaseModel).filter(DatabaseModel.id == 13).first()
-                #self.insert_DB_instance(data['database'])
+                data['database']['datasource'] = datasourceModel
+                databaseModel = self.insert_DB_instance(data['database'])
 
                 data['database']['databaseModel'] = databaseModel
-                data['database']['datasourceContextId'] = 12#datasourceContextId
+                data['database']['datasourceId'] = datasourceId
                 file = self.generate_DB_file(data['name'], data['database'])
-                print(file, data['database']['datasource'])
+                
                 data['database']['datasource'].file = file
                 db.session.add(data['database']['datasource'])
                 db.session.commit()

@@ -8,6 +8,7 @@ import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import Chip from '@material-ui/core/Chip';
 import DeleteIcon from 'react-feather/dist/icons/trash-2';
+import EyeIcon from 'react-feather/dist/icons/eye';
 import PlayIcon from 'react-feather/dist/icons/play';
 import FileIcon from 'react-feather/dist/icons/file';
 import PlusIcon from 'react-feather/dist/icons/plus';
@@ -32,6 +33,7 @@ import { Creators as DialogActions } from '../../store/ducks/dialog';
 import { Creators as ContextActions } from '../../store/ducks/context';
 import { Creators as JDBCDriverActions } from '../../store/ducks/jdbc_driver';
 import { CardContainer } from './styles';
+import DatabaseDialog from '../DatabaseDialog';
 
 class DataSource extends Component {
   constructor(props) {
@@ -73,14 +75,7 @@ class DataSource extends Component {
     }
   }
 
-  openDialogConfig = (item/* , event */) => {
-    this.props.setDialog(item.name, {
-      ...item,
-      version: {
-        label: item.version, value: item.version,
-      },
-    });
-  }
+  handleShowContext = (data) => this.props.setDialog('database', data)
 
   renderCardCSV = (item, idx) => (
     <Card className="lms-card" key={idx}>
@@ -105,7 +100,7 @@ class DataSource extends Component {
         <IconButton onClick={this.goToIndicators.bind(this, CSV, item.id, item.name)}>
           <PlayIcon size={20} color="#FFF" />
         </IconButton>
-        <IconButton onClick={this.handleMsgDelete.bind(this, item)}>
+        <IconButton onClick={this.handleMsgDelete.bind(this, item, '')}>
           <DeleteIcon size={20} color="#FFF" />
         </IconButton>
       </CardActions>
@@ -127,13 +122,16 @@ class DataSource extends Component {
           <Typography variant="body2" color="textSecondary" component="p" style={{ color: primaryColor, fontFamily, fontSize: '10px' }}>
             <b>Tamanho:</b>
             {' '}
-            {filesize(item.size)}
+            {filesize(item.file.size)}
           </Typography>
         </CardContent>
       </CardActionArea>
       <CardActions style={{ backgroundColor: primaryColor }}>
         <IconButton onClick={this.goToIndicators.bind(this, CSV, item.id, item.name)}>
           <PlayIcon size={20} color="#FFF" />
+        </IconButton>
+        <IconButton onClick={() => this.handleShowContext(item)}>
+          <EyeIcon size={20} color="#FFF" />
         </IconButton>
         <IconButton onClick={this.handleMsgDelete.bind(this, item, 'Você realmente deseja excluir este banco de dados?')}>
           <DeleteIcon size={20} color="#FFF" />
@@ -272,6 +270,7 @@ class DataSource extends Component {
 
         </ConfigContainer>
         <DataSourceDialog />
+        <DatabaseDialog />
         <AlertDialog onSubmit={this.handleDelete} />
       </PerfectScrollbar>
     );

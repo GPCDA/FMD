@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 # revision identifiers, used by Alembic.
 revision = '3611ccaad282'
-down_revision = '222c1b030b19'
+down_revision = 'f41af0c76a60'
 branch_labels = None
 depends_on = None
 
@@ -23,8 +23,8 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('datasource_field', sa.String(), nullable=False),
     sa.Column('context_field', sa.String(), nullable=False),
-    sa.Column('datasource_context_id', sa.Integer(), nullable=False),
-    sa.ForeignKeyConstraint(['datasource_context_id'], ['datasource_context.id'], onupdate='CASCADE', ondelete='CASCADE'),
+    sa.Column('datasource_id', sa.Integer(), nullable=False),
+    sa.ForeignKeyConstraint(['datasource_id'], ['datasources.id'], onupdate='CASCADE', ondelete='CASCADE'),
     sa.PrimaryKeyConstraint('id')
     )
     # ### end Alembic commands ###
