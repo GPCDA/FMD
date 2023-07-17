@@ -58,7 +58,7 @@ class DatabaseDialog extends PureComponent {
             </thead>
 
             <tbody>
-              {currentDatasourceValues.slice(10).map((item, idx) => this.renderItem(item, idx))}
+              {currentDatasourceValues.slice(0, 10).map((item, idx) => this.renderItem(item, idx))}
             </tbody>
           </Table>
           )}

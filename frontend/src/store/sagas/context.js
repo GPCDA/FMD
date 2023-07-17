@@ -53,24 +53,24 @@ export function* postContext({ data, callback }) {
   }
 }
 
-export function* putContext({ filter }) {
+export function* putContext({ data }) {
   try {
     yield put(Creators.contextRequest());
-    const response = yield call(api.put, 'context', filter);
+    const response = yield call(api.put, 'context', data);
 
     yield put(Creators.contextSuccess(response.data));
 
     yield put(toastrActions.add({
       type: 'success',
       title: 'Sucesso',
-      message: 'Fonte de Contexto alterado com sucesso!',
+      message: 'Contexto salvo com sucesso!',
     }));
   } catch (err) {
     yield put(Creators.contextError({ err }));
     yield put(toastrActions.add({
       type: 'error',
       title: 'Erro',
-      message: 'Falha ao atualizar contexto',
+      message: 'Falha ao salvar contexto',
     }));
   }
 }

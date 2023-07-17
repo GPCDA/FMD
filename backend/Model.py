@@ -234,7 +234,7 @@ class ContextFieldModel(db.Model, TimestampMixin):
     size = db.Column(db.Integer())
     allowed_values = db.Column(db.String())
     context_id = db.Column(db.Integer, db.ForeignKey('contexts.id', onupdate="CASCADE", ondelete="CASCADE"), nullable=False)
-    context = db.relationship('ContextModel', backref=backref('fields', passive_deletes=True))
+    context = db.relationship('ContextModel', backref=backref('fields', passive_deletes=True, order_by='ContextFieldModel.id.asc()'))
 
     def __init__(self, code, description, type, size, allowed_values, context):
         self.code = code

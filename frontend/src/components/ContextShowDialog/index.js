@@ -11,13 +11,13 @@ import { Creators as DialogActions } from '../../store/ducks/dialog';
 import Dialog from '../Dialog';
 import Button from '../../styles/Button';
 
-class ContextDialog extends PureComponent {
-  onClose = () => this.props.setDialog('context');
+class ContextShowDialog extends PureComponent {
+  onClose = () => this.props.setDialog('contextShow');
 
   render() {
-    const { context, data } = this.props.dialog;
+    const { contextShow, data } = this.props.dialog;
 
-    if (!context) return null;
+    if (!contextShow) return null;
 
     return (
       <Dialog size="big">
@@ -52,4 +52,4 @@ export default connect(
   {
     ...DialogActions,
   },
-)(ContextDialog);
+)(ContextShowDialog);

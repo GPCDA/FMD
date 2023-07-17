@@ -9,6 +9,7 @@ import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import EyeIcon from 'react-feather/dist/icons/eye';
+import ToolIcon from 'react-feather/dist/icons/tool';
 import DeleteIcon from 'react-feather/dist/icons/trash-2';
 import { ProgressSpinner } from 'primereact/progressspinner';
 import UploadIcon from 'react-feather/dist/icons/upload';
@@ -22,7 +23,8 @@ import {
 import { Creators as DialogActions } from '../../store/ducks/dialog';
 import { Creators as ContextActions } from '../../store/ducks/context';
 import { ConfigContainer } from '../../styles/ConfigContainer';
-import ContextDialog from '../ContextDialog';
+import ContextShowDialog from '../ContextShowDialog';
+import ContextEditDialog from '../ContextEditDialog';
 
 const JSON_MIME_TYPES = [
   'application/json',
@@ -41,7 +43,9 @@ class Context extends Component {
     this.props.getContext();
   }
 
-  handleShowContext = (data) => this.props.setDialog('context', data)
+  handleShowContext = (data) => this.props.setDialog('contextShow', data)
+
+  handleEditContext = (data) => this.props.setDialog('contextEdit', data)
 
   renderCardContext = (item, idx) => (
     <Card className="lms-card" key={idx} style={{ display: 'flex', flexDirection: 'column' }}>
@@ -55,6 +59,9 @@ class Context extends Component {
       <CardActions style={{ backgroundColor: primaryColor }}>
         <IconButton onClick={() => this.handleShowContext(item)}>
           <EyeIcon size={20} color="#FFF" />
+        </IconButton>
+        <IconButton onClick={() => this.handleEditContext(item)}>
+          <ToolIcon size={20} color="#FFF" />
         </IconButton>
         <IconButton onClick={this.handleMsgDelete.bind(this, item, 'Você realmente deseja excluir este contexto?')}>
           <DeleteIcon size={20} color="#FFF" />
@@ -124,7 +131,8 @@ class Context extends Component {
           <StatusMsgContainer>Nenhum contexto cadastrado</StatusMsgContainer>
           )}
           <AlertDialog onSubmit={this.handleDelete} />
-          <ContextDialog />
+          <ContextShowDialog />
+          <ContextEditDialog />
         </ConfigContainer>
       </PerfectScrollbar>
     );
