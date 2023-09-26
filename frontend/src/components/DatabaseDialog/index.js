@@ -1,12 +1,9 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
-import * as moment from 'moment';
 import {
   DialogFormButtonContainer, DialogHeader,
-  DialogForm, DialogLabelGroup,
-  DialogLabel, primaryColor, DialogSpan,
-  Table, HeaderColumn, FirstHeaderColumn,
-  ItemColumn, FirstItemColumn,
+  DialogForm, Table, HeaderColumn,
+  ItemColumn,
 } from '../../styles/global';
 import { Creators as DialogActions } from '../../store/ducks/dialog';
 import { Creators as DataSourceActions } from '../../store/ducks/data_source';
@@ -18,7 +15,7 @@ class DatabaseDialog extends PureComponent {
     const { data } = this.props.dialog;
     const { data: prevData } = prevProps.dialog;
     if (data?.file_id && prevData?.file_id !== data.file_id) {
-      this.props.getDataSourceContent(/* data.file_id */87);
+      this.props.getDataSourceContent(data.file_id);
     }
   }
 
@@ -27,7 +24,7 @@ class DatabaseDialog extends PureComponent {
     return (
       <tr key={idx}>
         {data.contextMap.map((column) => (
-          <ItemColumn key={column.id}>{item[column.datasource_field]}</ItemColumn>
+          <ItemColumn key={column.id}>{item[column.context_field]}</ItemColumn>
         ))}
       </tr>
     );
@@ -38,7 +35,6 @@ class DatabaseDialog extends PureComponent {
   render() {
     const { database, data } = this.props.dialog;
     const { loading, currentDatasourceValues } = this.props.data_source;
-    console.log(loading, currentDatasourceValues, currentDatasourceValues.length, data?.contextMap);
 
     if (!database) return null;
 

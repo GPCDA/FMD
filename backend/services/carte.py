@@ -6,7 +6,9 @@ def transformations():
     return {
         "testar_conexao": f"{current_app.config.get('CARTE_LOCATION')}/testarConexao/connectiongetmetadata.ktr", # (url, driver, user, password, query) Get database connection and sql query
         "capturar_metadata": f"{current_app.config.get('CARTE_LOCATION')}/testarConexao/connectiongetmetadata_metadataonly.ktr", # (url, driver, user, password, query) Get database connection and sql query
-        "ingerir_banco_de_dados": f"{current_app.config.get('CARTE_LOCATION')}/IngestorBD/Transformation_1.ktr", # (url, driver, user, password, query, datasource_id, filename) Get database connection and sql query
+        "ingerir_banco_de_dados_1": f"{current_app.config.get('CARTE_LOCATION')}/IngestorBD/cria_headers_csv.ktr", # (datasource_id, filename) Get database connection and sql query
+        "ingerir_banco_de_dados_2": f"{current_app.config.get('CARTE_LOCATION')}/IngestorBD/ingestor_bd.ktr", # (url, driver, user, password, query, datasource_id, filename) Get database connection and sql query
+        # "ingerir_banco_de_dados_2": f"{current_app.config.get('CARTE_LOCATION')}/IngestorBD/Transformation_1.ktr", # (url, driver, user, password, query, datasource_id, filename) Get database connection and sql query
     }
 
 # def jobs():

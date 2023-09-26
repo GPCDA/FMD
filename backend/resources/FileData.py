@@ -15,7 +15,7 @@ class FileData(Resource):
         upload_folder = current_app.config.get('UPLOAD_FOLDER')
         path = f"{upload_folder}/{file.file_id}"
 
-        df = pd.read_csv(path)
+        df = pd.read_csv(path, sep="\*\,\-\)")
 
         return loads(df.to_json(orient="records"))
     

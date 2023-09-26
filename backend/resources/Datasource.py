@@ -44,18 +44,26 @@ class Datasource(Resource):
             filepath = os.path.abspath(os.path.join(upload_folder, file_id))
             file_id = f"{file_id}{extension}"
             
-            trans = carte.transformations()['ingerir_banco_de_dados']
-            executeBody = {
-              'url': data['url'],
-              'driver': data['databaseModel'].driver.driverclass,
-              'username': data['user'],
-              'password': data['password'],
-              'query': data['query'],
+            trans_1 = carte.transformations()['ingerir_banco_de_dados_1']
+            trans_2 = carte.transformations()['ingerir_banco_de_dados_2']
+
+            executeBody1 = {
               "datasource_id": data['datasourceId'],
               "filename": filepath
             }
 
-            carte.executeTrans(trans, executeBody)
+            executeBody2 = {
+                'url': data['url'],
+                'driver': data['databaseModel'].driver.driverclass,
+                'username': data['user'],
+                'password': data['password'],
+                'query': data['query'],
+                "datasource_id": data['datasourceId'],
+                "filename": filepath
+            }
+
+            carte.executeTrans(trans_1, executeBody1)
+            carte.executeTrans(trans_2, executeBody2)
 
             data = {
                 'id': file_id,
