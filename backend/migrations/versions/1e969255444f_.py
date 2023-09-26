@@ -92,7 +92,7 @@ def upgrade():
             {
                 "username": "admin",
                 "email": "admin@fmdev.com.br",
-                "password": "p@ssW0rd",
+                "password": "$2b$12$vmBMj47O6UsxfsreJXAOYuf0S.QZgVH7juxQ.dsL8IW7DgKFLHIja",
                 "created_at": datetime.datetime.now(),
                 "updated_at": datetime.datetime.now()
             },
