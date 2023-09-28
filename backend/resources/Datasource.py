@@ -1,6 +1,7 @@
 import os
 import uuid
 import traceback
+import pandas as pd
 from Model import db
 from utils import utils
 from sqlalchemy import desc
@@ -9,7 +10,7 @@ from flask import request, current_app
 from flask_jwt_extended import jwt_required
 from services import carte
 from Model import FileModel, DatasourceModel, DatasourceModelSchema, DatasourceTypeModel, \
-    DatabaseModel, ContextModel, DatasourceContextMapModel, FileModel, JDBCDriverModel
+    DatabaseModel, ContextModel, DatasourceContextMapModel, FileModel, JDBCDriverModel, FileModelSchema
 
 
 class Datasource(Resource):
@@ -126,6 +127,30 @@ class Datasource(Resource):
             traceback.print_exc()
             return None
 
+    def update_CSV_file(self, file_id, contextMap):
+        file = db.session.query(FileModel).filter(FileModel.id == file_id).first()
+
+        schema = FileModelSchema()
+        fileData = schema.dump(file)
+
+        upload_folder = current_app.config.get('UPLOAD_FOLDER')
+        
+        filepath = os.path.abspath(os.path.join(upload_folder, fileData.data['file_id']))
+
+        df = pd.read_csv(filepath)
+
+        df_filtered = df[list([field.datasource_field for field in contextMap])]
+
+        csv_column_map = {}
+        for index, column in enumerate(contextMap):
+            csv_column_map[column.datasource_field] = column.context_field
+        df_renamed = df_filtered.rename(columns=csv_column_map)
+        df_renamed.to_csv(filepath, index=False)
+
+        file.size = self.get_file_size(f"{filepath}"),
+        db.session.add(file)
+        db.session.commit()
+
     @jwt_required
     def get(self):
         try:
@@ -169,6 +194,8 @@ class Datasource(Resource):
                 data['database']['datasource'].file = file
                 db.session.add(data['database']['datasource'])
                 db.session.commit()
+            elif datasourceType.name == 'CSV':
+                self.update_CSV_file(data.get('file_id'), datasourceModel.contextMap)
 
             return self.get()
 

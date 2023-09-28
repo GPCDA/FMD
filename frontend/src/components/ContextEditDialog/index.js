@@ -26,10 +26,10 @@ class ContextEditDialog extends Component {
   }
 
   componentDidUpdate(prevProps/* , prevState */) {
-    const { data } = this.props.dialog;
+    const { contextEdit, data } = this.props.dialog;
     const { data: prevData } = prevProps.dialog;
 
-    if (data && prevData !== data) {
+    if (contextEdit && data && prevData !== data) {
       const fields = data.fields.asMutable({ deep: true });
       this.setState({ name: data.name, fields });
     }

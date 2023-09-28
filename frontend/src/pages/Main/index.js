@@ -15,7 +15,7 @@ import {
 } from '../../constants';
 import Train from '../../components/Train';
 import TrainModel from '../TrainModel';
-import Dashboard from '../../components/Dashboard';
+// import Dashboard from '../../components/Dashboard';
 import Context from '../../components/Context';
 
 const COMPONENTS = {
@@ -24,7 +24,7 @@ const COMPONENTS = {
   [PRE_PROCESSING]: <PreProcessing />,
   [TRAIN]: <Train />,
   [TRAIN_MODEL]: <TrainModel />,
-  [LAD]: <Dashboard />,
+  // [LAD]: <Dashboard />,
   [CONTEXT]: <Context />,
 };
 

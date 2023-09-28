@@ -7,6 +7,7 @@ from Model import FileModel
 
 
 class FileData(Resource):
+    __sep="," #\*\,\-\)
     
     @jwt_required
     def get(self, key):
@@ -15,7 +16,7 @@ class FileData(Resource):
         upload_folder = current_app.config.get('UPLOAD_FOLDER')
         path = f"{upload_folder}/{file.file_id}"
 
-        df = pd.read_csv(path, sep="\*\,\-\)")
+        df = pd.read_csv(path, sep=self.__sep)
 
         return loads(df.to_json(orient="records"))
     

@@ -30,11 +30,11 @@ class SideMenu extends Component {
   render() {
     const { signOutRequest } = this.props;
     const links = [
-      {
-        screen: LAD,
-        component: LAD,
-        icon: <MonitorIcon color="#FFF" strokeWidth={this.getStrokeWidth(LAD)} />,
-      },
+      // {
+      //   screen: LAD,
+      //   component: LAD,
+      //   icon: <MonitorIcon color="#FFF" strokeWidth={this.getStrokeWidth(LAD)} />,
+      // },
       {
         screen: ADD_TRAIN,
         component: DATASOURCE,
