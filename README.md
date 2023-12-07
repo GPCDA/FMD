@@ -306,9 +306,74 @@ May 20 20:43:26 fmdev gunicorn[26626]: [2020-05-20 20:43:26 +0000] [26626] [INFO
 May 20 20:43:26 fmdev gunicorn[26626]: [2020-05-20 20:43:26 +0000] [26646] [INFO] Booting worker
 ```
 
-# 2. Deploy on Docker
+## 1.6 Java
 
-In Progress
+Install openjdk 11 from
+
+```
+https://jdk.java.net/archive/
+```
+
+## 1.7 Pentaho
+
+Download Pentaho Data Integration community editon from:
+
+```
+https://privatefilesbucket-community-edition.s3.us-west-2.amazonaws.com/9.4.0.0-343/ce/client-tools/pdi-ce-9.4.0.0-343.zip
+```
+
+Move Pentaho Data Integration folder to user home folder
+
+```
+mv <path>/pdi-ce-9.4.0.0-343 [USER_HOME]/
+```
+
+Move the transformations folder into the Pentaho Data Integration folder
+
+```
+mv <path>/fmdev/etl/transformations [USER_HOME]/pdi-ce-9.4.0.0-343/data-integration/
+```
+
+Set the Pentaho Data Integration location at carte.sh
+
+```
+nano <path>/fmdev/carte.sh
+```
+
+Configure the Pentaho Data Integration location at <path>/fmdev/backend/.env.development
+
+```
+nano <path>/fmdev/backend/.env.development
+```
+
+```
+DB_HOST=localhost
+DB_USER=root
+DB_PORT=5432
+DB_PWD=1234
+DB_NAME=fmdev
+CARTE_HOST=localhost
+CARTE_PORT=8081
+CARTE_USER=cluster
+CARTE_PASS=cluster
+#Change [USER_HOME] to user home path
+CARTE_LOCATION=[USER_HOME]/pdi-ce-9.4.0.0-343/data-integration/transformations
+```
+
+# 2. Start project
+Run the following commands to start the project
+```
+export JAVA_HOME="[JAVA PATH]"
+export PATH=$PATH:$JAVA_HOME/bin
+
+service postgresql start
+service nginx start
+source ~/.bashrc
+/app/fmdev/carte.sh &
+cd /app/fmdev/backend
+source venv/bin/activate
+venv/bin/gunicorn --reload -b 127.0.0.1:5000 "run:create_app('config')"
+```
 
 # 3. Local Development
 
