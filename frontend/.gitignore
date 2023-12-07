@@ -7,6 +7,9 @@
 
 # testing
 /coverage
+/transformations/dadosDummy
+/transformations/carga_iris.ktr
+/transformations/iris_2.csv
 
 # production
 /build
