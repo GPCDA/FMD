@@ -411,3 +411,47 @@ source venv/bin/activate
 pip install -r requirements.txt
 jupyter notebook --ip=127.0.0.1
 ```
+# 4. How to use
+## 4.1 Contexts
+
+To upload a context the document must be a JSON and must be on this specific format:
+
+```
+{"metadados": {
+    "cabecalho": {
+      "titulo": "Iris 2",
+      "descricao": "Dados teste iris"
+    },
+    "campos": [
+      {
+        "codigo": "sepal.length",
+        "descricao": "Sepal Length",
+        "tipo": "Num",
+        "tamanho": 100,
+        "valores_permitidos": ""
+      },
+      {
+        "codigo": "sepal.width",
+        "descricao": "Sepal Width",
+        "tipo": "Num",
+        "tamanho": 50,
+        "valores_permitidos": ""
+      },
+      {
+        "codigo": "sepal.length",
+        "descricao": "Petal Length",
+        "tipo": "Num",
+        "tamanho": 10,
+        "valores_permitidos": ""
+      },
+      {
+        "codigo": "variety",
+        "descricao": "Variety",
+        "tipo": "Num",
+        "tamanho": 10,
+        "valores_permitidos": ""
+      }
+    ]
+  }
+}
+```
