@@ -17,7 +17,7 @@ class FileData(Resource):
         path = f"{upload_folder}/{file.file_id}"
 
         df = pd.read_csv(path, sep=self.__sep)
-
+        
         return loads(df.to_json(orient="records"))
-    
+        
     

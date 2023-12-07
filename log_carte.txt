@@ -1,0 +1,7 @@
+#######################################################################
+WARNING:  no libwebkitgtk-1.0 detected, some features will be unavailable
+    Consider installing the package with apt-get or yum.
+    e.g. 'sudo apt-get install libwebkitgtk-1.0-0'
+#######################################################################
+2023/12/06 21:00:20 - Carte - Installing timer to purge stale objects after 1440 minutes.
+2023/12/06 21:00:21 - Carte - Created listener for webserver @ address : 127.0.0.1:8081

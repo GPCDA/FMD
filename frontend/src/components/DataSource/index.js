@@ -100,6 +100,9 @@ class DataSource extends Component {
         <IconButton onClick={this.goToIndicators.bind(this, CSV, item.id, item.name)}>
           <PlayIcon size={20} color="#FFF" />
         </IconButton>
+        <IconButton onClick={() => this.handleShowContext(item)}>
+          <EyeIcon size={20} color="#FFF" />
+        </IconButton>
         <IconButton onClick={this.handleMsgDelete.bind(this, item, '')}>
           <DeleteIcon size={20} color="#FFF" />
         </IconButton>
