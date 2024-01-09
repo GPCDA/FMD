@@ -115,6 +115,9 @@ export default createGlobalStyle`
   }
 
   .lms-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
     min-height: 10rem;
     width: 30.5%;
     margin: .5vw;

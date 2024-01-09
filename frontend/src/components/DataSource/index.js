@@ -79,7 +79,7 @@ class DataSource extends Component {
 
   renderCardCSV = (item, idx) => (
     <Card className="lms-card" key={idx}>
-      <CardActionArea>
+      <CardActionArea style={{ flex: 1 }}>
         <CardContent style={{ color: primaryColor }}>
           <Typography gutterBottom variant="h5" component="h2" style={{ fontFamily }}>
             {item.name}

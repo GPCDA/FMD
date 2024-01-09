@@ -106,7 +106,8 @@ class Train(Resource):
 
             x_train, x_test, y_train, y_test = train_test_split(
                 df_x, df[target], train_size=train, test_size=test)
-
+            #print('X treinamento', ' ', x_train)
+            #print('Y treinamento', ' ', y_train)
             tpot = self.train(x_train, y_train, generations, kfold)
 
             self.save(tpot)
