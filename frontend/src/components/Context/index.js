@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useState } from 'react';
 import { connect } from 'react-redux';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import { actions as toastrActions } from 'react-redux-toastr';
@@ -8,9 +8,12 @@ import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
+import CheckIcon from 'react-feather/dist/icons/check';
 import EyeIcon from 'react-feather/dist/icons/eye';
 import ToolIcon from 'react-feather/dist/icons/tool';
+import HelpIcon from 'react-feather/dist/icons/help-circle';
 import DeleteIcon from 'react-feather/dist/icons/trash-2';
+import Tour from 'reactour';
 import { ProgressSpinner } from 'primereact/progressspinner';
 import UploadIcon from 'react-feather/dist/icons/upload';
 
@@ -18,7 +21,7 @@ import { CardContainer } from './styles';
 import AlertDialog from '../AlertDialog';
 import Upload from '../Upload';
 import {
-  primaryColor, Header, StatusMsgContainer, fontFamily,
+  primaryColor, Header, StatusMsgContainer, fontFamily, CodeText,
 } from '../../styles/global';
 import { Creators as DialogActions } from '../../store/ducks/dialog';
 import { Creators as ContextActions } from '../../store/ducks/context';
@@ -70,6 +73,16 @@ class Context extends Component {
     </Card>
   )
 
+  // Handles do react tour geral do contexto, para abrir e fechar o tour
+
+  handleStartTourContextoGeral = () => {
+    this.setState({ isTourContextoGeralOpen: true });
+  };
+
+  handleTourCloseContextoGeral = () => {
+    this.setState({ isTourContextoGeralOpen: false });
+  };
+
   handleMsgDelete = (item, message = '') => {
     this.setState({ selectedItem: item });
 
@@ -89,16 +102,46 @@ class Context extends Component {
     const loadingContext = !!context.loading;
     const hasContext = !!context.data.length;
 
+    const stepsContextoGeral = [
+      {
+        selector: '#contextos-titulo',
+        content: 'A seção de upload de contextos serve para que você adicione as informações necessárias para a análise dos dados.',
+        style: {
+          color: '#000',
+          padding: '2.2rem',
+        },
+      },
+      {
+        selector: '#upload-json',
+        content: (
+          <div style={{ flexWrap: 'wrap', display: 'flex', wordBreak: 'break-word' }}>
+            <p>Para utilização basta fazer o upload de um arquivo de formato JSON no molde correto.</p>
+            <br />
+            <p>Você pode encontrar um exemplo de arquivo na Seção 4 do README do projeto no link:</p>
+            <br />
+            <CodeText>
+              <code>https://github.com/machamilton/fmdev</code>
+            </CodeText>
+          </div>
+        ),
+        style: {
+          color: '#000',
+          padding: '2.2rem',
+        },
+      },
+    ];
+
     return (
       <PerfectScrollbar style={{ width: '100%', overflowX: 'auto' }}>
         <ConfigContainer size="big" style={{ color: '#000' }}>
 
           <Header>
-            <h1>Contextos</h1>
+            <h1 id="contextos-titulo">Contextos</h1>
+            <spam><HelpIcon size={20} color="#000" style={{ cursor: 'pointer' }} onClick={this.handleStartTourContextoGeral} /></spam>
           </Header>
 
           {!uploadedFiles.length && (
-          <div style={{ padding: '2rem' }}>
+          <div id="upload-json" style={{ padding: '2rem' }}>
             <Upload
               serverUpload={(data, callback) => this.props.postContext(data, (newFileValues) => {
                 callback(newFileValues);
@@ -134,6 +177,16 @@ class Context extends Component {
           <ContextShowDialog />
           <ContextEditDialog />
         </ConfigContainer>
+        {/* Componente do tour do contexto geral */}
+        <Tour
+          steps={stepsContextoGeral}
+          isOpen={this.state.isTourContextoGeralOpen}
+          onRequestClose={this.handleTourCloseContextoGeral}
+          rounded={10}
+          startAt={0}
+          lastStepNextButton={<IconButton><CheckIcon size={20} color="#000" /></IconButton>}
+          className="tour"
+        />
       </PerfectScrollbar>
     );
   }

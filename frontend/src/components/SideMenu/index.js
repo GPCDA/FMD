@@ -36,19 +36,19 @@ class SideMenu extends Component {
       //   icon: <MonitorIcon color="#FFF" strokeWidth={this.getStrokeWidth(LAD)} />,
       // },
       {
+        screen: CONTEXT,
+        component: CONTEXT,
+        icon: <ToolIcon id="contextos" color="#FFF" strokeWidth={this.getStrokeWidth(CONTEXT)} />,
+      },
+      {
         screen: ADD_TRAIN,
         component: DATASOURCE,
-        icon: <AddIcon color="#FFF" strokeWidth={this.getStrokeWidth(ADD_TRAIN)} />,
+        icon: <AddIcon id="fonte-dados" color="#FFF" strokeWidth={this.getStrokeWidth(ADD_TRAIN)} />,
       },
       {
         screen: TRAIN_MODEL,
         component: TRAIN_MODEL,
-        icon: <TranModelIcon color="#FFF" strokeWidth={this.getStrokeWidth(TRAIN_MODEL)} />,
-      },
-      {
-        screen: CONTEXT,
-        component: CONTEXT,
-        icon: <ToolIcon color="#FFF" strokeWidth={this.getStrokeWidth(CONTEXT)} />,
+        icon: <TranModelIcon id="modelos" color="#FFF" strokeWidth={this.getStrokeWidth(TRAIN_MODEL)} />,
       },
     ];
 

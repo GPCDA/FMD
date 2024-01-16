@@ -44,6 +44,7 @@ class DataSource extends Component {
     super(props);
     this.state = {
       selectedItem: null,
+      isTourGeralOpen: false,
       chipSelected: DATA_BASE,
       csvDatasources: [],
       dbDatasources: [],
@@ -81,7 +82,7 @@ class DataSource extends Component {
 
   handleShowContext = (data) => this.props.setDialog('database', data)
 
-  // Handles do react tour, para abrir e fechar o tour
+  // Handles do react tour do card, para abrir e fechar o tour
 
   handleStartTour = () => {
     this.setState({ isTourOpen: true });
@@ -89,6 +90,16 @@ class DataSource extends Component {
 
   handleTourClose = () => {
     this.setState({ isTourOpen: false });
+  };
+
+  // Handles do react tour geral, para abrir e fechar o tour
+
+  handleStartTourGeral = () => {
+    this.setState({ isTourGeralOpen: true });
+  };
+
+  handleTourCloseGeral = () => {
+    this.setState({ isTourGeralOpen: false });
   };
 
   renderCardCSV = (item, idx) => (
@@ -318,18 +329,66 @@ class DataSource extends Component {
       // ...
     ];
 
+    // Passos do tour Geral. O selector representa a classe selecionada durante o tour e content, o conteúdo a ser apresentado.
+    const stepsGeral = [
+      {
+        selector: '',
+        content: 'Bem vindo ao Framework de Mineração de Dados! Você está a poucos passos de iniciar o processo de aprendizado de máquina!',
+        style: {
+          color: '#000',
+          padding: '2.2rem',
+        },
+      },
+      {
+        selector: '#contextos',
+        content: 'Primeiramente você deve fazer o upload de um contexto. O contexto representará as informações necessárias para analisar os seus dados.',
+        style: {
+          color: '#000',
+          padding: '2.2rem',
+        },
+      },
+      {
+        selector: '#fonte-dados',
+        content: 'Em seguida você poderá fazer o cadastro de um conjunto de dados. Com isso você estará apto a executar algoritmos de aprendizado de máquina.',
+        style: {
+          color: '#000',
+          padding: '2.2rem',
+        },
+      },
+      {
+        selector: '#modelos',
+        content: 'Finalmente, você poderá acessar os modelos treinados e extrair suas análises!',
+        style: {
+          color: '#000',
+          padding: '2.2rem',
+        },
+      },
+      // ...
+    ];
+
     return (
       <PerfectScrollbar style={{ width: '100%', overflowX: 'auto' }}>
         <ConfigContainer style={{ color: '#000' }}>
 
           <Header>
             <h1>Fontes de Dados</h1>
+            <spam><HelpIcon size={20} color="#000" style={{ cursor: 'pointer' }} onClick={this.handleStartTourGeral} /></spam>
           </Header>
           {/* Componente do tour */}
           <Tour
             steps={steps}
             isOpen={this.state.isTourOpen}
             onRequestClose={this.handleTourClose}
+            rounded={10}
+            startAt={0}
+            lastStepNextButton={<IconButton><CheckIcon size={20} color="#000" /></IconButton>}
+            className="tour"
+          />
+          {/* Componente do tour */}
+          <Tour
+            steps={stepsGeral}
+            isOpen={this.state.isTourGeralOpen}
+            onRequestClose={this.handleTourCloseGeral}
             rounded={10}
             startAt={0}
             lastStepNextButton={<IconButton><CheckIcon size={20} color="#000" /></IconButton>}
