@@ -60,14 +60,17 @@ class Context extends Component {
         </CardContent>
       </CardActionArea>
       <CardActions style={{ backgroundColor: primaryColor }}>
-        <IconButton onClick={() => this.handleShowContext(item)}>
+        <IconButton id="eye" onClick={() => this.handleShowContext(item)}>
           <EyeIcon size={20} color="#FFF" />
         </IconButton>
-        <IconButton onClick={() => this.handleEditContext(item)}>
+        <IconButton id="edit" onClick={() => this.handleEditContext(item)}>
           <ToolIcon size={20} color="#FFF" />
         </IconButton>
-        <IconButton onClick={this.handleMsgDelete.bind(this, item, 'Você realmente deseja excluir este contexto?')}>
+        <IconButton id="delete" onClick={this.handleMsgDelete.bind(this, item, 'Você realmente deseja excluir este contexto?')}>
           <DeleteIcon size={20} color="#FFF" />
+        </IconButton>
+        <IconButton onClick={this.handleStartTourCard}>
+          <HelpIcon size={20} color="#FFF" />
         </IconButton>
       </CardActions>
     </Card>
@@ -81,6 +84,16 @@ class Context extends Component {
 
   handleTourCloseContextoGeral = () => {
     this.setState({ isTourContextoGeralOpen: false });
+  };
+
+  // Handles do react tour do card, para abrir e fechar o tour
+
+  handleStartTourCard = () => {
+    this.setState({ isTourCardOpen: true });
+  };
+
+  handleCloseTourCard = () => {
+    this.setState({ isTourCardOpen: false });
   };
 
   handleMsgDelete = (item, message = '') => {
@@ -124,6 +137,33 @@ class Context extends Component {
             </CodeText>
           </div>
         ),
+        style: {
+          color: '#000',
+          padding: '2.2rem',
+        },
+      },
+    ];
+
+    const stepsCard = [
+      {
+        selector: '#eye',
+        content: 'Clicando aqui você poderá visualizar as informações do contexto.',
+        style: {
+          color: '#000',
+          padding: '2.2rem',
+        },
+      },
+      {
+        selector: '#edit',
+        content: 'Para editar as informações adicionadas, você poderá clicar aqui.',
+        style: {
+          color: '#000',
+          padding: '2.2rem',
+        },
+      },
+      {
+        selector: '#delete',
+        content: 'Caso queira deletar o contexto clique aqui.',
         style: {
           color: '#000',
           padding: '2.2rem',
@@ -182,6 +222,16 @@ class Context extends Component {
           steps={stepsContextoGeral}
           isOpen={this.state.isTourContextoGeralOpen}
           onRequestClose={this.handleTourCloseContextoGeral}
+          rounded={10}
+          startAt={0}
+          lastStepNextButton={<IconButton><CheckIcon size={20} color="#000" /></IconButton>}
+          className="tour"
+        />
+        {/* Componente do tour do card */}
+        <Tour
+          steps={stepsCard}
+          isOpen={this.state.isTourCardOpen}
+          onRequestClose={this.handleCloseTourCard}
           rounded={10}
           startAt={0}
           lastStepNextButton={<IconButton><CheckIcon size={20} color="#000" /></IconButton>}
