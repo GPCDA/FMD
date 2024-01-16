@@ -25,7 +25,8 @@ class DataSourceDialog extends Component {
     this.state = {
       currentStep: 0,
       steps: 2,
-
+      isTourContextosOpen: false,
+      isTourCSVOpen: false,
       selectedDataSourceType: DATA_BASE,
 
       name: '',
@@ -62,13 +63,31 @@ class DataSourceDialog extends Component {
     }
   }
 
-  // Handles do react tour, para abrir e fechar o tour
+  // Handles do react tour, para abrir e fechar o tour do banco de dados
   handleStartTour = () => {
     this.setState({ isTourOpen: true });
   };
 
   handleTourClose = () => {
     this.setState({ isTourOpen: false });
+  };
+
+  // Handles do react tour, para abrir e fechar o tour do mapeamento de contextos
+  handleStartTourContextos = () => {
+    this.setState({ isTourContextosOpen: true });
+  };
+
+  handleTourCloseContextos = () => {
+    this.setState({ isTourContextosOpen: false });
+  };
+
+  // Handles do react tour, para abrir e fechar o tour de Upload de CSV
+  handleStartTourCSV = () => {
+    this.setState({ isTourCSVOpen: true });
+  };
+
+  handleTourCloseCSV = () => {
+    this.setState({ isTourCSVOpen: false });
   };
 
   onClose = () => {
@@ -266,7 +285,15 @@ class DataSourceDialog extends Component {
         fields: dataBaseFields,
       },
       [CSV]: {
-        header: <h1>Upload de arquivo</h1>,
+        header: (<div
+          style={{
+            display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'flex-end', gap: '0.5rem',
+          }}
+        >
+          <h1>Upload de Arquivo</h1>
+          <spam><HelpIcon size={20} color="#000" style={{ cursor: 'pointer' }} onClick={this.handleStartTourCSV} /></spam>
+          {/* eslint-disable-next-line react/jsx-closing-tag-location */}
+        </div>),
         body: <File
           name={name}
           setName={(newName) => (
@@ -284,7 +311,15 @@ class DataSourceDialog extends Component {
     const stepsComponents = [
       dataSourceComponent,
       {
-        header: <h1>Mapeamento de Contexto</h1>,
+        header: (<div
+          style={{
+            display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'flex-end', gap: '0.5rem',
+          }}
+        >
+          <h1 className="titulo-contexto">Mapeamento de Contexto</h1>
+          <spam><HelpIcon size={20} color="#000" style={{ cursor: 'pointer' }} onClick={this.handleStartTourContextos} /></spam>
+          {/* eslint-disable-next-line react/jsx-closing-tag-location */}
+        </div>),
         body: <ContextMap
           contexts={contexts.asMutable()}
           contextMap={contextMap}
@@ -296,7 +331,7 @@ class DataSourceDialog extends Component {
       },
     ];
 
-    // Passos do tour. O selector representa a classe selecionada durante o tour e content, o conteúdo a ser apresentado.
+    // Passos do tour de conexão com banco de dados. O selector representa a classe selecionada durante o tour e content, o conteúdo a ser apresentado.
     const stepsTour = [
       {
         selector: '.fonte-dados',
@@ -391,6 +426,56 @@ class DataSourceDialog extends Component {
       // ...
     ];
 
+    // Passos do tour de mapeamento de contextos. O selector representa a classe selecionada durante o tour e content, o conteúdo a ser apresentado.
+    const stepsTourContextos = [
+      {
+        selector: '.titulo-contexto',
+        content: 'Na etapa de Mapeamento de Contexto devem ser identificados na base de dados os campos necessários para a análise de um determinado contexto.',
+        style: {
+          color: '#000',
+          padding: '2.2rem',
+        },
+      },
+      {
+        selector: '.seletor-contexto',
+        content: 'Ao selecionar o contexto serão visualizados na coluna da esquerda os campos necessários e você deverá fazer a correspondência dos mesmos na coluna da direita.',
+        style: {
+          color: '#000',
+          padding: '2.2rem',
+        },
+      },
+    ];
+
+    // Passos do tour de upload de arquivo CSV. O selector representa a classe selecionada durante o tour e content, o conteúdo a ser apresentado.
+    const stepsTourCSV = [
+      {
+        selector: '.fonte-dados-csv',
+        content: 'Primeiro é necessário definir o nome da fonte de dados.',
+        style: {
+          color: '#000',
+          padding: '2.2rem',
+        },
+      },
+      {
+        selector: '.upload-arquivo',
+        content: () => (
+          <div style={{ flexWrap: 'wrap' }}>
+            <p>Em seguida deve ser feito o upload dos dados em um arquivo de texto separado por vírgulas, ou CSV.</p>
+            <br />
+            <p>Atente-se para as observações sobre o arquivo!</p>
+            <br />
+            <p>* Arquivo deve estar separado por vírgulas</p>
+            <p>* Primeira linha deve ser o cabeçalho</p>
+            <p>* As variáveis alvo devem ser numéricas</p>
+          </div>
+        ),
+        style: {
+          color: '#000',
+          padding: '2.2rem',
+        },
+      },
+    ];
+
     return (
       <Dialog size="big">
         <DialogHeader>
@@ -419,11 +504,31 @@ class DataSourceDialog extends Component {
             )
           }
         </DialogFormButtonContainer>
-        {/* Componente do tour */}
+        {/* Componente do tour de conexão com banco de dados */}
         <Tour
           steps={stepsTour}
           isOpen={this.state.isTourOpen}
           onRequestClose={this.handleTourClose}
+          rounded={10}
+          startAt={0}
+          lastStepNextButton={<IconButton><CheckIcon size={20} color="#000" /></IconButton>}
+          className="tour"
+        />
+        {/* Componente do tour de mapeamento de contextos */}
+        <Tour
+          steps={stepsTourContextos}
+          isOpen={this.state.isTourContextosOpen}
+          onRequestClose={this.handleTourCloseContextos}
+          rounded={10}
+          startAt={0}
+          lastStepNextButton={<IconButton><CheckIcon size={20} color="#000" /></IconButton>}
+          className="tour"
+        />
+        {/* Componente do tour de mapeamento de contextos */}
+        <Tour
+          steps={stepsTourCSV}
+          isOpen={this.state.isTourCSVOpen}
+          onRequestClose={this.handleTourCloseCSV}
           rounded={10}
           startAt={0}
           lastStepNextButton={<IconButton><CheckIcon size={20} color="#000" /></IconButton>}

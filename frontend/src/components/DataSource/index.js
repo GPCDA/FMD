@@ -290,7 +290,13 @@ class DataSource extends Component {
       },
       {
         selector: '.play',
-        content: 'Para iniciar o processo de aprendizado de máquina clique aqui. Então será possível fazer automaticamente o pré-processamento da base de dados e executar algoritmos de inteligência artificial.',
+        content: () => (
+          <div>
+            <p>Para iniciar o processo de aprendizado de máquina clique aqui.</p>
+            <br />
+            <p>Então será possível fazer automaticamente o pré-processamento da base de dados e executar algoritmos de inteligência artificial</p>
+          </div>
+        ),
         style: {
           color: '#000',
         },

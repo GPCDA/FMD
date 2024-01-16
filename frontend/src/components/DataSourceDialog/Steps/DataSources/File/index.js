@@ -35,7 +35,7 @@ export class File extends PureComponent {
 
     return (
       <DialogForm>
-        <DialogLabelGroup>
+        <DialogLabelGroup className="fonte-dados-csv">
           <DialogLabel htmlFor="name">Fonte de dados*:</DialogLabel>
           <DialogInput
             id="name"
@@ -47,7 +47,7 @@ export class File extends PureComponent {
         </DialogLabelGroup>
 
         {!file.uploadedFiles.length && (
-        <div style={{ paddingTop: '2vh' }}>
+        <div style={{ paddingTop: '2vh' }} className="upload-arquivo">
           <div style={{ paddingBottom: '.5vh' }}><DialogSpan>Arquivo*:</DialogSpan></div>
           <Upload
             serverUpload={this.uploadDatasourceFile}

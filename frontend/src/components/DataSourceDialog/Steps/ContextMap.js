@@ -62,9 +62,11 @@ export class ContextMap extends PureComponent {
 
     return (
       <DialogForm style={{ padding: '4rem 40px' }}>
-        <div style={{
-          display: 'flex', flexDirection: 'column', gap: '0.25rem', marginBottom: '1.25rem',
-        }}
+        <div
+          style={{
+            display: 'flex', flexDirection: 'column', gap: '0.25rem', marginBottom: '1.25rem',
+          }}
+          className="seletor-contexto"
         >
           <SelectText style={{ flex: 1 }}>Selecione o Contexto*:</SelectText>
           <div style={{ display: 'flex' }}>
