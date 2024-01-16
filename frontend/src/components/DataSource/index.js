@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useState } from 'react';
 import { connect } from 'react-redux';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import Card from '@material-ui/core/Card';
@@ -8,15 +8,19 @@ import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import Chip from '@material-ui/core/Chip';
 import DeleteIcon from 'react-feather/dist/icons/trash-2';
+import HelpIcon from 'react-feather/dist/icons/help-circle';
+import CheckIcon from 'react-feather/dist/icons/check';
 import EyeIcon from 'react-feather/dist/icons/eye';
 import PlayIcon from 'react-feather/dist/icons/play';
 import FileIcon from 'react-feather/dist/icons/file';
 import PlusIcon from 'react-feather/dist/icons/plus';
 import DatabaseIcon from 'react-feather/dist/icons/database';
+import Tour from 'reactour';
 import * as moment from 'moment';
 import IconButton from '@material-ui/core/IconButton';
 import { ProgressSpinner } from 'primereact/progressspinner';
 import filesize from 'filesize';
+import { Button } from '@material-ui/core';
 import {
   INDICATORS, ADD_TRAIN, CSV, DATA_BASE,
 } from '../../constants';
@@ -77,6 +81,16 @@ class DataSource extends Component {
 
   handleShowContext = (data) => this.props.setDialog('database', data)
 
+  // Handles do react tour, para abrir e fechar o tour
+
+  handleStartTour = () => {
+    this.setState({ isTourOpen: true });
+  };
+
+  handleTourClose = () => {
+    this.setState({ isTourOpen: false });
+  };
+
   renderCardCSV = (item, idx) => (
     <Card className="lms-card" key={idx}>
       <CardActionArea style={{ flex: 1 }}>
@@ -97,14 +111,17 @@ class DataSource extends Component {
         </CardContent>
       </CardActionArea>
       <CardActions style={{ backgroundColor: primaryColor }}>
-        <IconButton onClick={this.goToIndicators.bind(this, CSV, item.id, item.name)}>
+        <IconButton className="play" onClick={this.goToIndicators.bind(this, CSV, item.id, item.name)}>
           <PlayIcon size={20} color="#FFF" />
         </IconButton>
-        <IconButton onClick={() => this.handleShowContext(item)}>
+        <IconButton className="eye" onClick={() => this.handleShowContext(item)}>
           <EyeIcon size={20} color="#FFF" />
         </IconButton>
-        <IconButton onClick={this.handleMsgDelete.bind(this, item, '')}>
+        <IconButton className="delete" onClick={this.handleMsgDelete.bind(this, item, '')}>
           <DeleteIcon size={20} color="#FFF" />
+        </IconButton>
+        <IconButton onClick={this.handleStartTour}>
+          <HelpIcon size={20} color="#FFF" />
         </IconButton>
       </CardActions>
     </Card>
@@ -130,14 +147,17 @@ class DataSource extends Component {
         </CardContent>
       </CardActionArea>
       <CardActions style={{ backgroundColor: primaryColor }}>
-        <IconButton onClick={this.goToIndicators.bind(this, CSV, item.id, item.name)}>
+        <IconButton className="play" onClick={this.goToIndicators.bind(this, CSV, item.id, item.name)}>
           <PlayIcon size={20} color="#FFF" />
         </IconButton>
-        <IconButton onClick={() => this.handleShowContext(item)}>
+        <IconButton className="eye" onClick={() => this.handleShowContext(item)}>
           <EyeIcon size={20} color="#FFF" />
         </IconButton>
-        <IconButton onClick={this.handleMsgDelete.bind(this, item, 'Você realmente deseja excluir este banco de dados?')}>
+        <IconButton className="delete" onClick={this.handleMsgDelete.bind(this, item, 'Você realmente deseja excluir este banco de dados?')}>
           <DeleteIcon size={20} color="#FFF" />
+        </IconButton>
+        <IconButton onClick={this.handleStartTour}>
+          <HelpIcon size={20} color="#FFF" />
         </IconButton>
       </CardActions>
     </Card>
@@ -258,6 +278,39 @@ class DataSource extends Component {
         </>
       ),
     };
+    // Passos do tour. O selector representa a classe selecionada durante o tour e content, o conteúdo a ser apresentado.
+    const steps = [
+      {
+        selector: '.lms-card',
+        content: 'Este é um conjunto de dados. A partir dele podemos fazer diversas operações!',
+        style: {
+          color: '#000',
+          padding: '2.2rem',
+        },
+      },
+      {
+        selector: '.play',
+        content: 'Para iniciar o processo de aprendizado de máquina clique aqui. Então será possível fazer automaticamente o pré-processamento da base de dados e executar algoritmos de inteligência artificial.',
+        style: {
+          color: '#000',
+        },
+      },
+      {
+        selector: '.eye',
+        content: 'Para visualizar os dados inseridos clique aqui.',
+        style: {
+          color: '#000',
+        },
+      },
+      {
+        selector: '.delete',
+        content: 'Caso deseje deletar o conjunto de dados clique aqui.',
+        style: {
+          color: '#000',
+        },
+      },
+      // ...
+    ];
 
     return (
       <PerfectScrollbar style={{ width: '100%', overflowX: 'auto' }}>
@@ -266,7 +319,16 @@ class DataSource extends Component {
           <Header>
             <h1>Fontes de Dados</h1>
           </Header>
-
+          {/* Componente do tour */}
+          <Tour
+            steps={steps}
+            isOpen={this.state.isTourOpen}
+            onRequestClose={this.handleTourClose}
+            rounded={10}
+            startAt={0}
+            lastStepNextButton={<IconButton><CheckIcon size={20} color="#000" /></IconButton>}
+            className="tour"
+          />
           {this.renderDatasetOptions()}
 
           {chipsView[chipSelected]}

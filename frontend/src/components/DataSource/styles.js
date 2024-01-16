@@ -7,3 +7,7 @@ export const CardContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
 `;
+
+export const tour = styled.div`
+  padding: 1rem;
+`;

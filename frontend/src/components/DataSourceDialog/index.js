@@ -1,10 +1,14 @@
-import React, { Component } from 'react';
+import React, { Component, useState } from 'react';
 import { connect } from 'react-redux';
 import { actions as toastrActions } from 'react-redux-toastr';
 import { ProgressSpinner } from 'primereact/progressspinner';
+import IconButton from '@material-ui/core/IconButton';
+import CheckIcon from 'react-feather/dist/icons/check';
+import Tour from 'reactour';
+import HelpIcon from 'react-feather/dist/icons/help-circle';
 import {
   DialogFormButtonContainer, DialogHeader,
-  DialogDotStepper, DialogDotStep, WaitingContainerBackdrop,
+  DialogDotStepper, DialogDotStep, WaitingContainerBackdrop, CodeText,
 } from '../../styles/global';
 import { Creators as DialogActions } from '../../store/ducks/dialog';
 import { Creators as DataSourceActions } from '../../store/ducks/data_source';
@@ -57,6 +61,15 @@ class DataSourceDialog extends Component {
       this.props.getDataSourceFields(uploadedFileId);
     }
   }
+
+  // Handles do react tour, para abrir e fechar o tour
+  handleStartTour = () => {
+    this.setState({ isTourOpen: true });
+  };
+
+  handleTourClose = () => {
+    this.setState({ isTourOpen: false });
+  };
 
   onClose = () => {
     this.props.setDialog('dataSource');
@@ -231,7 +244,15 @@ class DataSourceDialog extends Component {
 
     const dataSources = {
       [DATA_BASE]: {
-        header: <h1>Conexão com Banco de Dados</h1>,
+        header: (<div
+          style={{
+            display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'flex-end', gap: '0.5rem',
+          }}
+        >
+          <h1>Conexão com Banco de Dados</h1>
+          <spam><HelpIcon size={20} color="#000" style={{ cursor: 'pointer' }} onClick={this.handleStartTour} /></spam>
+          {/* eslint-disable-next-line react/jsx-closing-tag-location */}
+        </div>),
         body: <Database
           name={name}
           setName={(newName) => (
@@ -275,6 +296,101 @@ class DataSourceDialog extends Component {
       },
     ];
 
+    // Passos do tour. O selector representa a classe selecionada durante o tour e content, o conteúdo a ser apresentado.
+    const stepsTour = [
+      {
+        selector: '.fonte-dados',
+        content: 'Primeiro é necessário definir o nome da fonte de dados.',
+        style: {
+          color: '#000',
+          padding: '2.2rem',
+        },
+      },
+      {
+        selector: '.url-conexao',
+        content: () => (
+          <div style={{ flexWrap: 'wrap', display: 'flex', wordBreak: 'break-word' }}>
+            <p>Em seguida deve ser definida a URL de conexão com banco de dados:</p>
+            <br />
+            <p>
+              Para um MySQL:
+              <br />
+              <CodeText><code>jdbc:mysql://host:porta/base_de_dados</code></CodeText>
+              <br />
+            </p>
+            <p>
+              Para um Oracle:
+              <br />
+              <CodeText><code>jdbc:oracle://host:porta/sid</code></CodeText>
+              <br />
+            </p>
+            <p>
+              Para um PostgreSQL:
+              <br />
+              <CodeText><code>jdbc:postgresql://host:porta/base_de_dados</code></CodeText>
+              <br />
+            </p>
+          </div>
+        ),
+        style: {
+          color: '#000',
+        },
+      },
+      {
+        selector: '.driver-conexao',
+        content: () => (
+          <div style={{ flexWrap: 'wrap' }}>
+            <p>Então deve ser escolhido o Banco de Dados que se deseja conectar.</p>
+            <br />
+            <p>As opções disponíveis são: PostgreSQL, MySQL ou Oracle.</p>
+          </div>
+        ),
+        style: {
+          color: '#000',
+        },
+      },
+      {
+        selector: '.usuario-db',
+        content: 'Preencha o usuário da conexão.',
+        style: {
+          color: '#000',
+        },
+      },
+      {
+        selector: '.senha-db',
+        content: 'Preencha a senha da conexão.',
+        style: {
+          color: '#000',
+        },
+      },
+      {
+        selector: '.consulta-db',
+        content: () => (
+          <div>
+            <p>Por último deve ser preenchida a consulta aos dados.</p>
+            <br />
+            <p>Normalmente definida como:</p>
+            <CodeText>
+              <pre>
+                <code>
+                  select DADOS
+                  from TABELA
+                </code>
+              </pre>
+
+            </CodeText>
+            <br />
+            <p>Caso ache necessário você pode testar a conexão para validá-la clicando no botão Testar!</p>
+            <br />
+          </div>
+        ),
+        style: {
+          color: '#000',
+        },
+      },
+      // ...
+    ];
+
     return (
       <Dialog size="big">
         <DialogHeader>
@@ -303,7 +419,16 @@ class DataSourceDialog extends Component {
             )
           }
         </DialogFormButtonContainer>
-
+        {/* Componente do tour */}
+        <Tour
+          steps={stepsTour}
+          isOpen={this.state.isTourOpen}
+          onRequestClose={this.handleTourClose}
+          rounded={10}
+          startAt={0}
+          lastStepNextButton={<IconButton><CheckIcon size={20} color="#000" /></IconButton>}
+          className="tour"
+        />
         <DialogDotStepper>
           {Array.from({ length: steps }, (_, index) => (
             <DialogDotStep key={index} active={currentStep === index} />

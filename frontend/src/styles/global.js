@@ -519,6 +519,14 @@ export const SelectText = styled.div`
   padding-bottom: .5vh;
 `;
 
+export const CodeText = styled.div`
+  border: 1px solid #1e1f22;
+  background-color: rgba(43, 45, 49, 0.8);
+  color: white;
+  padding: 10px;
+  border-radius: 10px;
+`;
+
 export const materialUIStyle = createMuiTheme({
   typography: {
     useNextVariants: true,

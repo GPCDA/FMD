@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { PureComponent, useState } from 'react';
 import { connect } from 'react-redux';
 import Select from 'react-select';
 import { Creators as DataBaseConnectionActions } from '../../../../../store/ducks/data_base_connection';
@@ -28,7 +28,7 @@ class DatabaseComponent extends PureComponent {
 
     return (
       <DialogForm>
-        <DialogLabelGroup>
+        <DialogLabelGroup className="fonte-dados">
           <DialogLabel htmlFor="name">Fonte de dados*:</DialogLabel>
           <DialogInput
             id="name"
@@ -39,7 +39,7 @@ class DatabaseComponent extends PureComponent {
           />
         </DialogLabelGroup>
 
-        <DialogLabelGroup>
+        <DialogLabelGroup className="url-conexao">
           <DialogLabel htmlFor="database-url">URL*: </DialogLabel>
           <DialogInput
             id="database-url"
@@ -50,7 +50,7 @@ class DatabaseComponent extends PureComponent {
           />
         </DialogLabelGroup>
 
-        <DialogLabelGroup>
+        <DialogLabelGroup className="driver-conexao">
           <DialogLabel htmlFor="database-url">Driver*: </DialogLabel>
           <Select
             isSearchable
@@ -64,7 +64,7 @@ class DatabaseComponent extends PureComponent {
         </DialogLabelGroup>
 
         <Flex>
-          <DialogLabelGroup>
+          <DialogLabelGroup className="usuario-db">
             <DialogLabel htmlFor="database-user">Usuário: </DialogLabel>
             <DialogInput
               id="database-user"
@@ -75,7 +75,7 @@ class DatabaseComponent extends PureComponent {
             />
           </DialogLabelGroup>
 
-          <DialogLabelGroup>
+          <DialogLabelGroup className="senha-db">
             <DialogLabel htmlFor="database-password">Senha: </DialogLabel>
             <DialogInput
               id="database-password"
@@ -87,7 +87,7 @@ class DatabaseComponent extends PureComponent {
           </DialogLabelGroup>
         </Flex>
 
-        <DialogLabelGroup>
+        <DialogLabelGroup className="consulta-db">
           <Flex style={{ justifyContent: 'space-between' }}>
             <DialogLabel htmlFor="database-query">Consulta*: </DialogLabel>
             <Button
