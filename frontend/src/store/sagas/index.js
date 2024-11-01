@@ -1,5 +1,4 @@
 import { all, takeLatest } from 'redux-saga/effects';
-import { Types as LmsTypes } from '../ducks/lms';
 import { Types as AuthTypes } from '../ducks/auth';
 import { Types as ChartTypes } from '../ducks/chart';
 import { Types as CourseTypes } from '../ducks/course';
@@ -15,23 +14,36 @@ import { Types as ModelCopyTypes } from '../ducks/model_copy';
 import { Types as DownloadTypes } from '../ducks/download';
 import { Types as DataSourceTypes } from '../ducks/data_source';
 import { Types as PhenomenonTypes } from '../ducks/phenomenon';
+import { Types as DataBaseTypes } from '../ducks/data_base';
+import { Types as ContextTypes } from '../ducks/context';
+import { Types as DataBaseConnectionTypes } from '../ducks/data_base_connection';
+import { Types as JDBCDriverTypes } from '../ducks/jdbc_driver';
 
 import { getChart } from './chart';
 import { getDownload } from './download';
 import { getModelCopy } from './model_copy';
 import { postTrain, deleteTrain } from './train';
-import { getLms, putLms } from './lms';
 import { getCourses } from './course';
 import { getSubjects } from './subject';
 import { getSemesters } from './semester';
 import { getIndicators } from './indicator';
 import { postTrainStatus } from './train_status';
-import { getTrainModel, postTrainModel, deleteTrainModel, putTrainModel } from './train_model';
+import {
+  getTrainModel, postTrainModel, deleteTrainModel, putTrainModel,
+} from './train_model';
 import { postTrainMetric } from './train_metric';
 import { signInRequest, signOutRequest } from './auth';
 import { getPreProcessing, deletePreProcessing } from './pre_processing';
-import { getDataSource, postDataSource, deleteDataSource } from './data_source';
+import {
+  getDataSourceFields, getDataSourceContent, getDataSource, postDataSource, deleteDataSource,
+} from './data_source';
 import { getPhenomenon } from './phenomenon';
+import { getDataBase, postDataBase, deleteDataBase } from './data_base';
+import {
+  getContext, postContext, putContext, deleteContext,
+} from './context';
+import { postDataBaseConnectionTest, postDataBaseConnectionFields } from './data_base_connection';
+import { getJDBCDriver } from './jdbc_driver';
 
 export default function* rootSaga() {
   return yield all([
@@ -40,8 +52,6 @@ export default function* rootSaga() {
     takeLatest(ModelCopyTypes.GET_MODEL_COPY, getModelCopy),
     takeLatest(AuthTypes.SIGN_IN_REQUEST, signInRequest),
     takeLatest(AuthTypes.SIGN_OUT_REQUEST, signOutRequest),
-    takeLatest(LmsTypes.GET_LMS, getLms),
-    takeLatest(LmsTypes.PUT_LMS, putLms),
     takeLatest(CourseTypes.GET_COURSES, getCourses),
     takeLatest(SubjectTypes.GET_SUBJECTS, getSubjects),
     takeLatest(SemesterTypes.GET_SEMESTERS, getSemesters),
@@ -56,9 +66,21 @@ export default function* rootSaga() {
     takeLatest(TrainModelTypes.PUT_TRAIN_MODEL, putTrainModel),
     takeLatest(TrainModelTypes.DELETE_TRAIN_MODEL, deleteTrainModel),
     takeLatest(TrainMetricTypes.POST_TRAIN_METRIC, postTrainMetric),
+    takeLatest(DataSourceTypes.GET_DATA_SOURCE_FIELDS, getDataSourceFields),
+    takeLatest(DataSourceTypes.GET_DATA_SOURCE_CONTENT, getDataSourceContent),
     takeLatest(DataSourceTypes.GET_DATA_SOURCE, getDataSource),
     takeLatest(DataSourceTypes.POST_DATA_SOURCE, postDataSource),
     takeLatest(DataSourceTypes.DELETE_DATA_SOURCE, deleteDataSource),
-    takeLatest(PhenomenonTypes.GET_PHENOMENON, getPhenomenon)
-  ])
+    takeLatest(PhenomenonTypes.GET_PHENOMENON, getPhenomenon),
+    takeLatest(DataBaseTypes.GET_DATA_BASE, getDataBase),
+    takeLatest(DataBaseTypes.POST_DATA_BASE, postDataBase),
+    takeLatest(DataBaseTypes.DELETE_DATA_BASE, deleteDataBase),
+    takeLatest(ContextTypes.GET_CONTEXT, getContext),
+    takeLatest(ContextTypes.POST_CONTEXT, postContext),
+    takeLatest(ContextTypes.PUT_CONTEXT, putContext),
+    takeLatest(ContextTypes.DELETE_CONTEXT, deleteContext),
+    takeLatest(DataBaseConnectionTypes.POST_DATA_BASE_CONNECTION_TEST, postDataBaseConnectionTest),
+    takeLatest(DataBaseConnectionTypes.POST_DATA_BASE_CONNECTION_FIELDS, postDataBaseConnectionFields),
+    takeLatest(JDBCDriverTypes.GET_JDBC_DRIVER, getJDBCDriver),
+  ]);
 }

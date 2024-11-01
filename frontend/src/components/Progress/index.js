@@ -3,9 +3,8 @@ import React, { Component } from 'react';
 import { Container, Content } from './styles';
 
 export default class Progress extends Component {
-
   getBackgroundColor = () => {
-    let color = '#488DA3';
+    const color = '#488DA3';
     const { value } = this.props;
 
     if (value > 0) return color;
@@ -13,15 +12,13 @@ export default class Progress extends Component {
     return '#FA8B8B';
   }
 
-  getImportance = fullWidth => {
+  getImportance = (fullWidth) => {
     const { value } = this.props;
 
     return Math.abs(value * fullWidth);
   }
 
-  renderNumber = (value, prop) => {
-    return <div style={{ fontSize: '.7rem', [prop]: '.3vw' }}>{value}</div>
-  }
+  renderNumber = (value, prop) => <div style={{ fontSize: '.7rem', [prop]: '.3vw' }}>{value}</div>
 
   render() {
     const fullWidth = 6;
@@ -36,7 +33,8 @@ export default class Progress extends Component {
         <Container style={{ transform }}>
           <Content
             background={background}
-            style={{ width: `${importance}vw` }} />
+            style={{ width: `${importance}vw` }}
+          />
         </Container>
         {value > 0 ? this.renderNumber(value, 'paddingLeft') : null}
       </div>

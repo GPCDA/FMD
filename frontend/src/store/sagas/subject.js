@@ -1,8 +1,7 @@
-import api from '../../services/api';
-import { Creators } from '../ducks/subject';
 import { call, put } from 'redux-saga/effects';
 import { actions as toastrActions } from 'react-redux-toastr';
-
+import api from '../../services/api';
+import { Creators } from '../ducks/subject';
 
 export function* getSubjects({ filter }) {
   try {
@@ -15,7 +14,7 @@ export function* getSubjects({ filter }) {
     yield put(toastrActions.add({
       type: 'error',
       title: 'Erro',
-      message: 'Falha ao listar Disciplinas'
+      message: 'Falha ao listar Disciplinas',
     }));
   }
 }

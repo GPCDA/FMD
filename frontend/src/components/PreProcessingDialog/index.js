@@ -1,19 +1,21 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { actions as toastrActions } from 'react-redux-toastr';
 import {
   DialogForm, DialogFormButtonContainer,
-  DialogInput, DialogSpan
+  DialogInput, DialogSpan,
 } from './styles';
 import { Creators as DialogActions } from '../../store/ducks/dialog';
-import { connect } from 'react-redux';
 import Dialog from '../Dialog';
 import Button from '../../styles/Button';
-import { actions as toastrActions } from 'react-redux-toastr';
 
 class PreProcessingDialog extends Component {
-
-  state = {
-    constant: null
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      constant: null,
+    };
+  }
 
   onClose = () => {
     this.props.setDialog('preProcessingConstant');
@@ -23,11 +25,11 @@ class PreProcessingDialog extends Component {
     this.props.add({
       type: 'warning',
       title: 'Atenção',
-      message: msg
+      message: msg,
     });
   }
 
-  handleChangeInput = e => {
+  handleChangeInput = (e) => {
     this.setState({ [e.target.name]: e.target.value });
   }
 
@@ -47,10 +49,10 @@ class PreProcessingDialog extends Component {
   }
 
   getInputType = (data) => {
-    let type = "text";
+    let type = 'text';
 
     if (data && data.type === 'Discreto') {
-      type = "number";
+      type = 'number';
     }
 
     return type;
@@ -69,30 +71,38 @@ class PreProcessingDialog extends Component {
       <Dialog>
         <DialogForm>
           <h1>Pré-processamento</h1>
-          <h2>(Indicador: {data && data.description ? `${data.description})` : null}</h2>
+          <h2>
+            (Indicador:
+            {' '}
+            {data && data.description ? `${data.description})` : null}
+          </h2>
 
-          <DialogSpan>Constante {inputType === 'number' ? '(Apenas números)' : null}</DialogSpan>
+          <DialogSpan>
+            Constante
+            {' '}
+            {inputType === 'number' ? '(Apenas números)' : null}
+          </DialogSpan>
           <DialogInput
             type={inputType}
             value={constant}
             autoComplete="off"
             onChange={this.handleChangeInput}
-            name="constant">
-          </DialogInput>
+            name="constant"
+          />
 
           <DialogFormButtonContainer>
             <Button onClick={this.submit.bind(this)}>Pré-processar</Button>
-            <Button color="gray" isCancel={true} onClick={this.onClose}>Cancelar</Button>
+            <Button color="gray" isCancel onClick={this.onClose}>Cancelar</Button>
           </DialogFormButtonContainer>
 
         </DialogForm>
       </Dialog>
-    )
+    );
   }
 }
 
 const mapStateToProps = ({ dialog }) => ({ dialog });
 
 export default connect(
-  mapStateToProps, { ...DialogActions, ...toastrActions }
+  mapStateToProps, { ...DialogActions, ...toastrActions },
 )(PreProcessingDialog);

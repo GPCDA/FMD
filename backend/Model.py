@@ -1,12 +1,14 @@
 from datetime import datetime
 from flask import Flask
-from marshmallow import Schema, fields, pre_load, validate
+from marshmallow import Schema, fields as maFields, pre_load, validate
 from flask_marshmallow import Marshmallow
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.orm import backref
 
 
 ma = Marshmallow()
 db = SQLAlchemy()
+
 
 class TimestampMixin(object):
     created_at = db.Column(
@@ -31,12 +33,12 @@ class User(db.Model):
 
 
 class UserSchema(ma.Schema):
-    id = fields.Integer(dump_only=True)
-    username = fields.String(required=True)
-    email = fields.String(required=True)
-    password = fields.String(required=True)
-    created_at = fields.DateTime(required=True)
-    updated_at = fields.DateTime(required=True)
+    id = maFields.Integer(dump_only=True)
+    username = maFields.String(required=True)
+    email = maFields.String(required=True)
+    password = maFields.String(required=True)
+    created_at = maFields.DateTime(required=True)
+    updated_at = maFields.DateTime(required=True)
 
 
 class Lms(db.Model, TimestampMixin):
@@ -56,14 +58,14 @@ class Lms(db.Model, TimestampMixin):
 
 
 class LmsSchema(ma.Schema):
-    id = fields.Integer(dump_only=True)
-    name = fields.String()
-    description = fields.String()
-    url = fields.String()
-    token = fields.String()
-    version = fields.String()
-    created_at = fields.DateTime()
-    updated_at = fields.DateTime()
+    id = maFields.Integer(dump_only=True)
+    name = maFields.String()
+    description = maFields.String()
+    url = maFields.String()
+    token = maFields.String()
+    version = maFields.String()
+    created_at = maFields.DateTime()
+    updated_at = maFields.DateTime()
 
 
 class Indicator(db.Model):
@@ -84,12 +86,12 @@ class Indicator(db.Model):
 
 
 class IndicatorSchema(ma.Schema):
-    id = fields.Integer(dump_only=True)
-    name = fields.String()
-    description = fields.String()
-    lms = fields.String()
-    created_at = fields.DateTime()
-    updated_at = fields.DateTime()
+    id = maFields.Integer(dump_only=True)
+    name = maFields.String()
+    description = maFields.String()
+    lms = maFields.String()
+    created_at = maFields.DateTime()
+    updated_at = maFields.DateTime()
 
 class TrainModel(db.Model, TimestampMixin):
     __tablename__ = 'train_models'
@@ -113,37 +115,68 @@ class TrainModel(db.Model, TimestampMixin):
 
 
 class TrainModelSchema(ma.Schema):
-    id = fields.Integer(dump_only=True)
-    name = fields.String()
-    description = fields.String()
-    user_id = fields.Integer()
-    model_id = fields.String()
-    score = fields.Float()
-    api_key = fields.String()
-    created_at = fields.DateTime()
-    updated_at = fields.DateTime()
-    qtd_predict = fields.Integer()
-    last_predict_at = fields.DateTime()
+    id = maFields.Integer(dump_only=True)
+    name = maFields.String()
+    description = maFields.String()
+    user_id = maFields.Integer()
+    model_id = maFields.String()
+    score = maFields.Float()
+    api_key = maFields.String()
+    created_at = maFields.DateTime()
+    updated_at = maFields.DateTime()
+    qtd_predict = maFields.Integer()
+    last_predict_at = maFields.DateTime()
+
+
+class DatasourceTypeModel(db.Model, TimestampMixin):
+    __tablename__ = 'datasource_types'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(), nullable=False)
+    description = db.Column(db.String())
+
+    def __init__(self, name, description):
+        self.name = name
+        self.description = description
+
+
+class DatasourceTypeModelSchema(ma.Schema):
+    id = maFields.Integer(dump_only=True)
+    name = maFields.String()
+    description = maFields.String()
+    created_at = maFields.DateTime()
+    updated_at = maFields.DateTime()
 
 
 class DatasourceModel(db.Model, TimestampMixin):
     __tablename__ = 'datasources'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(), nullable=False)
-    file_id = db.Column(db.Integer, db.ForeignKey('files.id'), nullable=False)
+    file_id = db.Column(db.Integer, db.ForeignKey('files.id'))
+    file = db.relationship('FileModel')
+    type_id = db.Column(db.Integer, db.ForeignKey('datasource_types.id', onupdate="CASCADE", ondelete="SET NULL"), nullable=False)
+    type = db.relationship('DatasourceTypeModel')
+    context_id = db.Column(db.Integer, db.ForeignKey('contexts.id', onupdate="CASCADE", ondelete="CASCADE"), nullable=False)
+    context = db.relationship("ContextModel", backref=backref('datasources', passive_deletes=True))
 
-    def __init__(self, name, file_id):
+    def __init__(self, name, file_id, type, context):
         self.name = name
         self.file_id = file_id
+        self.type = type
+        self.context = context
 
 
 class DatasourceModelSchema(ma.Schema):
-    id = fields.Integer(dump_only=True)
-    name = fields.String()
-    file_id = fields.Integer()
-    size = fields.Float()
-    created_at = fields.DateTime()
-    updated_at = fields.DateTime()
+    id = maFields.Integer(dump_only=True)
+    name = maFields.String()
+    type_id = maFields.Integer()
+    type = maFields.Nested('DatasourceTypeModelSchema')
+    file_id = maFields.Integer()
+    file = maFields.Nested('FileModelSchema')
+    context = maFields.Nested('ContextModelSchema', exclude=('datasources', ))
+    contextMap = maFields.List(maFields.Nested('DatasourceContextMapModelSchema', exclude=('datasource', )))
+    database = maFields.Nested('DatabaseModelSchema', exclude=('datasource', ))
+    created_at = maFields.DateTime()
+    updated_at = maFields.DateTime()
 
 
 class FileModel(db.Model, TimestampMixin):
@@ -162,10 +195,145 @@ class FileModel(db.Model, TimestampMixin):
 
 
 class FileModelSchema(ma.Schema):
-    id = fields.Integer(dump_only=True)
-    file_id = fields.String()
-    filename = fields.String()
-    extension = fields.String()
-    size = fields.Float()
-    created_at = fields.DateTime()
-    updated_at = fields.DateTime()
+    id = maFields.Integer(dump_only=True)
+    file_id = maFields.String()
+    filename = maFields.String()
+    extension = maFields.String()
+    size = maFields.Float()
+    created_at = maFields.DateTime()
+    updated_at = maFields.DateTime()
+
+
+class ContextModel(db.Model, TimestampMixin):
+    __tablename__ = 'contexts'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String())
+    description = db.Column(db.String())
+
+    def __init__(self, name, description):
+        self.name = name
+        self.description = description
+
+
+class ContextModelSchema(ma.Schema):
+    id = maFields.Integer(dump_only=True)
+    name = maFields.String()
+    description = maFields.String()
+    fields = maFields.List(maFields.Nested('ContextFieldSchema', exclude=('context', )))
+    datasources = maFields.List(maFields.Nested('DatasourceModelSchema', exclude=('context', )))
+    created_at = maFields.DateTime()
+    updated_at = maFields.DateTime()
+
+
+class ContextFieldModel(db.Model, TimestampMixin):
+    __tablename__ = 'context_fields'
+    id = db.Column(db.Integer, primary_key=True)
+    code = db.Column(db.String())
+    description = db.Column(db.String())
+    type = db.Column(db.String())
+    size = db.Column(db.Integer())
+    allowed_values = db.Column(db.String())
+    context_id = db.Column(db.Integer, db.ForeignKey('contexts.id', onupdate="CASCADE", ondelete="CASCADE"), nullable=False)
+    context = db.relationship('ContextModel', backref=backref('fields', passive_deletes=True, order_by='ContextFieldModel.id.asc()'))
+
+    def __init__(self, code, description, type, size, allowed_values, context):
+        self.code = code
+        self.description = description
+        self.type = type
+        self.size = size
+        self.allowed_values = allowed_values
+        # self.context_id = context_id
+        self.context = context
+
+
+class ContextFieldSchema(ma.Schema):
+    id = maFields.Integer(dump_only=True)
+    code = maFields.String()
+    description = maFields.String()
+    type = maFields.String()
+    size = maFields.Integer()
+    allowed_values = maFields.String()
+    context_id = maFields.Integer()
+    context = maFields.Nested('ContextModelSchema')
+    created_at = maFields.DateTime()
+    updated_at = maFields.DateTime()
+
+
+class JDBCDriverModel(db.Model, TimestampMixin):
+    __tablename__ = 'jdbc_drivers'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(), nullable=False)
+    driverclass = db.Column(db.String(), nullable=False)
+
+    def __init__(self, name, driverclass):
+        self.name = name
+        self.driverclass = driverclass
+
+
+class JDBCDriverModelSchema(ma.Schema):
+    id = maFields.Integer(dump_only=True)
+    name = maFields.String()
+    driverclass = maFields.String()
+    created_at = maFields.DateTime()
+    updated_at = maFields.DateTime()
+
+
+class DatabaseModel(db.Model, TimestampMixin):
+    __tablename__ = 'databases'
+    id = db.Column(db.Integer, primary_key=True)
+    url = db.Column(db.String(), nullable=False)
+    user = db.Column(db.String())
+    password = db.Column(db.String())
+    query = db.Column(db.String(), nullable=False)
+    driver_id = db.Column(db.Integer, db.ForeignKey('jdbc_drivers.id', onupdate="CASCADE", ondelete="SET NULL"), nullable=False)
+    driver = db.relationship('JDBCDriverModel')
+    datasource_id = db.Column(db.Integer, db.ForeignKey('datasources.id', onupdate="CASCADE", ondelete="CASCADE"), nullable=False)
+    datasource = db.relationship('DatasourceModel', backref=backref('database', uselist=False, passive_deletes=True))
+
+    def __init__(self, url, user, password, query, driver, datasource):
+        self.url = url
+        self.user = user
+        self.password = password
+        self.query = query
+        self.driver = driver
+        self.datasource = datasource
+
+
+class DatabaseModelSchema(ma.Schema):
+    id = maFields.Integer(dump_only=True)
+    url = maFields.String()
+    user = maFields.String()
+    password = maFields.String()
+    query = maFields.String()
+    driver_id = maFields.Integer()
+    driver = maFields.Nested('JDBCDriverModelSchema')
+    datasource_id = maFields.Integer()
+    datasource = maFields.Nested('DatasourceModelSchema')
+    created_at = maFields.DateTime()
+    updated_at = maFields.DateTime()
+
+
+class DatasourceContextMapModel(db.Model, TimestampMixin):
+    __tablename__ = 'datasource_context_map'
+    id = db.Column(db.Integer, primary_key=True)
+    datasource_field = db.Column(db.String(), nullable=False)
+    context_field = db.Column(db.String(), nullable=False)
+    datasource_id = db.Column(db.ForeignKey('datasources.id', onupdate="CASCADE", ondelete="CASCADE"), nullable=False)
+    datasource = db.relationship("DatasourceModel", viewonly=True, backref=backref('contextMap'))
+
+    def __init__(self, datasource_field, context_field, datasource_id):
+        self.datasource_field = datasource_field
+        self.context_field = context_field
+        self.datasource_id = datasource_id
+
+
+class DatasourceContextMapModelSchema(ma.Schema):
+    id = maFields.Integer(dump_only=True)
+    datasource_field = maFields.String()
+    context_field = maFields.String()
+    datasource_id = maFields.Integer()
+    context_id = maFields.Integer()
+    datasource = maFields.Nested('DatasourceModelSchema')
+    created_at = maFields.DateTime()
+    updated_at = maFields.DateTime()
+

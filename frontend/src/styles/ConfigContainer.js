@@ -9,13 +9,10 @@ const sizes = {
     min-height: 60vh;
   `,
   big: css`
-    margin-top: 5vh;
-    margin-bottom: 5vh;
-    margin-left: 5vw;
-    margin-right: 5vw;
+    margin: 5vh auto;
     width: 90%;
     min-height: 90vh;
-  `
+  `,
 };
 
 export const ConfigContainer = styled.div`
@@ -23,10 +20,13 @@ export const ConfigContainer = styled.div`
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.1);
   border-radius: 5px;
 
-  ${props => sizes[props.size || 'default']}
+  ${(props) => sizes[props.size || 'default']}
+
+  header {
+    padding: 2rem;
+  }
   
   h1 {
-    padding: 2rem;
     font-weight: 600;
     font-size: 24px;
     line-height: 31px;

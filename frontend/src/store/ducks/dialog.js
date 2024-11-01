@@ -5,7 +5,7 @@ import Immutable from 'seamless-immutable';
 
 export const { Types, Creators } = createActions({
   setDialog: ['field', 'data'],
-  setDialogData: ['data']
+  setDialogData: ['data'],
 });
 
 /* Initial State */
@@ -19,12 +19,14 @@ export const INITIAL_STATE = Immutable({
   trainConfig: false,
   trainSave: false,
   trainMetrics: false,
-  trainAlgorithm: false
+  trainAlgorithm: false,
+  contextShow: false,
+  contextEdit: false,
 });
 
 /* Reducers */
 
-export const set = (state, { field, data }) => state.merge({ [field]: !state[field], data: data });
+export const set = (state, { field, data }) => state.merge({ [field]: !state[field], data });
 
 export const setData = (state, { data }) => state.merge({ data: { ...state.data, ...data } });
 
@@ -32,5 +34,5 @@ export const setData = (state, { data }) => state.merge({ data: { ...state.data,
 
 export default createReducer(INITIAL_STATE, {
   [Types.SET_DIALOG]: set,
-  [Types.SET_DIALOG_DATA]: setData
+  [Types.SET_DIALOG_DATA]: setData,
 });

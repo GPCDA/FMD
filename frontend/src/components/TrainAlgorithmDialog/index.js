@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
-import { Table, ItemColumn, DialogForm, DialogFormButtonContainer } from '../../styles/global';
-import { Creators as DialogActions } from '../../store/ducks/dialog';
 import { connect } from 'react-redux';
+import {
+  Table, ItemColumn, DialogForm, DialogFormButtonContainer,
+} from '../../styles/global';
+import { Creators as DialogActions } from '../../store/ducks/dialog';
 import Dialog from '../Dialog';
 import Button from '../../styles/Button';
 
 class TrainAlgorithmDialog extends Component {
-
   onClose = () => {
     this.props.setDialog('trainAlgorithm');
   }
@@ -31,31 +32,32 @@ class TrainAlgorithmDialog extends Component {
         <DialogForm>
           <h1 style={{ paddingLeft: '1rem' }}>Classificadores Utilizados</h1>
 
-          {fitted_pipelines && fitted_pipelines.length ?
-            <div style={{ display: 'flex' }}>
-              <Table>
-                <thead>
-                  <tr>
-                    <th align="left" style={{ paddingLeft: '1rem' }}>Classificador</th>
-                    <th align="left" style={{ paddingLeft: '1rem' }}>Hiperparâmetros</th>
-                  </tr>
-                </thead>
+          {fitted_pipelines && fitted_pipelines.length
+            ? (
+              <div style={{ display: 'flex' }}>
+                <Table>
+                  <thead>
+                    <tr>
+                      <th align="left" style={{ paddingLeft: '1rem' }}>Classificador</th>
+                      <th align="left" style={{ paddingLeft: '1rem' }}>Hiperparâmetros</th>
+                    </tr>
+                  </thead>
 
-                <tbody>
-                  {fitted_pipelines.map((item, idx) => this.renderItem(item, idx))}
-                </tbody>
-              </Table>
-            </div>
+                  <tbody>
+                    {fitted_pipelines.map((item, idx) => this.renderItem(item, idx))}
+                  </tbody>
+                </Table>
+              </div>
+            )
             : null}
 
           <DialogFormButtonContainer>
-            <Button color="gray" isCancel={true} onClick={this.onClose}>Fechar</Button>
+            <Button color="gray" isCancel onClick={this.onClose}>Fechar</Button>
           </DialogFormButtonContainer>
-
 
         </DialogForm>
       </Dialog>
-    )
+    );
   }
 }
 
@@ -64,6 +66,6 @@ const mapStateToProps = ({ dialog, train }) => ({ dialog, train });
 export default connect(
   mapStateToProps,
   {
-    ...DialogActions
-  }
+    ...DialogActions,
+  },
 )(TrainAlgorithmDialog);

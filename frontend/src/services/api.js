@@ -1,12 +1,11 @@
 import axios from 'axios';
-import store from '../store';
 
 const api = axios.create({
-  baseURL: `${process.env.REACT_APP_HOST}/api/`
+  baseURL: `${process.env.REACT_APP_HOST}`,
 });
 
 api.interceptors.request.use((config) => {
-  const { token } = store.getState().auth;
+  const token = localStorage.getItem('@fmdev:token');
 
   const headers = { ...config.headers };
 

@@ -1,18 +1,22 @@
 import React, { Component } from 'react';
 
-import logo from '../../assets/logo.svg';
-import { Container, ItemList, Item, ItemText, Logo } from './styles';
 import { connect } from 'react-redux';
-
-import { Creators as AuthActions } from '../../store/ducks/auth';
-import { Creators as ScreenActions } from '../../store/ducks/screen';
 import AddIcon from 'react-feather/dist/icons/plus-circle';
 import TranModelIcon from 'react-feather/dist/icons/package';
 import MonitorIcon from 'react-feather/dist/icons/monitor';
-import { DATASOURCE, TRAIN_MODEL, ADD_TRAIN, LAD } from '../../constants';
+import ToolIcon from 'react-feather/dist/icons/tool';
+import logo from '../../assets/logo.svg';
+import {
+  Container, ItemList, Item, ItemText, Logo,
+} from './styles';
+
+import { Creators as AuthActions } from '../../store/ducks/auth';
+import { Creators as ScreenActions } from '../../store/ducks/screen';
+import {
+  DATASOURCE, TRAIN_MODEL, ADD_TRAIN, LAD, CONTEXT,
+} from '../../constants';
 
 class SideMenu extends Component {
-
   getStrokeWidth = (screen) => {
     const { activeScreen } = this.props.screen;
 
@@ -20,28 +24,32 @@ class SideMenu extends Component {
       return 1.5;
     }
 
-    return .5;
+    return 0.5;
   }
 
   render() {
-
     const { signOutRequest } = this.props;
     const links = [
+      // {
+      //   screen: LAD,
+      //   component: LAD,
+      //   icon: <MonitorIcon color="#FFF" strokeWidth={this.getStrokeWidth(LAD)} />,
+      // },
       {
-        screen: LAD,
-        component: LAD,
-        icon: <MonitorIcon color={'#FFF'} strokeWidth={this.getStrokeWidth(LAD)} />
+        screen: CONTEXT,
+        component: CONTEXT,
+        icon: <ToolIcon id="contextos" color="#FFF" strokeWidth={this.getStrokeWidth(CONTEXT)} />,
       },
       {
         screen: ADD_TRAIN,
         component: DATASOURCE,
-        icon: <AddIcon color={'#FFF'} strokeWidth={this.getStrokeWidth(ADD_TRAIN)} />
+        icon: <AddIcon id="fonte-dados" color="#FFF" strokeWidth={this.getStrokeWidth(ADD_TRAIN)} />,
       },
       {
         screen: TRAIN_MODEL,
         component: TRAIN_MODEL,
-        icon: <TranModelIcon color={'#FFF'} strokeWidth={this.getStrokeWidth(TRAIN_MODEL)} />
-      }
+        icon: <TranModelIcon id="modelos" color="#FFF" strokeWidth={this.getStrokeWidth(TRAIN_MODEL)} />,
+      },
     ];
 
     return (
@@ -50,10 +58,11 @@ class SideMenu extends Component {
           <Logo>
             <img alt="" src={logo} />
           </Logo>
-          {links.map((link, idx) => (
+          {links.map((link) => (
             <Item
-              key={idx}
-              onClick={this.props.setScreen.bind(this, link.screen, link.component, null)}>
+              key={link.screen}
+              onClick={this.props.setScreen.bind(this, link.screen, link.component, null)}
+            >
               {link.icon}
             </Item>
           ))}
@@ -72,5 +81,5 @@ const mapStateToProps = ({ screen }) => ({ screen });
 
 export default connect(
   mapStateToProps,
-  { ...AuthActions, ...ScreenActions }
+  { ...AuthActions, ...ScreenActions },
 )(SideMenu);

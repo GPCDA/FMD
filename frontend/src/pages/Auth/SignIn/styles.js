@@ -57,4 +57,4 @@ export const SignForm = styled.form`
       color: #FFF;
     }
   }
-`
+`;

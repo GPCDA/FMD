@@ -1,19 +1,21 @@
 import React, { Component } from 'react';
-import Button from '../../../styles/Button';
-import { Container, SignForm } from './styles';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import Button from '../../../styles/Button';
+import { Container, SignForm } from './styles';
 import logo from '../../../assets/login_logo.svg';
 import squares from '../../../assets/login_squares.svg';
 import { Creators as AuthActions } from '../../../store/ducks/auth';
 import { DialogInput } from '../../../styles/global';
 
 class SignIn extends Component {
-
-  state = {
-    email: 'admin@fmdev.com.br',
-    password: 'p@ssW0rd'
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      email: 'admin@fmdev.com.br',
+      password: 'p@ssW0rd',
+    };
+  }
 
   handleInputChange = (e) => {
     this.setState({ [e.target.name]: e.target.value });
@@ -26,7 +28,6 @@ class SignIn extends Component {
     const { signInRequest } = this.props;
 
     signInRequest(email, password);
-
   }
 
   render() {
@@ -54,7 +55,6 @@ class SignIn extends Component {
   }
 }
 
-const mapDispatchToProps = (dispatch) =>
-  bindActionCreators(AuthActions, dispatch);
+const mapDispatchToProps = (dispatch) => bindActionCreators(AuthActions, dispatch);
 
 export default connect(null, mapDispatchToProps)(SignIn);

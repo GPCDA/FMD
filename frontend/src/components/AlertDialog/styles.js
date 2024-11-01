@@ -61,7 +61,7 @@ export const DialogForm = styled.form`
       color: #FFF;
     }
   }
-`
+`;
 
 export const DialogFormButtonContainer = styled.div`
   display: flex;

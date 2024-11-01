@@ -1,22 +1,24 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { actions as toastrActions } from 'react-redux-toastr';
+import { ProgressSpinner } from 'primereact/progressspinner';
 import {
   DialogForm, DialogFormButtonContainer,
-  DialogInput, DialogSpan
+  DialogInput, DialogSpan,
 } from '../../styles/global';
 import { Creators as DialogActions } from '../../store/ducks/dialog';
-import { connect } from 'react-redux';
 import Dialog from '../Dialog';
 import Button from '../../styles/Button';
-import { actions as toastrActions } from 'react-redux-toastr';
 import { Creators as TrainModelActions } from '../../store/ducks/train_model';
-import { ProgressSpinner } from 'primereact/progressspinner';
 
 class TrainModelSaveDialog extends Component {
-
-  state = {
-    name: '',
-    description: ''
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      name: '',
+      description: '',
+    };
+  }
 
   onClose = () => {
     this.props.setDialog('trainSave');
@@ -26,11 +28,11 @@ class TrainModelSaveDialog extends Component {
     this.props.add({
       type: 'warning',
       title: 'Atenção',
-      message: msg
+      message: msg,
     });
   }
 
-  handleChange = e => {
+  handleChange = (e) => {
     this.setState({ [e.target.name]: e.target.value });
   }
 
@@ -45,10 +47,10 @@ class TrainModelSaveDialog extends Component {
     }
 
     this.props.postTrainModel({
-      name, 
-      description, 
-      path, 
-      score: score || null
+      name,
+      description,
+      path,
+      score: score || null,
     });
   }
 
@@ -66,43 +68,56 @@ class TrainModelSaveDialog extends Component {
         <DialogForm>
           <h1>{loading ? 'Salvando Modelo...' : 'Salvar Modelo'}</h1>
 
-          {loading ? 
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '15vh' }}>
-              <ProgressSpinner style={{ width: '30px', height: '30px' }} strokeWidth="4" animationDuration=".5s" />
-            </div>
-          : null}
+          {loading
+            ? (
+              <div style={{
+                display: 'flex', alignItems: 'center', justifyContent: 'center', height: '15vh',
+              }}
+              >
+                <ProgressSpinner style={{ width: '30px', height: '30px' }} strokeWidth="4" animationDuration=".5s" />
+              </div>
+            )
+            : null}
 
           {!loading ? <DialogSpan>Nome do modelo</DialogSpan> : null}
-          {!loading ? <DialogInput
-            value={name}
-            autoComplete="off"
-            onChange={this.handleChange}
-            name="name">
-          </DialogInput> : null}
+          {!loading ? (
+            <DialogInput
+              value={name}
+              autoComplete="off"
+              onChange={this.handleChange}
+              name="name"
+            />
+          ) : null}
 
           {!loading ? <DialogSpan>Detalhes do modelo</DialogSpan> : null}
-          {!loading ? <DialogInput
-            value={description}
-            autoComplete="off"
-            onChange={this.handleChange}
-            name="description">
-          </DialogInput> : null}
+          {!loading ? (
+            <DialogInput
+              value={description}
+              autoComplete="off"
+              onChange={this.handleChange}
+              name="description"
+            />
+          ) : null}
 
-          {!loading ? <DialogFormButtonContainer>
-            <Button onClick={this.submit.bind(this)}>Salvar</Button>
-            <Button style={{ marginLeft: '1vw' }} color="gray" isCancel={true} onClick={this.onClose}>Cancelar</Button>
-          </DialogFormButtonContainer> : null}
-
+          {!loading ? (
+            <DialogFormButtonContainer>
+              <Button onClick={this.submit.bind(this)}>Salvar</Button>
+              <Button style={{ marginLeft: '1vw' }} color="gray" isCancel onClick={this.onClose}>Cancelar</Button>
+            </DialogFormButtonContainer>
+          ) : null}
 
         </DialogForm>
       </Dialog>
-    )
+    );
   }
 }
 
-const mapStateToProps = ({ dialog, train_model, pre_processing, train }) =>
-  ({ dialog, train_model, pre_processing, train });
+const mapStateToProps = ({
+  dialog, train_model, pre_processing, train,
+}) => ({
+  dialog, train_model, pre_processing, train,
+});
 
 export default connect(
-  mapStateToProps, { ...DialogActions, ...toastrActions, ...TrainModelActions }
+  mapStateToProps, { ...DialogActions, ...toastrActions, ...TrainModelActions },
 )(TrainModelSaveDialog);

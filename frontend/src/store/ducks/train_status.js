@@ -6,7 +6,7 @@ export const { Types, Creators } = createActions({
   postTrainStatus: ['filter'],
   trainStatusRequest: [],
   trainStatusSuccess: ['data'],
-  trainStatusError: ['err']
+  trainStatusError: ['err'],
 });
 
 /** --------------------------------
@@ -16,18 +16,18 @@ export const { Types, Creators } = createActions({
 const INITIAL_STATE = Immutable({
   data: [],
   loading: false,
-  error: false
+  error: false,
 });
 
 /* Reducers */
 
-export const init = state => state.merge({ ...INITIAL_STATE });
+export const init = (state) => state.merge({ ...INITIAL_STATE });
 
-export const request = state => state.merge({ loading: true });
+export const request = (state) => state.merge({ loading: true });
 
 export const success = (state, { data }) => state.merge({ data, loading: false, error: false });
 
-export const error = state => state.merge({ loading: false, error: true });
+export const error = (state) => state.merge({ loading: false, error: true });
 
 export const setFilter = (state, { filter }) => state.merge({ filter });
 

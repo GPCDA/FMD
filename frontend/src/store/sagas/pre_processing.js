@@ -1,8 +1,7 @@
-import api from '../../services/api';
-import { Creators } from '../ducks/pre_processing';
 import { call, put } from 'redux-saga/effects';
 import { actions as toastrActions } from 'react-redux-toastr';
-
+import api from '../../services/api';
+import { Creators } from '../ducks/pre_processing';
 
 export function* getPreProcessing({ filter }) {
   try {
@@ -16,16 +15,15 @@ export function* getPreProcessing({ filter }) {
       yield put(toastrActions.add({
         type: 'success',
         title: 'Sucesso',
-        message: `Indicador ${filter.pre_processing_indicator} pré-processado com sucesso!`
+        message: `Indicador ${filter.pre_processing_indicator} pré-processado com sucesso!`,
       }));
     }
-
   } catch (err) {
     yield put(Creators.preProcessingError({ err }));
     yield put(toastrActions.add({
       type: 'error',
       title: 'Erro',
-      message: 'Falha ao listar Indicadores'
+      message: 'Falha ao listar Indicadores',
     }));
   }
 }
@@ -41,7 +39,7 @@ export function* deletePreProcessing({ filter }) {
     yield put(toastrActions.add({
       type: 'error',
       title: 'Erro',
-      message: 'Falha ao excluir dados do pré-processamento'
+      message: 'Falha ao excluir dados do pré-processamento',
     }));
   }
 }

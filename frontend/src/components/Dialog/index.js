@@ -5,6 +5,6 @@ const Dialog = ({ children, size }) => (
   <Container>
     <Content size={size}>{children}</Content>
   </Container>
-)
+);
 
 export default Dialog;
