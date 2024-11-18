@@ -1,35 +1,45 @@
 import React, { Component } from 'react';
 
-import { Container } from './styles';
 import { connect } from 'react-redux';
 
 import { bindActionCreators } from 'redux';
+import { Container } from './styles';
 
 import SideMenu from '../../components/SideMenu';
 import DataSource from '../../components/DataSource';
 import Indicators from '../../components/Indicators';
 import PreProcessing from '../../components/PreProcessing';
 import { Creators as ScreenActions } from '../../store/ducks/screen';
-import { Creators as LmsActions } from '../../store/ducks/lms';
+// import { Creators as LmsActions } from '../../store/ducks/lms';
 import { DATASOURCE, INDICATORS, PRE_PROCESSING, TRAIN, TRAIN_MODEL, LAD, CLUSTER, SPARK_PROCESSING} from '../../constants';
 import Train from '../../components/Train';
 import TrainModel from '../TrainModel';
 import Dashboard from '../../components/Dashboard';
 import Cluster from '../../components/Cluster';
 import SparkProcessing from '../../components/SparkData';
+import {
+  DATASOURCE, INDICATORS, PRE_PROCESSING, TRAIN, TRAIN_MODEL, LAD, CONTEXT,
+} from '../../constants';
+import Train from '../../components/Train';
+import TrainModel from '../TrainModel';
+// import Dashboard from '../../components/Dashboard';
+import Context from '../../components/Context';
+
+const COMPONENTS = {
+  [DATASOURCE]: <DataSource />,
+  [INDICATORS]: <Indicators />,
+  [PRE_PROCESSING]: <PreProcessing />,
+  [TRAIN]: <Train />,
+  [TRAIN_MODEL]: <TrainModel />,
+  // [LAD]: <Dashboard />,
+  [CONTEXT]: <Context />,
+};
 
 class Main extends Component {
-
-  componentDidMount() {
-    this.props.getLms();
-  }
-
   renderContent = () => {
     const { activeComponent } = this.props.screen;
 
-    if (activeComponent === DATASOURCE) {
-      return <DataSource />;
-    }
+    const currentComponent = COMPONENTS[activeComponent];
 
     if (activeComponent === INDICATORS) {
       return <Indicators />;
@@ -60,6 +70,7 @@ class Main extends Component {
     }
     
     return null;
+    return currentComponent;
   }
 
   render() {
@@ -68,13 +79,12 @@ class Main extends Component {
         <SideMenu />
         {this.renderContent()}
       </Container>
-    )
+    );
   }
 }
 
 const mapStateToProps = ({ screen }) => ({ screen });
 
-const mapDispatchToProps = (dispatch) =>
-  bindActionCreators({ ...ScreenActions, ...LmsActions }, dispatch);
+const mapDispatchToProps = (dispatch) => bindActionCreators({ ...ScreenActions }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(Main);

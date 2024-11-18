@@ -5,11 +5,13 @@ from environs import Env
 env = Env()
 
 #if os.environ.get('FLASK_ENV') is None or os.environ.get('FLASK_ENV') == 'production':
- #   env.read_env()
+#    env.read_env()
 #else:
-env.read_env('.env.development')
+#    env.read_env('.env.development')
 
 # You need to replace the next values with the appropriate values for your configuration
+
+env.read_env('.env.development')
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 SQLALCHEMY_ECHO = False
@@ -27,3 +29,5 @@ TEST_FEATURES = 'data/test/features'
 TEST_TARGET = 'data/test/target'
 BASE_URL = 'http://localhost:5000'
 UPLOAD_FOLDER = 'data/upload'
+CARTE_BASE_URI = f"http://{env.str('CARTE_USER')}:{env.str('CARTE_PASS')}@{env.str('CARTE_HOST')}:{env.str('CARTE_PORT')}"
+CARTE_LOCATION = env.str('CARTE_LOCATION')

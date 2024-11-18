@@ -1,8 +1,7 @@
-import api from '../../services/api';
-import { Creators } from '../ducks/indicator';
 import { call, put } from 'redux-saga/effects';
 import { actions as toastrActions } from 'react-redux-toastr';
-
+import api from '../../services/api';
+import { Creators } from '../ducks/indicator';
 
 export function* getIndicators({ filter }) {
   try {
@@ -15,7 +14,7 @@ export function* getIndicators({ filter }) {
     yield put(toastrActions.add({
       type: 'error',
       title: 'Erro',
-      message: 'Falha ao listar Indicadores'
+      message: 'Falha ao listar Indicadores',
     }));
   }
 }
@@ -31,7 +30,7 @@ export function* saveIndicators() {
     yield put(toastrActions.add({
       type: 'error',
       title: 'Erro',
-      message: 'Falha ao listar Indicadores'
+      message: 'Falha ao listar Indicadores',
     }));
   }
 }

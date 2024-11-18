@@ -1,10 +1,8 @@
-
+import { call, put } from 'redux-saga/effects';
+import { actions as toastrActions } from 'react-redux-toastr';
 import api from '../../services/api';
 import { Creators } from '../ducks/train_model';
 import { Creators as DialogCreators } from '../ducks/dialog';
-import { call, put } from 'redux-saga/effects';
-import { actions as toastrActions } from 'react-redux-toastr';
-
 
 export function* getTrainModel() {
   try {
@@ -17,7 +15,7 @@ export function* getTrainModel() {
     yield put(toastrActions.add({
       type: 'error',
       title: 'Erro',
-      message: 'Falha ao listar modelos'
+      message: 'Falha ao listar modelos',
     }));
   }
 }
@@ -33,14 +31,14 @@ export function* postTrainModel({ data }) {
     yield put(toastrActions.add({
       type: 'success',
       title: 'Sucesso',
-      message: `Modelo salvo com sucesso!`
+      message: 'Modelo salvo com sucesso!',
     }));
   } catch (err) {
     yield put(Creators.trainModelError({ err }));
     yield put(toastrActions.add({
       type: 'error',
       title: 'Erro',
-      message: 'Falha ao salvar modelo'
+      message: 'Falha ao salvar modelo',
     }));
   }
 }
@@ -55,14 +53,14 @@ export function* putTrainModel({ id, data }) {
     yield put(toastrActions.add({
       type: 'success',
       title: 'Sucesso',
-      message: `Chave de API regerada com sucesso!`
+      message: 'Chave de API regerada com sucesso!',
     }));
   } catch (err) {
     yield put(Creators.trainModelError({ err }));
     yield put(toastrActions.add({
       type: 'error',
       title: 'Erro',
-      message: 'Falha ao gerar nova chave de API'
+      message: 'Falha ao gerar nova chave de API',
     }));
   }
 }
@@ -77,14 +75,14 @@ export function* deleteTrainModel({ id }) {
     yield put(toastrActions.add({
       type: 'success',
       title: 'Sucesso',
-      message: `Modelo removido com sucesso!`
+      message: 'Modelo removido com sucesso!',
     }));
   } catch (err) {
     yield put(Creators.trainModelError({ err }));
     yield put(toastrActions.add({
       type: 'error',
       title: 'Erro',
-      message: 'Falha ao remover modelo'
+      message: 'Falha ao remover modelo',
     }));
   }
 }

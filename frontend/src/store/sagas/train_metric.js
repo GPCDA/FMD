@@ -1,8 +1,7 @@
-import api from '../../services/api';
-import { Creators } from '../ducks/train_metric';
 import { call, put } from 'redux-saga/effects';
 import { actions as toastrActions } from 'react-redux-toastr';
-
+import api from '../../services/api';
+import { Creators } from '../ducks/train_metric';
 
 export function* postTrainMetric({ filter }) {
   try {
@@ -15,7 +14,7 @@ export function* postTrainMetric({ filter }) {
     yield put(toastrActions.add({
       type: 'error',
       title: 'Erro',
-      message: 'Falha ao exibir métricas do modelo'
+      message: 'Falha ao exibir métricas do modelo',
     }));
   }
 }

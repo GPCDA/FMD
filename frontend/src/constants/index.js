@@ -11,3 +11,5 @@ export const CSV = 'CSV';
 export const LAD = 'LAD';
 export const CLUSTER = 'CLUSTER';
 export const SPARK_PROCESSING = "SPARK_PROCESSING";
+export const DATA_BASE = 'DB';
+export const CONTEXT = 'CONTEXT';

@@ -6,7 +6,7 @@ export const Container = styled.div`
   padding-bottom: 0;
   align-items: center;
   color: #4A5173;
-  
+
 
   &:hover {
     cursor: pointer;
@@ -24,4 +24,4 @@ export const Text = styled.span`
   &:hover {
     font-weight: bold;
   }
-`
+`;

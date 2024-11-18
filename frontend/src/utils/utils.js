@@ -1,24 +1,20 @@
-import { TRAIN_PIPELINES, PRE_PROCESSING_RAW } from "../constants";
+import { TRAIN_PIPELINES, PRE_PROCESSING_RAW } from '../constants';
 
-export const copyToClipboard = (value) => {
-  let dummy = document.createElement("input");
+export const copyToClipboard = async (value) => {
+  const dummy = document.createElement('input');
 
   document.body.appendChild(dummy);
   dummy.value = value;
   dummy.select();
-  document.execCommand("copy");
+  await navigator.clipboard.writeText(dummy.value);
   document.body.removeChild(dummy);
-}
+};
 
 export const getExtensionDownload = (action) => {
-  if (action === TRAIN_PIPELINES) {
-    return 'py';
-  }
-
-  if (action === PRE_PROCESSING_RAW) {
-    return 'csv';
-  }
-}
+  if (action === TRAIN_PIPELINES) return 'py';
+  if (action === PRE_PROCESSING_RAW) return 'csv';
+  return '';
+};
 
 export const downloadStream = ({ id, content, action }) => {
   const url = window.URL.createObjectURL(new Blob([content]));
@@ -29,4 +25,4 @@ export const downloadStream = ({ id, content, action }) => {
   link.setAttribute('download', `${id}.${extension}`);
   document.body.appendChild(link);
   link.click();
-}
+};

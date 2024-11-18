@@ -1,7 +1,7 @@
 import { combineReducers } from 'redux';
 import { connectRouter } from 'connected-react-router';
 
-import lms from './lms';
+import { reducer as toastr } from 'react-redux-toastr';
 import auth from './auth';
 import train from './train';
 import chart from './chart';
@@ -19,10 +19,12 @@ import model_copy from './model_copy';
 import download from './download';
 import data_source from './data_source';
 import phenomenon from './phenomenon';
-import { reducer as toastr } from 'react-redux-toastr';
+import data_base from './data_base';
+import context from './context';
+import data_base_connection from './data_base_connection';
+import jdbc_driver from './jdbc_driver';
 
-export default history => combineReducers({
-  lms,
+export default (history) => combineReducers({
   auth,
   train,
   chart,
@@ -41,5 +43,9 @@ export default history => combineReducers({
   download,
   data_source,
   phenomenon,
-  router: connectRouter(history)
+  data_base,
+  context,
+  data_base_connection,
+  jdbc_driver,
+  router: connectRouter(history),
 });

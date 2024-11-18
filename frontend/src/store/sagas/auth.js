@@ -1,14 +1,12 @@
 import { call, put } from 'redux-saga/effects';
-import api from '../../services/api';
 import { push } from 'connected-react-router';
 import { actions as toastrActions } from 'react-redux-toastr';
+import api from '../../services/api';
 import { Creators } from '../ducks/auth';
 import { Creators as ScreenCreators } from '../ducks/screen';
 import { DATASOURCE, ADD_TRAIN } from '../../constants';
 
-
 export function* signInRequest({ email, password }) {
-
   try {
     const response = yield call(api.post, 'auth/login', { email, password });
 
@@ -19,7 +17,7 @@ export function* signInRequest({ email, password }) {
     yield put(toastrActions.add({
       type: 'error',
       title: 'Falha no login',
-      message: 'Verifique seu e-mail/senha'
+      message: 'Verifique seu e-mail/senha',
     }));
   }
 }

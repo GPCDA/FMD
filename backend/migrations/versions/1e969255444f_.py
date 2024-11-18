@@ -7,7 +7,7 @@ Create Date: 2020-05-20 22:43:08.759387
 """
 from alembic import op
 import sqlalchemy as sa
-
+import datetime
 
 # revision identifiers, used by Alembic.
 revision = '1e969255444f'
@@ -49,7 +49,7 @@ def upgrade():
     sa.Column('version', sa.String(), nullable=True),
     sa.PrimaryKeyConstraint('id')
     )
-    op.create_table('users',
+    users_table = op.create_table('users',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('username', sa.String(length=64), nullable=True),
     sa.Column('email', sa.String(length=120), nullable=True),
@@ -85,6 +85,19 @@ def upgrade():
     sa.PrimaryKeyConstraint('id')
     )
     op.create_index(op.f('ix_train_models_model_id'), 'train_models', ['model_id'], unique=False)
+
+    op.bulk_insert(
+        users_table,
+        [
+            {
+                "username": "admin",
+                "email": "admin@fmdev.com.br",
+                "password": "$2b$12$vmBMj47O6UsxfsreJXAOYuf0S.QZgVH7juxQ.dsL8IW7DgKFLHIja",
+                "created_at": datetime.datetime.now(),
+                "updated_at": datetime.datetime.now()
+            },
+        ],
+    )
     # ### end Alembic commands ###
 
 

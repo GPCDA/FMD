@@ -1,22 +1,24 @@
 import React, { Component } from 'react';
-import {
-  DialogForm, DialogFormButtonContainer, DialogSpan
-} from './styles';
-import { Creators as DialogActions } from '../../store/ducks/dialog';
 import { connect } from 'react-redux';
-import Dialog from '../Dialog';
-import Button from '../../styles/Button';
 import { actions as toastrActions } from 'react-redux-toastr';
 import CurrencyInput from 'react-currency-input';
+import {
+  DialogForm, DialogFormButtonContainer, DialogSpan,
+} from './styles';
+import { Creators as DialogActions } from '../../store/ducks/dialog';
+import Dialog from '../Dialog';
+import Button from '../../styles/Button';
 
 class TrainConfigDialog extends Component {
-
-  state = {
-    train: 70,
-    test: 30,
-    generations: 5,
-    kfold: 5
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      train: 70,
+      test: 30,
+      generations: 5,
+      kfold: 5,
+    };
+  }
 
   onClose = () => {
     this.props.setDialog('trainConfig');
@@ -26,12 +28,14 @@ class TrainConfigDialog extends Component {
     this.props.add({
       type: 'warning',
       title: 'Atenção',
-      message: msg
+      message: msg,
     });
   }
 
   submit = () => {
-    const { train, test, generations, kfold } = this.state;
+    const {
+      train, test, generations, kfold,
+    } = this.state;
     const { onSubmit } = this.props;
 
     if (!train || train <= 0) {
@@ -57,13 +61,17 @@ class TrainConfigDialog extends Component {
     this.onClose();
 
     if (onSubmit) {
-      onSubmit({ data: { train, test, generations, kfold } });
+      onSubmit({
+        data: {
+          train, test, generations, kfold,
+        },
+      });
     }
   }
 
   handlePercentualChange = (event, maskedValue, floatValue) => {
     let newValue = floatValue;
-    let otherInputToUpdate = event.target.name === 'train' ? 'test' : 'train';
+    const otherInputToUpdate = event.target.name === 'train' ? 'test' : 'train';
 
     if (floatValue < 0) {
       newValue = 0;
@@ -84,14 +92,16 @@ class TrainConfigDialog extends Component {
   }
 
   render() {
-    const { train, test, generations, kfold } = this.state;
+    const {
+      train, test, generations, kfold,
+    } = this.state;
     const { trainConfig } = this.props.dialog;
     const inputParams = {
-      suffix: "%",
-      className: "input",
-      decimalSeparator: ".",
-      thousandSeparator: "",
-      onChangeEvent: this.handlePercentualChange
+      suffix: '%',
+      className: 'input',
+      decimalSeparator: '.',
+      thousandSeparator: '',
+      onChangeEvent: this.handlePercentualChange,
     };
 
     if (!trainConfig) {
@@ -140,17 +150,17 @@ class TrainConfigDialog extends Component {
 
           <DialogFormButtonContainer>
             <Button onClick={this.submit.bind(this)}>TREINAR</Button>
-            <Button color="gray" isCancel={true} onClick={this.onClose}>Cancelar</Button>
+            <Button color="gray" isCancel onClick={this.onClose}>Cancelar</Button>
           </DialogFormButtonContainer>
 
         </DialogForm>
       </Dialog>
-    )
+    );
   }
 }
 
 const mapStateToProps = ({ dialog }) => ({ dialog });
 
 export default connect(
-  mapStateToProps, { ...DialogActions, ...toastrActions }
+  mapStateToProps, { ...DialogActions, ...toastrActions },
 )(TrainConfigDialog);

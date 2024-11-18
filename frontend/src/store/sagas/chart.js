@@ -1,15 +1,12 @@
-import api from '../../services/api';
-import { Creators } from '../ducks/chart';
 import { call, put } from 'redux-saga/effects';
 import { actions as toastrActions } from 'react-redux-toastr';
-
+import api from '../../services/api';
+import { Creators } from '../ducks/chart';
 
 export function* getChart({ filter }) {
   try {
-    let response;
-
     yield put(Creators.chartRequest());
-    response = yield call(api.post, 'chart', filter);
+    const response = yield call(api.post, 'chart', filter);
 
     yield put(Creators.chartSuccess(response.data, filter.chartType));
   } catch (err) {
@@ -17,7 +14,7 @@ export function* getChart({ filter }) {
     yield put(toastrActions.add({
       type: 'error',
       title: 'Erro',
-      message: 'Falha ao exibir gráfico'
+      message: 'Falha ao exibir gráfico',
     }));
   }
 }

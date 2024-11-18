@@ -1,8 +1,7 @@
-import api from '../../services/api';
-import { Creators } from '../ducks/course';
 import { call, put } from 'redux-saga/effects';
 import { actions as toastrActions } from 'react-redux-toastr';
-
+import api from '../../services/api';
+import { Creators } from '../ducks/course';
 
 export function* getCourses({ filter }) {
   try {
@@ -15,7 +14,7 @@ export function* getCourses({ filter }) {
     yield put(toastrActions.add({
       type: 'error',
       title: 'Erro',
-      message: 'Falha ao listar Cursos'
+      message: 'Falha ao listar Cursos',
     }));
   }
 }

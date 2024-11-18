@@ -12,7 +12,7 @@ const sizes = {
   big: css`
     height: 44px;
     font-size: 18px;
-  `
+  `,
 };
 
 const colors = {
@@ -37,13 +37,13 @@ const colors = {
     &:hover {
       background: #999;
     }
-  `
+  `,
 };
 
 const Button = styled.button.attrs({
-  type: 'button'
+  type: 'button',
 })`
-  
+
   font-size: 12px;
   padding: 0 10px;
   border-radius: none;
@@ -63,10 +63,10 @@ const Button = styled.button.attrs({
     border: 1px solid #4A5173;
   }
 
-  ${props => sizes[props.size || 'default']}
-  ${props => colors[props.color || 'default']}
+  ${(props) => sizes[props.size || 'default']}
+  ${(props) => colors[props.color || 'default']}
 
-  ${props => props.filled === false && css`
+  ${(props) => props.filled === false && css`
     background: none;
     color: #4A5173;
     border: 1px solid #4A5173;
@@ -76,12 +76,12 @@ const Button = styled.button.attrs({
       color: #FFF;
     }`}
 
-  ${props => props.isCancel === true && css`
+  ${(props) => props.isCancel === true && css`
       font-weight: normal;
       border: none !important;
     `}
-  
-  ${props => props.disabled === true && css`
+
+  ${(props) => props.disabled === true && css`
     font-weight: normal;
     opacity: .4;
 

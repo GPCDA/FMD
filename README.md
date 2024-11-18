@@ -339,9 +339,74 @@ pyspark
 pip show pyspark
 ```
 
-# 2. Deploy on Docker
+## 1.6 Java
 
-In Progress
+Install openjdk 11 from
+
+```
+https://jdk.java.net/archive/
+```
+
+## 1.7 Pentaho
+
+Download Pentaho Data Integration community editon from:
+
+```
+https://privatefilesbucket-community-edition.s3.us-west-2.amazonaws.com/9.4.0.0-343/ce/client-tools/pdi-ce-9.4.0.0-343.zip
+```
+
+Move Pentaho Data Integration folder to user home folder
+
+```
+mv <path>/pdi-ce-9.4.0.0-343 [USER_HOME]/
+```
+
+Move the transformations folder into the Pentaho Data Integration folder
+
+```
+mv <path>/fmdev/etl/transformations [USER_HOME]/pdi-ce-9.4.0.0-343/data-integration/
+```
+
+Set the Pentaho Data Integration location at carte.sh
+
+```
+nano <path>/fmdev/carte.sh
+```
+
+Configure the Pentaho Data Integration location at <path>/fmdev/backend/.env.development
+
+```
+nano <path>/fmdev/backend/.env.development
+```
+
+```
+DB_HOST=localhost
+DB_USER=root
+DB_PORT=5432
+DB_PWD=1234
+DB_NAME=fmdev
+CARTE_HOST=localhost
+CARTE_PORT=8081
+CARTE_USER=cluster
+CARTE_PASS=cluster
+#Change [USER_HOME] to user home path
+CARTE_LOCATION=[USER_HOME]/pdi-ce-9.4.0.0-343/data-integration/transformations
+```
+
+# 2. Start project
+Run the following commands to start the project
+```
+export JAVA_HOME="[JAVA PATH]"
+export PATH=$PATH:$JAVA_HOME/bin
+
+service postgresql start
+service nginx start
+source ~/.bashrc
+/app/fmdev/carte.sh &
+cd /app/fmdev/backend
+source venv/bin/activate
+venv/bin/gunicorn --reload -b 127.0.0.1:5000 "run:create_app('config')"
+```
 
 # 3. Local Development
 
@@ -518,4 +583,48 @@ ports:
 [Spark](https://localhost:4040:4040)
 [DJANGO REST]  (https://localhost:8000:8000)
 
-# FMDEV-ROBERTO
+# FMD-ROBERTO
+# 5. How to use - Data ingestion
+## 5.1 Contexts
+
+To upload a context the document must be a JSON and must be on this specific format:
+
+```
+{"metadados": {
+    "cabecalho": {
+      "titulo": "Iris 2",
+      "descricao": "Dados teste iris"
+    },
+    "campos": [
+      {
+        "codigo": "sepal.length",
+        "descricao": "Sepal Length",
+        "tipo": "Num",
+        "tamanho": 100,
+        "valores_permitidos": ""
+      },
+      {
+        "codigo": "sepal.width",
+        "descricao": "Sepal Width",
+        "tipo": "Num",
+        "tamanho": 50,
+        "valores_permitidos": ""
+      },
+      {
+        "codigo": "sepal.length",
+        "descricao": "Petal Length",
+        "tipo": "Num",
+        "tamanho": 10,
+        "valores_permitidos": ""
+      },
+      {
+        "codigo": "variety",
+        "descricao": "Variety",
+        "tipo": "Num",
+        "tamanho": 10,
+        "valores_permitidos": ""
+      }
+    ]
+  }
+}
+```
