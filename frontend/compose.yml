@@ -1,0 +1,18 @@
+version: '3'
+
+services:
+  fe:
+    image: node:13
+    ports:
+      - '3000:3000'
+    volumes:
+      - ./:/srv/react-docker
+    working_dir: /srv/react-docker
+    command: 'yarn start'
+    networks:
+      - fmdev
+
+networks:
+  fmdev:
+    external: true
+    name: fmdev
