@@ -4,13 +4,6 @@
   "private": true,
   "dependencies": {
     "@material-ui/core": "^4.9.7",
-    "@testing-library/jest-dom": "^4.2.4",
-    "@testing-library/react": "^9.3.2",
-    "@testing-library/user-event": "^7.1.2",
-    "@types/jest": "^24.0.0",
-    "@types/node": "^12.0.0",
-    "@types/react": "^16.12.0",
-    "@types/react-dom": "^16.9.19",
     "@uifabric/icons": "^7.3.42",
     "ace-builds": "^1.22.0",
     "axios": "^0.19.1",
@@ -86,6 +79,13 @@
     "eslint-plugin-prettier": "^3.1.4",
     "eslint-plugin-react": "^7.21.5",
     "prettier": "^2.1.2",
-    "redux-devtools-extension": "^2.13.8"
+    "redux-devtools-extension": "^2.13.8",
+    "@testing-library/jest-dom": "^4.2.4",
+    "@testing-library/react": "^9.3.2",
+    "@testing-library/user-event": "^7.1.2",
+    "@types/jest": "^24.0.0",
+    "@types/node": "^12.0.0",
+    "@types/react": "^16.12.0",
+    "@types/react-dom": "^16.9.19"
   }
 }
