@@ -1,4 +1,4 @@
-import React, { Component, useState } from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import Card from '@material-ui/core/Card';
@@ -9,14 +9,15 @@ import Typography from '@material-ui/core/Typography';
 import Chip from '@material-ui/core/Chip';
 import DeleteIcon from 'react-feather/dist/icons/trash-2';
 import HelpIcon from 'react-feather/dist/icons/help-circle';
+import EditIcon from 'react-feather/dist/icons/edit';
 import CheckIcon from 'react-feather/dist/icons/check';
 import EyeIcon from 'react-feather/dist/icons/eye';
 import PlayIcon from 'react-feather/dist/icons/play';
 import FileIcon from 'react-feather/dist/icons/file';
-import EyeIcon from 'react-feather/dist/icons/eye';
+
 import CpuIcon from 'react-feather/dist/icons/cpu';
-import MoodleConfigDialog from '../MoodleConfigDialog';
-import { INDICATORS, ADD_TRAIN, LMS, CSV, CLUSTER } from '../../constants';
+
+import { INDICATORS, ADD_TRAIN, LMS, CSV, CLUSTER, DATA_BASE } from '../../constants';
 import { Creators as ScreenActions } from '../../store/ducks/screen';
 import { Creators as IndicatorActions } from '../../store/ducks/indicator';
 import DataSourceDialog from '../DataSourceDialog';
@@ -27,19 +28,11 @@ import * as moment from 'moment';
 import IconButton from '@material-ui/core/IconButton';
 import { ProgressSpinner } from 'primereact/progressspinner';
 import filesize from 'filesize';
-import { Button } from '@material-ui/core';
-import {
-  INDICATORS, ADD_TRAIN, CSV, DATA_BASE,
-} from '../../constants';
-import { Creators as ScreenActions } from '../../store/ducks/screen';
-import { Creators as IndicatorActions } from '../../store/ducks/indicator';
-import DataSourceDialog from '../DataSourceDialog';
+
 import AlertDialog from '../AlertDialog';
-import filesize from "filesize";
 import PopupComponent from '../PopupComponent/PopupComponent';
 
 
-const availableLms = { moodle: true };
 import {
   Header, fontFamily, primaryColor, StatusMsgContainer,
 } from '../../styles/global';
@@ -52,33 +45,38 @@ import { CardContainer } from './styles';
 import DatabaseDialog from '../DatabaseDialog';
 
 const url = 'http://127.0.0.1:8000/arquivos'; // ENDPOINT DA INTEGRAÇÃO
+const availableLms = { moodle: true };
 
 //chamada assicrona
-async function fetchData(url) {
-  const response = await fetch(url);
-  const data = await response.json();
-  return data;
-}
+// async function fetchData(url) {
+//   const response = await fetch(url);
+//   const data = await response.json();
+//   return data;
+// }
 
 var clusterItems = []
 
 
 async function getdata() {
-  const response = await fetch(url);
-  const data = await response.json();
-  console.log(data.message.toString())
+  try {
+    const response = await fetch(url);
+    const data = await response.json();
+    console.log(data.message.toString())
 
-  var fileNames = data.message.toString().split(',');
-  console.log(fileNames[0])
+    var fileNames = data.message.toString().split(',');
+    console.log(fileNames[0])
 
-  // Percorrendo cada nome de arquivo no array
-  for (var fileName of fileNames) {
+    // Percorrendo cada nome de arquivo no array
+    for (var fileName of fileNames) {
 
-    clusterItems.push({
-      data: "/arquivos/",
-      name: fileName,
-      description: fileName,
-    });
+      clusterItems.push({
+        data: "/arquivos/",
+        name: fileName,
+        description: fileName,
+      });
+    }
+  } catch (error) {
+    console.error('Erro ao buscar os dados:', error);
   }
 
 }
@@ -424,7 +422,7 @@ class DataSource extends Component {
           )}
 
           <PopupComponent
-            isOpen={openPopup}
+            isOpen={this.openPopup}
             handleClose={this.closePopup}
             selectedItemName={this.state.selectedItemName}
           />

@@ -3,39 +3,12 @@ import { ConfigContainer } from "../../styles/ConfigContainer";
 
 import { Header } from "../../styles/global";
 import PerfectScrollbar from "react-perfect-scrollbar";
-import { LeftContent, SelectContainer, Content, Separator } from "./styles";
-import Button from "../../styles/Button";
+import { Content } from "./styles";
 import "./ButtonGrid.css"; // Import the CSS file
 import "./stylestwo.css"; // Importe o arquivo de estilos
 import { api_spark } from "../Indicators";
-import api from "../../services/api";
 
 
-
-
-class ConfigurarIntegracao extends Component {
-
-    
-  /*state = {
-    url: "Valor Padrão do IP",
-    token: "Valor Padrão da Chave de API",
-    version: null, // Deixe null se não tiver uma versão selecionada inicialmente
-  };
-
-
-
-  handleChangeInput = (e) => {
-    this.setState({ [e.target.name]: e.target.value });
-  };
-
-  
-
-  handleChangeVersion = (selectedOption) => {
-    this.setState({ version: selectedOption });
-
-  };
-  */
-}
 
 const Formulario = () => {
   return (

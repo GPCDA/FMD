@@ -1,30 +1,39 @@
 import React, { useState, useEffect } from 'react';
-import { Card, CardContent, Typography } from '@material-ui/core';
+import { Card, CardContent } from '@material-ui/core';
 
 const PopupComponent = ({ isOpen, handleClose, selectedItemName }) => {
-  const [data, setData] = useState([]);          
-  const [headers, setHeaders] = useState([]);  
+  const [data, setData] = useState([]);
+  const [headers, setHeaders] = useState([]);
 
   useEffect(() => {
-    fetch('http://127.0.0.1:8000/dados?file=' + selectedItemName)
-      .then(response => response.json())
-      .then(json => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch('http://127.0.0.1:8000/dados?file=' + selectedItemName);
+        const json = await response.json();
+
         const rawData = json.message;
-        const rows = rawData.split('\n'); 
-        const extractedHeaders = rows[0].split(','); 
-        setHeaders(extractedHeaders); 
-        const extractedData = rows.slice(1, -1).map(row => { 
+        const rows = rawData.split('\n');
+        const extractedHeaders = rows[0].split(',');
+        setHeaders(extractedHeaders);
+
+        const extractedData = rows.slice(1, -1).map(row => {
           const values = row.split(',');
           let obj = {};
           values.forEach((value, index) => {
-            obj[extractedHeaders[index]] = value; 
+            obj[extractedHeaders[index]] = value;
           });
           return obj;
         });
+
         setData(extractedData);
-      })
-      .catch(error => console.error('Erro ao buscar dados:', error));
-  }, [selectedItemName]); // Adding selectedItemName to the dependency array
+
+      } catch (error) {
+        console.error('Erro ao buscar dados:', error);
+      }
+    };
+
+    fetchData();
+  }, [selectedItemName]);
 
   if (!isOpen) return null;
 
@@ -60,9 +69,9 @@ const PopupComponent = ({ isOpen, handleClose, selectedItemName }) => {
                   <tr>
                     {headers.map(key => (
                       <th key={key} style={{
-                        backgroundColor: 'rgb(73,81,114)', 
-                        border: '1px solid rgb(73,81,114)', 
-                        color: 'white', 
+                        backgroundColor: 'rgb(73,81,114)',
+                        border: '1px solid rgb(73,81,114)',
+                        color: 'white',
                         padding: '8px',
                         textAlign: 'left'
                       }}>{key}</th>
@@ -74,8 +83,8 @@ const PopupComponent = ({ isOpen, handleClose, selectedItemName }) => {
                     <tr key={index}>
                       {Object.values(row).map((value, idx) => (
                         <td key={idx} style={{
-                          border: '1px solid rgb(73,81,114)', 
-                          padding: '5px 10px' 
+                          border: '1px solid rgb(73,81,114)',
+                          padding: '5px 10px'
                         }}>{value}</td>
                       ))}
                     </tr>
@@ -85,23 +94,23 @@ const PopupComponent = ({ isOpen, handleClose, selectedItemName }) => {
             ) : <p>Carregando dados...</p>}
           </div>
           <button
-                onClick={handleClose}
-                style={{
-                    marginTop: '30px',
-                    fontSize: '18px', 
-                    backgroundColor: 'white', 
-                    color: 'rgb(73,81,114)', 
-                    border: 'none', 
-                    padding: '10px 20px', 
-                    borderRadius: '5px', 
-                    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)', 
-                    cursor: 'pointer', 
-                    transition: 'all 0.3s ease', 
-                    outline: 'none' 
-                }}
-                >
-                Fechar
-            </button>
+            onClick={handleClose}
+            style={{
+              marginTop: '30px',
+              fontSize: '18px',
+              backgroundColor: 'white',
+              color: 'rgb(73,81,114)',
+              border: 'none',
+              padding: '10px 20px',
+              borderRadius: '5px',
+              boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+              cursor: 'pointer',
+              transition: 'all 0.3s ease',
+              outline: 'none'
+            }}
+          >
+            Fechar
+          </button>
         </CardContent>
       </Card>
     </div>

@@ -5,7 +5,6 @@ import PerfectScrollbar from "react-perfect-scrollbar";
 import { Content } from "./styles";
 import { api_spark } from "../Indicators";
 import api from "../../services/api";
-import MyComponent from "./styles";
 import { SpinnerContainer, Spinner, Message } from "./styles";
 import ComponentComTooltip from "./styles";
 import "./styles.css";

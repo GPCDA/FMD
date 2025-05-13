@@ -11,17 +11,22 @@ import Indicators from '../../components/Indicators';
 import PreProcessing from '../../components/PreProcessing';
 import { Creators as ScreenActions } from '../../store/ducks/screen';
 // import { Creators as LmsActions } from '../../store/ducks/lms';
-import { DATASOURCE, INDICATORS, PRE_PROCESSING, TRAIN, TRAIN_MODEL, LAD, CLUSTER, SPARK_PROCESSING} from '../../constants';
+import {
+  DATASOURCE,
+  CONTEXT,
+  INDICATORS,
+  PRE_PROCESSING,
+  TRAIN,
+  TRAIN_MODEL,
+  LAD,
+  CLUSTER,
+  SPARK_PROCESSING
+} from '../../constants';
 import Train from '../../components/Train';
 import TrainModel from '../TrainModel';
 import Dashboard from '../../components/Dashboard';
 import Cluster from '../../components/Cluster';
 import SparkProcessing from '../../components/SparkData';
-import {
-  DATASOURCE, INDICATORS, PRE_PROCESSING, TRAIN, TRAIN_MODEL, LAD, CONTEXT,
-} from '../../constants';
-import Train from '../../components/Train';
-import TrainModel from '../TrainModel';
 // import Dashboard from '../../components/Dashboard';
 import Context from '../../components/Context';
 
@@ -61,15 +66,14 @@ class Main extends Component {
       return <Dashboard />;
     }
 
-    if(activeComponent === CLUSTER){
+    if (activeComponent === CLUSTER) {
       return <Cluster />;
     }
 
-    if(activeComponent === SPARK_PROCESSING){
+    if (activeComponent === SPARK_PROCESSING) {
       return <SparkProcessing />;
     }
-    
-    return null;
+
     return currentComponent;
   }
 

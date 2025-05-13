@@ -1,28 +1,28 @@
-import React, { Component } from "react";
+import React from "react";
 import { ConfigContainer } from "../../styles/ConfigContainer";
 
 import { Header } from "../../styles/global";
 import PerfectScrollbar from "react-perfect-scrollbar";
-import { LeftContent, SelectContainer, Content, Separator } from "./styles";
+import { LeftContent, Content, Separator } from "./styles";
 import Button from "../../styles/Button";
 import "./ButtonGrid.css"; 
 import "./stylestwo.css"; 
 
-class ConfigurarIntegracao extends Component {
-  state = {
-    url: "Valor Padrão do IP",
-    token: "Valor Padrão da Chave de API",
-    version: null, 
-  };
+// class ConfigurarIntegracao extends Component {
+//   state = {
+//     url: "Valor Padrão do IP",
+//     token: "Valor Padrão da Chave de API",
+//     version: null, 
+//   };
 
-  handleChangeInput = (e) => {
-    this.setState({ [e.target.name]: e.target.value });
-  };
+//   handleChangeInput = (e) => {
+//     this.setState({ [e.target.name]: e.target.value });
+//   };
 
-  handleChangeVersion = (selectedOption) => {
-    this.setState({ version: selectedOption });
-  };
-}
+//   handleChangeVersion = (selectedOption) => {
+//     this.setState({ version: selectedOption });
+//   };
+// }
 
 const Formulario = () => {
   return (

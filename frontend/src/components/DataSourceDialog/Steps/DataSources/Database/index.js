@@ -1,4 +1,4 @@
-import React, { PureComponent, useState } from 'react';
+import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import Select from 'react-select';
 import { Creators as DataBaseConnectionActions } from '../../../../../store/ducks/data_base_connection';

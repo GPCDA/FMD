@@ -3,9 +3,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import AddIcon from 'react-feather/dist/icons/plus-circle';
 import TranModelIcon from 'react-feather/dist/icons/package';
-import MonitorIcon from 'react-feather/dist/icons/monitor';
 import CpuIcon from 'react-feather/dist/icons/cpu';
-import { DATASOURCE, TRAIN_MODEL, ADD_TRAIN, LAD, CLUSTER } from '../../constants';
+import { DATASOURCE, TRAIN_MODEL, ADD_TRAIN, CLUSTER, CONTEXT } from '../../constants';
 import ToolIcon from 'react-feather/dist/icons/tool';
 import logo from '../../assets/logo.svg';
 import {
@@ -14,9 +13,7 @@ import {
 
 import { Creators as AuthActions } from '../../store/ducks/auth';
 import { Creators as ScreenActions } from '../../store/ducks/screen';
-import {
-  DATASOURCE, TRAIN_MODEL, ADD_TRAIN, LAD, CONTEXT,
-} from '../../constants';
+
 
 class SideMenu extends Component {
   getStrokeWidth = (screen) => {

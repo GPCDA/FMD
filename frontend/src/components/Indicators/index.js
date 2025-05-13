@@ -11,18 +11,17 @@ import { Creators as ScreenActions } from '../../store/ducks/screen';
 import { Creators as CourseActions } from '../../store/ducks/course';
 import { Creators as SubjectActions } from '../../store/ducks/subject';
 import { Creators as SemesterActions } from '../../store/ducks/semester';
-import indicator, { Creators as IndicatorActions } from '../../store/ducks/indicator';
+import { Creators as IndicatorActions } from '../../store/ducks/indicator';
 import { Creators as PreProcessingActions } from '../../store/ducks/pre_processing';
 import {
   Header, Separator, Content, LeftContent,
   RightContainer, SelectText, SelectContainer,
 } from './styles';
-import { DATASOURCE, PRE_PROCESSING, ADD_TRAIN, LMS, SPARK_TRAIN, SPARK_PROCESSING } from '../../constants';
+import { DATASOURCE, PRE_PROCESSING, ADD_TRAIN, LMS, SPARK_PROCESSING } from '../../constants';
 import { selectStyle } from '../../styles/global';
 
 var sourceCluster = [];
 var IndicatorsOptions = [];
-var file = '';
 
 
 const fetchData = async (url) => {
@@ -221,7 +220,7 @@ class Indicators extends Component {
     }
 
     const { indicator } = this.props;
-    const { source, indicators, targetSelected, kSelected, algoritmsSelected } = this.props.indicator;
+    let { source, indicators, targetSelected, kSelected, algoritmsSelected } = this.props.indicator;
 
     const dataSourceContext = this.getDataSourceContext();
     source = sourceCluster;
