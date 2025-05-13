@@ -1,0 +1,43 @@
+./bin/spark-submit \
+  --class org.apache.spark.examples.SparkPi \
+  --master spark://10.5.0.2:7077 \
+  --deploy-mode cluster \
+  --supervise \
+  --executor-memory 20G \
+  --total-executor-cores 100 \
+  /path/to/examples.jar \
+  1000
+
+
+  ./bin/spark-submit \
+  --master <master-url> \
+  --deploy-mode <deploy-mode> \
+  --conf <key<=<value> \
+  --driver-memory <value>g \
+  --executor-memory <value>g \
+  --executor-cores <number of cores>  \
+  --py-files file1.py,file2.py,file3.zip, file4.egg \
+  wordByExample.py [application-arguments]
+
+
+
+  oci --profile oci-cli --auth security_token data-flow run submit \
+--compartment-id <compartment-id> \
+--archive-uri  "oci://<bucket-name>@<tenancy-name>/mmlspark_original.zip" \
+--execute "--jars oci://<bucket-name>@<tenancy-name>/fake.jar
+ --conf spark.sql.crossJoin.enabled=true
+ --class org.apache.spark.examples.SparkPi
+ oci://<bucket-name>@<tenancy-name>/spark-examples_2.11-2.3.1-SNAPSHOT-jar-with-dependencies.jar 10"
+#result
+{'opc-request-id': '<opc-request-id>', 'code': 'InvalidParameter',
+ 'message': 'Invalid OCI Object Storage uri. The object was not found or you are not authorized to access it.
+ {ResultCode: OBJECTSTORAGE_URI_INVALID,
+ Parameters: [oci://<bucket-name>@<tenancy-name>/fake.jar]}', 'status': 400}
+
+
+
+
+ wget https://dlcdn.apache.org/incubator/livy/0.7.1-incubating/apache-livy-0.7.1-incubating-bin.zip
+
+
+ tar -xvzf apache-livy-0.7.1-incubating-bin.zip.tar.gz
