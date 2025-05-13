@@ -1,0 +1,27 @@
+# Usa a imagem oficial do Python 3.7.6 como base
+FROM python:3.7.6-slim
+
+WORKDIR /app
+
+# Instala as dependências do sistema operacional necessárias para compilar o Python
+RUN apt update; apt install -y build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev \
+    curl git libncursesw5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev
+
+# Copia o arquivo de requisitos para o diretório de trabalho
+COPY requirements.txt .
+
+# Instala as dependências do Python
+RUN pip install -r requirements.txt
+
+# Copia o restante do código da aplicação para o diretório de trabalho
+COPY . .
+
+# Define a variável de ambiente para a execução do Flask
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+
+# Exponha a porta usada pelo Flask
+EXPOSE 5000
+
+# Comando para rodar a aplicação (Desenvolvimento)
+CMD ["python", "run.py", "-h 0.0.0.0"]

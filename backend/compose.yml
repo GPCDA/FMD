@@ -1,0 +1,72 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:14
+    container_name: postgres-db
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_DB: fmdev
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    expose:
+      - 5432
+    networks:
+      - fmdev
+
+# eu já buildei a imagem do pentaho, mas se você não conseguir dar pull, descomente a linha abaixo
+  pentaho:
+    image: anacgfp/pentaho_fmdev:matheus
+    build:
+      context: ./fmdev/pentaho
+      dockerfile: Dockerfile
+    container_name: pentaho-pdi
+    environment:
+      - PENTAHO_HOME=/opt/pentaho
+    ports:
+      - "8081:8080"
+    expose:
+      - 8081
+    volumes:
+      - pentaho_data:/opt/pentaho/data-integration
+      - ./fmdev/etl/transformations:/opt/pentaho/data-integration/transformations
+    networks:
+      - fmdev
+
+  backend:
+    build: .
+    container_name: backend
+    restart: always
+    environment:
+      FLASK_ENV: development
+      DATABASE_URL: postgres://root:1234@postgres-db:5432/fmdev
+      CARTE_HOST: pentaho-pdi
+      CARTE_PORT: 8081
+      CARTE_USER: cluster
+      CARTE_PASS: cluster
+      # Set the Pentaho Data Integration location
+      CARTE_LOCATION: /opt/pentaho/data-integration/transformations
+    volumes:
+      - .:/app
+    ports:
+      - "5000:5000"
+    expose:
+      - 5000
+    depends_on:
+      - postgres
+      - pentaho
+    networks:
+      - fmdev
+
+
+volumes:
+  postgres_data:
+  pentaho_data:
+
+networks:
+  fmdev:
+    external: true
+    name: fmdev
